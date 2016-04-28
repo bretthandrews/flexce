@@ -1,0 +1,57 @@
+# As of May 25, 2011 (found in https://trac.sdss3.org/wiki/APOGEE/Linelists):
+# 
+# CURRENT WORKING LINELIST = linelist.201105101120
+# BEST LINELIST = linelist.201105101120
+# 
+# When we create the astrophysical gf values we will fit to the following
+# abundances:
+# 
+# Solar Abundances to use from Asplund, Grevesse, Sauval, & Scott 2009
+# 
+# C = 8.43 - photospheric
+# C12/C13 = 89
+# N = 7.83 - photospheric
+# O = 8.69 - photospheric
+# Na = 6.27 - meteoritic
+# Mg = 7.53 - meteoritic
+# Al = 6.43 - meteoritic
+# Si = 7.51 - meteoritic
+# S = 7.15 - meteoritic
+# K = 5.08 - meteoritic
+# Ca = 6.29 - meteoritic
+# Ti = 4.91 - meteoritic
+# V = 3.96 - meteoritic
+# Cr = 5.64 - meteoritic
+# Mn = 5.48 - meteoritic
+# Fe = 7.45 - meteoritic
+# Co = 4.87 - meteoritic
+# Ni = 6.20 - meteoritic
+# 
+# We will adopt a solar Kurucz ODF model Teff = 5780 K, log g = 4.44, [Fe/H] =
+# 0.0, v_t = 1.10 km/sec
+# 
+# To get a fit with the OH, CO and CN lines I used the following dissociation
+# energies:
+# 
+# CN = 7.760 eV
+# OH = 4.395 eV
+# CO = 11.092 eV
+#
+#
+c    8.43
+n    7.83
+o    8.69  
+na   6.27
+mg   7.53
+al   6.43
+si   7.51
+s    7.15 
+k    5.08 
+ca   6.29
+ti   4.91
+v    3.96 
+cr   5.64
+mn   5.48
+fe   7.45
+co   4.87
+ni   6.20

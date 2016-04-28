@@ -1,0 +1,10 @@
+Each file consists of 44 columns whose legenda is the following:
+Mass H He Li Be B C N O F Ne Na Mg Al Si P S Cl Ar K Ca Sc Ti V Cr Mn Fe Co Ni
+Cu Zn Ga Ge As Se Br Kr Rb Sr Y Zr Nb Mo 56Ni
+
+For each mass cut shown in column 1, columns 2 to 43 contain the yields of the
+various elements (in solar masses). The last column also provide the amount of
+56Ni that would be ejected with that specific choice of the mass cut. We prefer
+to give yields for a variety of possible mass cut because the determination of
+this quantity is still so uncertain that there is definitely room for different
+alternatives. We leave such a responsability to the user.

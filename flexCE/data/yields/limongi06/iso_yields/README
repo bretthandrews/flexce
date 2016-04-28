@@ -1,0 +1,9 @@
+Each file contains the isotopic chemical structure of the star after the
+explosion, down to a mass coordinate of the order of 1Msun. All the unstable
+isotopes are fully decayed into their closest stable daughter nucleus. The
+meaning of each column should be auto explicative because there is a legend in
+the first row. The first two columns contain the mass coordinate in solar masses
+and the radius in cm. The first row below the legend contains the average
+chemical composition of the mass lost by the wind while the amount of mass lost
+by the wind is simply the mass difference between the surface point (i.e. the
+first one) and the second one.

@@ -1,0 +1,15 @@
+maltov1.orig
+
+http://cococubed.asu.edu/code_pages/chem.shtml
+
+The ascii data file maltov1.orig contains the isotopic contributions from
+
+    * Type II supernovae (Woosley & Weaver 1995 models),
+    * low mass stars (Renzini & Voli 1986 models),
+    * six different Type Ia supernovae models (Chandra, Sub-Chandra, & NSE;
+	Timmies et al. 1995: ``The popular W7 model of Nomoto, Thielemann, &
+	Yokoi 1984 was adopted as representative of Type Ia supernovae, but the
+	detailed nucleosythesis was taken from Thielemann, Nomoto, & Yokoi
+	1986.''),
+    * three different classical novae flavors (1.0, 1.25, and 1.35 Msol models),
+    * Big Bang.

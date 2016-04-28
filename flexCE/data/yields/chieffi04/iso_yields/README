@@ -1,0 +1,10 @@
+Each row contains the yields integrated (in Msun) from the surface up to that
+specific mass layer. All the unstable nuclei are fully decayed to their stable
+daughter in advance. For each mass there are 12 files, 11 from zxxmxx.q10 to
+zxxmxx.q20 and a file called zxxmxx.nik. The legenda of the various columns is
+in the first row of each file. For convenience each file has the mass (in Msun)
+in the first column. The .nik file contain the cumulative abundance (in solar
+masses) of the Ni56 so that it is easy to find the mass cut corresponding to
+each specific amount of Ni56 ejected outward. The meaning of the filenames is as
+follows: Zxx refers the metallicity: z13=0.001, z63=0.006 and so on. Mxx refers
+to the star mass in solar masses.
