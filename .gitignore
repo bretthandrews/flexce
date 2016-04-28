@@ -1,0 +1,8 @@
+*.pyc
+*.pdf
+*.pck
+*.pickle
+*.inv
+*.doctree
+/env
+/flexCE/output
