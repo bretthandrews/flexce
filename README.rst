@@ -34,8 +34,8 @@ Run the code
 
 **Change the parameters of the code**::
 
-1. create a new `simN.cfg` file (where **N** is a number)
-2. edit `simN.cfg`
+1. create a new :code:`simN.cfg` file (where **N** is a number)
+2. edit :code:`simN.cfg`
 3. re-run the code::
 
     python flexce.py ../config/simN.cfg
