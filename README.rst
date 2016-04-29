@@ -59,3 +59,11 @@ Copyright 2016 Brett Andrews.
 
 flexCE is free software made available under the MIT License. For details see
 the LICENSE file.
+
+
+Attribution
+^^^^^^^^^^^
+Please cite Andrews et al. (2016) if you find this code helpful in your
+research. You may also want to check out `Weinberg, Andrews, Freudenburg (2016)
+<http://adsabs.harvard.edu/cgi-bin/bib_query?arXiv:1604.07435>`_ for a companion
+analytic model.
