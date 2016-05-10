@@ -59,24 +59,13 @@ python setup.py install
 python make_yield_grids.py
 </code></pre>
 
-<h2>Run the code</h2>
+<h2>Quick Start</h2>
 
+<p><strong>Run the code</strong></p>
 <pre><code>cd ~/flexCE/flexCE/
 python flexce.py ../config/sim0.cfg
 </code></pre>
 
-<p><strong>Change the parameters of the code</strong></p>
-
-<ol>
-<li>create a new <code>simN.cfg</code> file (where <code>N</code> is a number)</li>
-<li>edit <code>simN.cfg</code>
-</li>
-<li>
-<p>re-run the code</p>
-
-<pre><code>python flexce.py ../config/simN.cfg</code></pre>
-</li>
-</ol>
 
 <p><strong>Plot [O/Fe]-[Fe/H]</strong></p>
 
@@ -88,6 +77,36 @@ python plot_xfe_feh.py ofe_feh_sim0.cfg
 
 <pre><code>cd flexCE/plots/plots
 </code></pre>
+
+
+<h2>Change the parameters of the code</h2>
+
+<ol>
+<li>create a new <code>simN.cfg</code> file (where <code>N</code> is a number) by copying
+    <code>sim0.cfg</code></li>
+<li>edit <code>simN.cfg</code></li>
+<li><p>re-run the code</p>
+<pre><code>cd ~/flexCE/flexCE/
+python flexce.py ../config/simN.cfg</code></pre>
+</li>
+</ol>
+
+<h2>Chemical Evolution Parameter Variations</h2>
+<p><code>inflows_func</code>: functional form of the gas inflow</p>
+<ul><li><code>exp</code>: exponential with a timescale of <code>inflows_b1</code></li>
+<li><code>double_exp</code>: double exponential with timescales of <code>inflows_b1</code> and
+    <code>inflows_b2</code></li>
+<li><code>te-t</code>: linear-exponential product with a timescale of <code>inflows_b1</code></li>
+<li><code>constant_mgas</code>: constant gas mass (and hence constant SFR)</li>
+<li><code>custom</code>: user-defined inflow rate</li>
+</ul>
+
+
+
+<h2>Warnings</h2>
+<p>Pickle files (<code>*.pck</code>) created in Python 2 cannot be read into Python 3 and vice
+versa, so use a consistent major version of Python for running the code and inspecting the
+simulation output. </p>
 
 <h2>Attribution</h2>
 <p>Please cite
