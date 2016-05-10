@@ -1,0 +1,128 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>flexCE by bretthandrews</title>
+
+    <link rel="stylesheet" href="stylesheets/styles.css">
+    <link rel="stylesheet" href="stylesheets/github-light.css">
+    <meta name="viewport" content="width=device-width">
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="wrapper">
+      <header>
+        <h1>flexCE</h1>
+        <p>flexible Chemical Evolution model</p>
+
+        <p class="view"><a href="https://github.com/bretthandrews/flexCE">View the Project on GitHub <small>bretthandrews/flexCE</small></a></p>
+
+
+        <ul>
+          <li><a href="https://github.com/bretthandrews/flexCE/zipball/master">Download <strong>ZIP File</strong></a></li>
+          <li><a href="https://github.com/bretthandrews/flexCE/tarball/master">Download <strong>TAR Ball</strong></a></li>
+          <li><a href="https://github.com/bretthandrews/flexCE">View On <strong>GitHub</strong></a></li>
+        </ul>
+      </header>
+      <section>
+        <h1></h1>
+
+<h1>
+<a id="flexce" class="anchor" href="#flexce" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>flexCE</h1>
+
+<h2>
+<a id="a-flexible-chemical-evolution-model" class="anchor" href="#a-flexible-chemical-evolution-model" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>A flexible Chemical Evolution model</h2>
+
+<p>Choose a location for flexCE to live. We'll assume that it's in your home
+directory ("~/").</p>
+
+<p>Installation
+^^^^^^^^^^^^
+::</p>
+
+<pre><code>cd ~/flexCE
+python setup.py install
+</code></pre>
+
+<p><strong>Generate yields</strong>::</p>
+
+<pre><code>cd ~/flexCE/flexCE/
+python make_yield_grids.py
+</code></pre>
+
+<p>Run the code
+^^^^^^^^^^^^
+::</p>
+
+<pre><code>cd ~/flexCE/flexCE/
+python flexce.py ../config/sim0.cfg
+</code></pre>
+
+<p><strong>Change the parameters of the code</strong>::</p>
+
+<ol>
+<li>create a new :code:<code>simN.cfg</code> file (where <strong>N</strong> is a number)</li>
+<li>edit :code:<code>simN.cfg</code>
+</li>
+<li>
+<p>re-run the code::</p>
+
+<p>python flexce.py ../config/simN.cfg</p>
+</li>
+</ol>
+
+<p><strong>Plot [O/Fe]-[Fe/H]</strong>::</p>
+
+<pre><code>cd flexCE/flexCE/plot
+python plot_xfe_feh.py ofe_feh_sim0.cfg
+</code></pre>
+
+<p><strong>Go to output plot directory</strong>::</p>
+
+<pre><code>cd flexCE/plots/plots
+</code></pre>
+
+<p>License
+^^^^^^^
+Copyright 2016 Brett Andrews.</p>
+
+<p>flexCE is free software made available under the MIT License. For details see
+the LICENSE file.</p>
+
+<p>Attribution
+^^^^^^^^^^^
+Please cite <code>Andrews et al. (2016)
+&lt;http://adsabs.harvard.edu/cgi-bin/bib_query?arXiv:1604.08613&gt;</code>_ if you find
+this code helpful in your research. You may also want to check out
+<code>Weinberg, Andrews, &amp; Freudenburg (2016)
+&lt;http://adsabs.harvard.edu/cgi-bin/bib_query?arXiv:1604.07435&gt;</code>_ for a companion
+analytic model.</p>
+
+<p>The BibTeX entry for Andrews et al. (2016)::</p>
+
+<pre><code>@ARTICLE{2016arXiv160408613A,
+       author = {{Andrews}, B.~H. and {Weinberg}, D.~H. and {Sch{\"o}nrich}, R. and {Johnson}, J.~A.},
+        title = "{Inflow, Outflow, Yields, and Stellar Population Mixing in Chemical Evolution Models}",
+      journal = {ArXiv e-prints},
+archivePrefix = "arXiv",
+       eprint = {1604.08613},
+     keywords = {Astrophysics - Astrophysics of Galaxies, Astrophysics - Solar and Stellar Astrophysics},
+         year = 2016,
+        month = apr,
+       adsurl = {http://adsabs.harvard.edu/abs/2016arXiv160408613A},
+      adsnote = {Provided by the SAO/NASA Astrophysics Data System}
+}
+</code></pre>
+      </section>
+      <footer>
+        <p>This project is maintained by <a href="https://github.com/bretthandrews">bretthandrews</a></p>
+        <p><small>Hosted on GitHub Pages &mdash; Theme by <a href="https://github.com/orderedlist">orderedlist</a></small></p>
+      </footer>
+    </div>
+    <script src="javascripts/scale.fix.js"></script>
+    
+  </body>
+</html>
