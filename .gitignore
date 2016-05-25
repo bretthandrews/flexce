@@ -6,3 +6,4 @@
 *.doctree
 /env
 /flexCE/output
+/flexCE/data/yields/bravo
