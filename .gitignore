@@ -4,6 +4,7 @@
 *.pickle
 *.inv
 *.doctree
+/build
 /env
-/flexCE/output
+/output
 /flexCE/data/yields/bravo
