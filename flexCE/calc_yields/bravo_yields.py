@@ -7,8 +7,8 @@ from os.path import join
 import sys
 
 import numpy as np
+from scipy import interpolate
 import pandas as pd
-import string
 
 # ---- Set Paths -----
 path_calc_yields = join(os.path.abspath(os.path.dirname(__file__)), '')  # TODO Uncomment when done debugging
@@ -101,5 +101,33 @@ for mod, mname in zip(models, model_names):
 for k in snia_yields.keys():
     pickle_write(snia_yields[k], join(path_bravo, k + '_yields.pck'))
 
+
 # Metallicity dependent yields
+
+# use same metallicity grid as Limongi & Chieffi SN yields
+n_metal_bin = 1001
+z_grid_lc = np.array([1e-6, 1e-4, 1e-3, 6e-3, 2e-2])
+logz_grid_lc = np.log10(z_grid_lc)
+z_grid_bravo = np.array([0.00025, 0.0025, 0.01, 0.025, 0.075])
+
+# evenly sample metallicity (in log Z) between grid points
+logz_final = np.zeros(n_metal_bin)
+dind = (n_metal_bin - 1) / (len(z_grid_lc) - 1)
+for i in range(len(z_grid_lc) - 1):
+    dlogz = (logz_grid_lc[i+1] - logz_grid_lc[i]) / \
+            ((n_metal_bin - 1) / (len(z_grid_lc) - 1))
+    logz_final[i*dind:i*dind+dind+1] = np.arange(logz_grid_lc[i],
+                                                 logz_grid_lc[i+1]+1e-9, dlogz)
+
+# metallicity of final grid
+z_final = 10.**logz_final
+
+
+
+
 # array of shape (1001, 293) for each model
+zdep_yields = np.zeros((n_metal_bin, n_species))
+for j in range(n_species):
+    itmp = interpolate.InterpolatedUnivariateSpline(
+        z_grid_bravo, k10_interp_mass[:, i, j], k=1)
+    k10_final[:, i, j] = itmp(z_final)
