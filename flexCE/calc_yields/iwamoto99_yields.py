@@ -69,15 +69,6 @@ solar_ab = np.array(solar_isotopes['ab'])
 solar_el_name = np.array([item.strip(string.digits) for item in solar_iso])
 
 
-# indices within "species" array of the elements for which CL04 give a solar
-# abundance
-ind_iso = []
-for i in range(len(solar_iso)):
-    ind_iso.append(np.where(solar_iso[i] == species)[0][0])
-
-ind_iso = np.array(ind_iso)
-
-
 # map elemental yields onto the dominant isotope
 snia_yields = {}
 for k in i99.keys():
