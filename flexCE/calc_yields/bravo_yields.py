@@ -7,7 +7,7 @@ from os.path import join
 import sys
 
 import numpy as np
-from scipy import interpolate
+from scipy.interpolate import InterpolatedUnivariateSpline
 import pandas as pd
 
 # ---- Set Paths -----
@@ -53,6 +53,8 @@ with open(ddt_in, 'r') as infile:
             data[model_name][model_metallicity] = tmp_yld
 
 bravo_el = np.array(bravo_el)
+bravo_met = [0.00025, 0.0025, 0.01, 0.025, 0.075]
+n_bravo_met = len(bravo_met)
 
 # Read in isotopes
 species_in = pd.read_csv(join(path_yldgen, 'species.txt'),
@@ -85,21 +87,26 @@ DDTc = pd.DataFrame(data['DDTc'], index=snia_sym)
 DDTe = pd.DataFrame(data['DDTe'], index=snia_sym)
 DDTf = pd.DataFrame(data['DDTf'], index=snia_sym)
 
-# Metallicity independent yields
-snia_yields = {}
+# Bravo yields projected onto the isotope list of the CCSN yields
+DDTa_iso = np.zeros((n_bravo_met, n_species))
+DDTc_iso = np.zeros((n_bravo_met, n_species))
+DDTe_iso = np.zeros((n_bravo_met, n_species))
+DDTf_iso = np.zeros((n_bravo_met, n_species))
+
+# Project yields onto isotope list of the CCSN yields
+snia_yields = {}  # metallicity independent yields
 models = [DDTa, DDTc, DDTe, DDTf]
+models_iso = [DDTa_iso, DDTc_iso, DDTe_iso, DDTf_iso]
 model_names = ['DDTa', 'DDTc', 'DDTe', 'DDTf']
-for mod, mname in zip(models, model_names):
-    for met in mod.keys():
+for mod, imod, mname in zip(models, models_iso, model_names):
+    for ii, bmet in enumerate(bravo_met):
+        met = str(bmet)
         mzname = '_z'.join((mname, met))
         snia_yields[mzname] = np.zeros(n_species)
-        for j in range(n_species):
-            if species[j] in snia_sym:
-                snia_yields[mzname][j] = mod[met].ix[np.where(snia_sym == species[j])[0][0]]
-
-# write to file
-for k in snia_yields.keys():
-    pickle_write(snia_yields[k], join(path_bravo, k + '_yields.pck'))
+        for jj in range(n_species):
+            if species[jj] in snia_sym:
+                snia_yields[mzname][jj] = mod[met].ix[snia_sym == species[jj]]
+                imod[ii][jj] = mod[met].ix[snia_sym == species[jj]]
 
 
 # Metallicity dependent yields
@@ -123,11 +130,27 @@ for i in range(len(z_grid_lc) - 1):
 z_final = 10.**logz_final
 
 
+# Bravo yields projected onto the isotope list and metallicity grid of the CCSN
+# yields
+# Only goes up to solar metallicity!
+# TODO Should I interpolate the SNIa yields to super-solar metallicities?
+DDTa_final = np.zeros((n_metal_bin, n_species))
+DDTc_final = np.zeros((n_metal_bin, n_species))
+DDTe_final = np.zeros((n_metal_bin, n_species))
+DDTf_final = np.zeros((n_metal_bin, n_species))
+models_final = [DDTa_final, DDTc_final, DDTe_final, DDTf_final]
+for imod, fmod in zip(models_iso, models_final):
+    for jj in range(n_species):
+        itmp = InterpolatedUnivariateSpline(z_grid_bravo, imod[:, jj], k=1)
+        fmod[:, jj] = itmp(z_final)
 
 
-# array of shape (1001, 293) for each model
-zdep_yields = np.zeros((n_metal_bin, n_species))
-for j in range(n_species):
-    itmp = interpolate.InterpolatedUnivariateSpline(
-        z_grid_bravo, k10_interp_mass[:, i, j], k=1)
-    k10_final[:, i, j] = itmp(z_final)
+# write Bravo yields to file for each model--metallicity combination
+for k in snia_yields.keys():
+    pickle_write(snia_yields[k], join(path_bravo, k + '_yields.pck'))
+
+
+# write Bravo yields to file for each model interpolated onto the CCSN
+# metallicity grid
+for fmod, mname in zip(models_final, model_names):
+    pickle_write(fmod, join(path_bravo, mname + '_yields.pck'))
