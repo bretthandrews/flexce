@@ -47,7 +47,7 @@ def load_yields(path, args, mass_bins):
     except IOError as e:
         print()
         print(e)
-        # FIX: automatically run make_yield_grids.py
+        # TODO automatically run make_yield_grids.py
         print('\nPlease create yield grids with')
         print('python make_yield_grids.py\n')
         sys.exit(1)

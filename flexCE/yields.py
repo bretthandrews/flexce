@@ -322,7 +322,16 @@ class Yields:
         self.element = np.append(self.element, self.nc_element)
         self.n_elements = len(self.element)
         self.bbmf = np.append(self.bbmf, np.zeros(self.n_nc_sym))
-        self.snia_yields = np.append(self.snia_yields, np.zeros(self.n_nc_sym))
+        if len(self.snia_yields.shape) == 1:
+            # metallicity-independent SNIa yields
+            self.snia_yields = np.append(self.snia_yields,
+                                         np.zeros(self.n_nc_sym))
+        elif len(self.snia_yields.shape) == 2:
+            # metallicity-dependent SNIa yields
+            self.snia_yields = np.append(self.snia_yields,
+                                         np.zeros((self.nc_yields.shape[0],
+                                                   self.nc_yields.shape[2])),
+                                         axis=1)
         self.snii_yields = np.append(self.snii_yields,
                                      self.nc_yields[:, self.ind8:], axis=2)
         self.agb_yields = np.append(self.agb_yields,

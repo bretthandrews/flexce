@@ -983,7 +983,16 @@ class ChemEvol:
                 self.snia_ev(i, yields.snia_yields.sum(),
                              self.mstar_left.sum(), self.sfr))
             self.NIa[i] = cnt_ia
-            self.snia[i] = yields.snia_yields * self.NIa[i]
+            try:
+                # for metallicity-independent SNIa yields
+                self.snia[i] = yields.snia_yields * self.NIa[i]
+            except ValueError:
+                # for metallicity-dependent SNIa yields
+                self.snia[i] = yields.snia_yields[ind_yld[i]] * self.NIa[i]
+            
+            # TODO error: mass_in - mass_out: 343553858.7
+            # ylds.snia_yields.shape (1001, 300)
+            
             self.mremnant[i] = (mass_remnant_tot - self.NIa[i] *
                                 yields.snia_yields.sum())
             # gas flows
