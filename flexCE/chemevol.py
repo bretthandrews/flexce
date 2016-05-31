@@ -979,9 +979,18 @@ class ChemEvol:
             self.random_num_state_snia.append(np.random.get_state())
             if set_state_snia is not None:
                 np.random.set_state(set_state_snia[i-1][i-1])
-            cnt_ia = np.random.poisson(
-                self.snia_ev(i, yields.snia_yields.sum(),
-                             self.mstar_left.sum(), self.sfr))
+
+            # TODO add flag for metallicity-independent SNIa yields
+            if len(yields.snia_yields.shape) == 1:
+                # for metallicity-independent SNIa yields
+                cnt_ia = np.random.poisson(
+                    self.snia_ev(i, yields.snia_yields.sum(),
+                                 self.mstar_left.sum(), self.sfr))
+            else:
+                # for metallicity-dependent SNIa yields
+                cnt_ia = np.random.poisson(
+                    self.snia_ev(i, yields.snia_yields[ind_yld[i]].sum(),
+                                 self.mstar_left.sum(), self.sfr))
             self.NIa[i] = cnt_ia
             try:
                 # for metallicity-independent SNIa yields
@@ -989,10 +998,12 @@ class ChemEvol:
             except ValueError:
                 # for metallicity-dependent SNIa yields
                 self.snia[i] = yields.snia_yields[ind_yld[i]] * self.NIa[i]
-            
-            # TODO error: mass_in - mass_out: 343553858.7
-            # ylds.snia_yields.shape (1001, 300)
-            
+
+                # TODO larger issue is that these metallicity-dependent SNIa
+                # yields use the current gas-phase metallicity. This isn't the
+                # worst approximation because of the prevalence of prompt Ia's,
+                # but it's not strictly correct.
+
             self.mremnant[i] = (mass_remnant_tot - self.NIa[i] *
                                 yields.snia_yields.sum())
             # gas flows
@@ -1005,8 +1016,8 @@ class ChemEvol:
             if self.inflow_func == 'constant_mgas':
                 self.inflow_rate[i] = (np.sum(
                     self.sf[i] + self.outflow[i] - self.gas_cooling[i] -
-                    self.fdirect * (self.snii[i] + self.agb[i] + self.snia[i]))
-                                       / self.dt)
+                    self.fdirect *
+                    (self.snii[i] + self.agb[i] + self.snia[i])) / self.dt)
             self.inflow[i] = (self.inflow_composition(yields, i) *
                               self.inflow_rate[i] * self.dt)
             self.mgas_iso[i] = (self.mgas_iso[i-1] +
@@ -1026,7 +1037,7 @@ class ChemEvol:
             self.snii_agb_rec = self.snii_agb - self.snii_agb_net
         print('Time elapsed:', time.time() - start)
         self.outflow_rate = np.sum(self.outflow, axis=1) / self.dt
-        self.check_mass_conservation(yields)
+        self.check_mass_conservation(yields, ind_yld)
         self.snii_snia_rate()
         # Set all negative masses equal to a small positive number.
         ind_neg = np.where(self.mgas_iso < 0.)
@@ -1038,7 +1049,7 @@ class ChemEvol:
                           warmgas=self.warmgasres_param, sf=self.sf_param,
                           snia=self.snia_param, yields=yields.sources)
 
-    def check_mass_conservation(self, yields):
+    def check_mass_conservation(self, yields, ind_yld):
         '''Check mass conservation.
 
         inflow[0].sum() is fractionally larger than inflow_rate.sum() by 7.5e-5
@@ -1047,8 +1058,15 @@ class ChemEvol:
                 self.mwarmgas_iso[0].sum() * 4.)
         m_out = self.outflow.sum()
         m_gas = self.mgas_iso[-1].sum() + self.mwarmgas_iso[-1].sum()
-        m_star = (self.mstar.sum() - self.snii.sum() - self.agb.sum() -
-                  self.NIa.sum() * yields.snia_yields.sum())
+        # TODO add flag for metallicity-independent SNIa yields
+        if len(yields.snia_yields.shape) == 1:
+            # metallicity-independent SNIa yields
+            m_star = (self.mstar.sum() - self.snii.sum() - self.agb.sum() -
+                      self.NIa.sum() * yields.snia_yields.sum())
+        else:
+            # metallicity-independent SNIa yields
+            m_star = (self.mstar.sum() - self.snii.sum() - self.agb.sum() -
+                      np.sum(self.NIa * yields.snia_yields[ind_yld].T))
         print('mass_in - mass_out:', m_in - m_out - m_gas - m_star)
 
     def snii_snia_rate(self):

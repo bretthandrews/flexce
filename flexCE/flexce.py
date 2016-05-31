@@ -100,7 +100,6 @@ def output(path, sim_id, gal, abund):
 
 
 if __name__ == '__main__':
-
     path_flexce = join(os.path.abspath(os.path.dirname(__file__)), '')
     path_flexce_top = os.path.abspath(join(path_flexce, '..'))
     path_data = join(path_flexce, 'data', '')
@@ -111,6 +110,7 @@ if __name__ == '__main__':
     if argv is None:
         argv = sys.argv
     try:
+        # TODO autosearch for config file in the standard config directory
         file_in = argv[1]
         if file_in.split('/')[-1][:3] != 'sim':
             raise IndexError
