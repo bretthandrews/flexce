@@ -11,8 +11,7 @@ from scipy.interpolate import InterpolatedUnivariateSpline
 import pandas as pd
 
 # ---- Set Paths -----
-path_calc_yields = join(os.path.abspath(os.path.dirname(__file__)), '')  # TODO Uncomment when done debugging
-# path_calc_yields = '/Users/andrews/flexCE/flexCE/calc_yields/'  # Remove when down debugging.................
+path_calc_yields = join(os.path.abspath(os.path.dirname(__file__)), '')
 path_flexce = join('/'.join(path_calc_yields.split('/')[:-2]), '')
 path_fileio = join(path_flexce, 'fileio')
 path_data = join(path_flexce, 'data')
