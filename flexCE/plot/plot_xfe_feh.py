@@ -67,5 +67,5 @@ leg_args = utils.get_leg_args(cfg)
 leg = fig.ax_joint.legend(p, labels, **leg_args)
 
 # Save plot
-fout = ''.join((fin.strip('.cfg'), '.pdf'))
+fout = ''.join((os.path.splitext(fin)[0], '.pdf'))
 plt.savefig(join(path_plots, fout))
