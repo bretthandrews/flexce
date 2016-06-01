@@ -999,10 +999,12 @@ class ChemEvol:
                 # for metallicity-dependent SNIa yields
                 self.snia[i] = yields.snia_yields[ind_yld[i]] * self.NIa[i]
 
-                # TODO larger issue is that these metallicity-dependent SNIa
-                # yields use the current gas-phase metallicity. This isn't the
-                # worst approximation because of the prevalence of prompt Ia's,
-                # but it's not strictly correct.
+                # TODO Z-dependent SNIa yields use current Z not birth Z
+                # This isn't the worst approximation because of the prevalence
+                # of prompt Ia's, but it's not strictly correct.
+                
+                # Z-dependent SNIa yields projected onto CCSN yields only go up
+                # to solar metallicity
 
             self.mremnant[i] = (mass_remnant_tot - self.NIa[i] *
                                 yields.snia_yields.sum())
