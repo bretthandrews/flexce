@@ -5,6 +5,7 @@ try:
 except ImportError as e:
     import configparser
 
+
 def read_sim_cfg(file_in):
     """Read in config file.
 
