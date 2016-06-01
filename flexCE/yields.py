@@ -251,12 +251,12 @@ class Yields:
         """
         if supersolar:
             self.sprocess_z = pickle_read(join(self.path_sprocess,
-                                               'busso01ext_metallicity.pck')
+                                               'busso01ext_metallicity.pck'))
             self.sprocess_yields = pickle_read(join(self.path_sprocess,
-                                                    'busso01ext_yields.pck')
+                                                    'busso01ext_yields.pck'))
         else:
             self.sprocess_yields = pickle_read(join(self.path_sprocess,
-                                                    'busso01_yields.pck')
+                                                    'busso01_yields.pck'))
 
     def load_snia_yields(self, model):
         """Load SNIa yields.
@@ -270,7 +270,8 @@ class Yields:
         wdd2\: WDD2
         wdd3\: WDD3
         """
-        self.snia_yields = pickle_read(join(self.path_snia, model, '_yields.pck'))
+        self.snia_yields = pickle_read(join(self.path_snia,
+                                            model + '_yields.pck'))
 
     def concat_ncapture_yields(self, r_elements, s_elements):
         """Create an array of r- and s-process isotopic yields."""
