@@ -23,6 +23,7 @@ def define_mass_bins(low=0.1, high=100, dm_low=0.1, dm_high=1.):
                             np.arange(8., high + 0.001, dm_high)))
     return mbins
 
+
 def load_yields(path, args, mass_bins):
     """Load yield grids.
 
