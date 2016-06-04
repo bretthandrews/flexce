@@ -11,7 +11,6 @@ from __future__ import print_function, division, absolute_import
 
 import os
 from os.path import join
-from pathlib import PurePath
 import sys
 
 import numpy as np
@@ -20,10 +19,7 @@ from fileio.cfg_io import read_sim_cfg
 from fileio.pickle_io import pickle_write
 from fileio.txt_io import txt_write
 
-from utils import define_mass_bins
-from utils import load_yields
-from utils import set_path
-
+import utils
 from chemevol import ChemEvol
 from abundances import Abundances
 
@@ -115,15 +111,7 @@ if __name__ == '__main__':
 
     try:
         default_config_path = join(path_flexce_root, 'config')
-        fname, path_config = set_path(argv[1], default_config_path)
-        # cfg_in = argv[1]
-        # if os.path.isfile(cfg_in):
-        #     path_config = os.path.dirname(os.path.abspath(cfg_in))
-        #     fname = os.path.basename(cfg_in)
-        # else:
-        #     # assume sim config file is in flexce/config/
-        #     path_config = join(path_flexce_root, 'config')
-        #     fname = cfg_in
+        fname, path_config = utils.set_path(argv[1], default_config_path)
     except IndexError:
         path_config = join(os.getenv('HOME'), 'flexCE', 'examples')
         fname = 'sim0.cfg'
@@ -132,15 +120,13 @@ if __name__ == '__main__':
     file_in = join(path_config, fname)
 
     # TODO Add try...except to handle user-defined output path
-    pp = PurePath(path_config)
-    output_parts = [p if p != 'config' else 'output' for p in pp.parts]
-    path_out = join(*output_parts)
+    path_out = utils.substitute_dir_in_path(path_config, 'config', 'output')
 
     (simulation_id, yld_args, initialize_args, mass_bins_args, snia_dtd_args,
      inflows_args, outflows_args, warmgasres_args, sf_args) = \
         read_sim_cfg(file_in)
-    mass_bins = define_mass_bins(**mass_bins_args)
-    ylds = load_yields(path_data, yld_args, mass_bins)
+    mass_bins = utils.define_mass_bins(**mass_bins_args)
+    ylds = utils.load_yields(path_data, yld_args, mass_bins)
     box = evolve(ylds, initialize_args, snia_dtd_args, inflows_args,
                  outflows_args, warmgasres_args, sf_args)
     ab = calc_abundances(path_data, ylds.sym, box.mgas_iso, box.survivors,

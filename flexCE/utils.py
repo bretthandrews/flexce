@@ -2,6 +2,7 @@ from __future__ import print_function, division, absolute_import
 
 import os
 import sys
+from pathlib import PurePath
 
 import numpy as np
 
@@ -64,3 +65,9 @@ def set_path(path_in, default_path):
         path = default_path
         filename = path_in
     return filename, path
+
+
+def substitute_dir_in_path(path, olddir, newdir):
+    pp = PurePath(path)
+    parts = [p if p != olddir else newdir for p in pp.parts]
+    return os.path.join(*parts)
