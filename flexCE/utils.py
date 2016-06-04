@@ -67,7 +67,7 @@ def set_path(path_in, default_path):
     return filename, path
 
 
-def set_output_path(path_config):
-    pp = PurePath(path_config)
-    output_parts = [p if p != 'config' else 'output' for p in pp.parts]
-    return os.path.join(*output_parts)
+def substitute_dir_in_path(path, olddir, newdir):
+    pp = PurePath(path)
+    parts = [p if p != olddir else newdir for p in pp.parts]
+    return os.path.join(*parts)
