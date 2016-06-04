@@ -22,6 +22,7 @@ from fileio.txt_io import txt_write
 
 from utils import define_mass_bins
 from utils import load_yields
+from utils import set_path
 
 from chemevol import ChemEvol
 from abundances import Abundances
@@ -113,18 +114,20 @@ if __name__ == '__main__':
         argv = sys.argv
 
     try:
-        cfg_in = argv[1]
-        if os.path.isfile(cfg_in):
-            path_config = os.path.dirname(os.path.abspath(cfg_in))
-            fname = os.path.basename(cfg_in)
-        else:
-            # assume sim config file is in flexce/config/
-            path_config = join(path_flexce_root, 'config')
-            fname = cfg_in
+        default_config_path = join(path_flexce_root, 'config')
+        fname, path_config = set_path(argv[1], default_config_path)
+        # cfg_in = argv[1]
+        # if os.path.isfile(cfg_in):
+        #     path_config = os.path.dirname(os.path.abspath(cfg_in))
+        #     fname = os.path.basename(cfg_in)
+        # else:
+        #     # assume sim config file is in flexce/config/
+        #     path_config = join(path_flexce_root, 'config')
+        #     fname = cfg_in
     except IndexError:
         path_config = join(os.getenv('HOME'), 'flexCE', 'examples')
         fname = 'sim0.cfg'
-        print('\nUsing default parameters in \n{}'.format(cfg_in))
+        print('\nUsing default parameters in \n{}'.format(argv[1]))
 
     file_in = join(path_config, fname)
 
