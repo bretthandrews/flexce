@@ -25,8 +25,8 @@ class Abundances:
             sim_id (str): Simulation ID number.
         """
         self.path_parent = path_parent
-        self.path_yields = path_parent + 'yields/'
-        self.path_yldgen = self.path_yields + 'general/'
+        self.path_yields = join(path_parent, 'yields')
+        self.path_yldgen = join(self.path_yields, 'general')
         self.isotope = sym_iso
         self.setup()
         self.split_element_mass()
