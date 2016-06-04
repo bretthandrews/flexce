@@ -1,5 +1,6 @@
 from __future__ import print_function, division, absolute_import
 
+import os
 import sys
 
 import numpy as np
@@ -22,6 +23,7 @@ def define_mass_bins(low=0.1, high=100, dm_low=0.1, dm_high=1.):
     mbins = np.concatenate((np.arange(low, 8., dm_low),
                             np.arange(8., high + 0.001, dm_high)))
     return mbins
+
 
 def load_yields(path, args, mass_bins):
     """Load yield grids.
@@ -52,3 +54,13 @@ def load_yields(path, args, mass_bins):
         print('python make_yield_grids.py\n')
         sys.exit(1)
     return yld
+
+
+def set_path(path_in, default_path):
+    if os.path.isfile(path_in):
+        path = os.path.dirname(os.path.abspath(path_in))
+        filename = os.path.basename(path_in)
+    else:
+        path = default_path
+        filename = path_in
+    return filename, path
