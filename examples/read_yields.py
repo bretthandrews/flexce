@@ -2,7 +2,6 @@
 
 import os
 from os.path import join
-
 from fileio.cfg_io import read_sim_cfg
 from utils import define_mass_bins
 from utils import load_yields
