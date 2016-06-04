@@ -3,12 +3,15 @@
 Command line args:
     config file that starts with "sim".
 
+Usage:
+    python flexce.py ../config/sim0.cfg
 """
 
 from __future__ import print_function, division, absolute_import
 
 import os
 from os.path import join
+from pathlib import PurePath
 import sys
 
 import numpy as np
@@ -102,24 +105,33 @@ def output(path, sim_id, gal, abund):
 if __name__ == '__main__':
 
     path_flexce = join(os.path.abspath(os.path.dirname(__file__)), '')
-    path_flexce_top = os.path.abspath(join(path_flexce, '..'))
-    path_data = join(path_flexce, 'data', '')
-    path_config = join(path_flexce_top, 'config', '')
-    path_out = join(path_flexce_top, 'output', '')
+    path_flexce_root = os.path.abspath(join(path_flexce, '..'))
+    path_data = join(path_flexce, 'data')
 
     argv = None
     if argv is None:
         argv = sys.argv
+
     try:
-        file_in = argv[1]
-        if file_in.split('/')[-1][:3] != 'sim':
-            raise IndexError
+        cfg_in = argv[1]
+        if os.path.isfile(cfg_in):
+            path_config = os.path.dirname(os.path.abspath(cfg_in))
+            fname = os.path.basename(cfg_in)
+        else:
+            # assume sim config file is in flexce/config/
+            path_config = join(path_flexce_root, 'config')
+            fname = cfg_in
     except IndexError:
+        path_config = join(os.getenv('HOME'), 'flexCE', 'examples')
         fname = 'sim0.cfg'
-        home = os.path.expanduser('~')
-        path_config = join(home, 'flexCE', 'examples', '')
-        file_in = join(path_config, fname)
-        print('\nUsing default parameters in \n{}'.format(file_in))
+        print('\nUsing default parameters in \n{}'.format(cfg_in))
+
+    file_in = join(path_config, fname)
+
+    # TODO Add try...except to handle user-defined output path
+    pp = PurePath(path_config)
+    output_parts = [p if p != 'config' else 'output' for p in pp.parts]
+    path_out = join(*output_parts)
 
     (simulation_id, yld_args, initialize_args, mass_bins_args, snia_dtd_args,
      inflows_args, outflows_args, warmgasres_args, sf_args) = \
