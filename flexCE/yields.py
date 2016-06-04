@@ -49,19 +49,19 @@ class Yields:
             mbins (array): stellar mass bins. Defaults to None.
         """
         self.path_parent = path_parent
-        self.path_yields = path_parent + 'yields/'
-        self.path_yldgen = self.path_yields + 'general/'
-        self.path_snii = self.path_yields + snii_dir
-        self.path_agb = self.path_yields + agb_dir
-        self.path_snia = self.path_yields + snia_dir
+        self.path_yields = join(self.path_parent, 'yields')
+        self.path_yldgen = join(self.path_yields, 'general')
+        self.path_snii = join(self.path_yields, snii_dir)
+        self.path_agb = join(self.path_yields, agb_dir)
+        self.path_snia = join(self.path_yields, snia_dir)
         self.sources = dict(snii=snii_dir.split('/')[0],
                             snia=snia_dir.split('/')[0],
                             agb=agb_dir.split('/')[0])
         if rprocess_dir is not None:
-            self.path_rprocess = self.path_yields + rprocess_dir
+            self.path_rprocess = join(self.path_yields, rprocess_dir)
             self.sources['rprocess'] = rprocess_dir.split('/')[0]
         if sprocess_dir is not None:
-            self.path_sprocess = self.path_yields + sprocess_dir
+            self.path_sprocess = join(self.path_yields, sprocess_dir)
             self.sources['sprocess'] = sprocess_dir.split('/')[0]
         if mbins is None:
             mbins = np.concatenate((np.arange(0.1, 8., 0.1),
@@ -181,10 +181,10 @@ class Yields:
 
         WW95 yields are also on same metallicity--stellar mass--isotope grid.
         """
-        self.snii_z = pickle_read(self.path_yldgen + 'interp_metallicity.pck')
-        self.snii_yields = pickle_read(self.path_snii + 'interp_yields.pck')
-        self.snii_mej = pickle_read(self.path_snii + 'interp_meject.pck')
-        self.snii_rem = pickle_read(self.path_snii + 'interp_mremnant.pck')
+        self.snii_z = pickle_read(join(self.path_yldgen, 'interp_metallicity.pck'))
+        self.snii_yields = pickle_read(join(self.path_snii, 'interp_yields.pck'))
+        self.snii_mej = pickle_read(join(self.path_snii, 'interp_meject.pck'))
+        self.snii_rem = pickle_read(join(self.path_snii, 'interp_mremnant.pck'))
         self.snii_agb_z = copy.deepcopy(self.snii_z)
         self.n_z = len(self.snii_agb_z)
         # adjust for a different upper mass limit to the IMF
@@ -209,12 +209,12 @@ class Yields:
                               delim_whitespace=True, skiprows=1, usecols=[1],
                               names=['name'])
         self.agb_sym = np.array(agb_sym['name'])
-        self.agb_z = pickle_read(self.path_yldgen + 'interp_metallicity.pck')
-        agb_yields_in = pickle_read(self.path_agb + 'interp_yields.pck')
+        self.agb_z = pickle_read(join(self.path_yldgen, 'interp_metallicity.pck'))
+        agb_yields_in = pickle_read(join(self.path_agb, 'interp_yields.pck'))
         # remove isotopes not in the LC06 yields
         agb_yields_in = np.delete(agb_yields_in, np.s_[6, 13, 23, 47], axis=2)
-        self.agb_mej = pickle_read(self.path_agb + 'interp_meject.pck')
-        self.agb_rem = pickle_read(self.path_agb + 'interp_mremnant.pck')
+        self.agb_mej = pickle_read(join(self.path_agb, 'interp_meject.pck'))
+        self.agb_rem = pickle_read(join(self.path_agb, 'interp_mremnant.pck'))
         # Create an array with the same elements as the Limongi & Chieffi
         # (2006) SNII yields.
         self.agb_yields = np.zeros((agb_yields_in.shape[0],
@@ -236,8 +236,8 @@ class Yields:
         Cescutti et al. (2006) r-process Ba & Eu yields for M = 12, 15, 30
         Msun that are metallicity independent.
         """
-        self.rprocess_yields = pickle_read(self.path_rprocess +
-                                           'cescutti06_yields.pck')
+        self.rprocess_yields = pickle_read(join(self.path_rprocess,
+                                                'cescutti06_yields.pck'))
 
     def load_sprocess_yields(self, supersolar=False):
         """Load s-process element yields.
@@ -250,13 +250,13 @@ class Yields:
         to twice solar (Z = 4e-2), otherwise only use the yields up to solar.
         """
         if supersolar:
-            self.sprocess_z = pickle_read(self.path_sprocess +
-                                          'busso01ext_metallicity.pck')
-            self.sprocess_yields = pickle_read(self.path_sprocess +
-                                               'busso01ext_yields.pck')
+            self.sprocess_z = pickle_read(join(self.path_sprocess,
+                                               'busso01ext_metallicity.pck'))
+            self.sprocess_yields = pickle_read(join(self.path_sprocess,
+                                                    'busso01ext_yields.pck'))
         else:
-            self.sprocess_yields = pickle_read(self.path_sprocess +
-                                               'busso01_yields.pck')
+            self.sprocess_yields = pickle_read(join(self.path_sprocess,
+                                                    'busso01_yields.pck'))
 
     def load_snia_yields(self, model):
         """Load SNIa yields.
@@ -270,11 +270,12 @@ class Yields:
         wdd2\: WDD2
         wdd3\: WDD3
         """
-        self.snia_yields = pickle_read(self.path_snia + model + '_yields.pck')
+        self.snia_yields = pickle_read(join(self.path_snia,
+                                            model + '_yields.pck'))
 
     def concat_ncapture_yields(self, r_elements, s_elements):
         """Create an array of r- and s-process isotopic yields."""
-        nclib = pickle_read(self.path_yldgen + 'sneden08.pck')
+        nclib = pickle_read(join(self.path_yldgen, 'sneden08.pck'))
         # unique elements arranged by atomic number
         elements = np.unique(r_elements + s_elements)
         at_num = []
@@ -322,7 +323,16 @@ class Yields:
         self.element = np.append(self.element, self.nc_element)
         self.n_elements = len(self.element)
         self.bbmf = np.append(self.bbmf, np.zeros(self.n_nc_sym))
-        self.snia_yields = np.append(self.snia_yields, np.zeros(self.n_nc_sym))
+        if len(self.snia_yields.shape) == 1:
+            # metallicity-independent SNIa yields
+            self.snia_yields = np.append(self.snia_yields,
+                                         np.zeros(self.n_nc_sym))
+        elif len(self.snia_yields.shape) == 2:
+            # metallicity-dependent SNIa yields
+            self.snia_yields = np.append(self.snia_yields,
+                                         np.zeros((self.nc_yields.shape[0],
+                                                   self.nc_yields.shape[2])),
+                                         axis=1)
         self.snii_yields = np.append(self.snii_yields,
                                      self.nc_yields[:, self.ind8:], axis=2)
         self.agb_yields = np.append(self.agb_yields,
