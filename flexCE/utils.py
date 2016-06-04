@@ -2,6 +2,7 @@ from __future__ import print_function, division, absolute_import
 
 import os
 import sys
+from pathlib import PurePath
 
 import numpy as np
 
@@ -64,3 +65,9 @@ def set_path(path_in, default_path):
         path = default_path
         filename = path_in
     return filename, path
+
+
+def set_output_path(path_config):
+    pp = PurePath(path_config)
+    output_parts = [p if p != 'config' else 'output' for p in pp.parts]
+    return os.path.join(*output_parts)
