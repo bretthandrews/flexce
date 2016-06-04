@@ -120,7 +120,7 @@ if __name__ == '__main__':
     file_in = join(path_config, fname)
 
     # TODO Add try...except to handle user-defined output path
-    path_out = utils.set_output_path(path_config)
+    path_out = utils.substitute_dir_in_path(path_config, 'config', 'output')
 
     (simulation_id, yld_args, initialize_args, mass_bins_args, snia_dtd_args,
      inflows_args, outflows_args, warmgasres_args, sf_args) = \

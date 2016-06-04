@@ -18,8 +18,6 @@ import sys
 import matplotlib.pyplot as plt
 import seaborn as sns
 
-import utils
-
 # ----- Set paths -----
 try:
     path_plot = os.path.abspath(os.path.dirname(__file__))
@@ -27,21 +25,26 @@ except NameError as e:
     path_plot = os.getcwd()
 
 path_flexce_top = os.path.abspath(join(path_plot, '../..'))
+path_flexce = join(path_flexce_top, 'flexce')
 path_output = join(path_flexce_top, 'output')
 path_fileio = join(path_flexce_top, 'flexCE', 'fileio')
-path_plots_top = join(path_flexce_top, 'plots')
-path_config = join(path_plots_top, 'config')
-path_plots = join(path_plots_top, 'plots')
+path_plots = join(path_flexce_top, 'plots')
 # ---------------------
 
-sys.path.append(path_fileio)
-import txt_io
-import cfg_io
+sys.path.insert(0, path_flexce)
+import utils
+import plot.utils as putils
+from fileio import txt_io, cfg_io
+
+default_config_path = join(path_plots, 'config')
+fin, path_config = utils.set_path(sys.argv[1], default_config_path)
+path_plot_out = utils.substitute_dir_in_path(path_config, 'config', 'plots')
+if not os.path.isdir(path_plot_out):
+    os.makedirs(path_plot_out)
 
 # Read config file
-fin = utils.get_filename(sys.argv, path_config)
 cfg = cfg_io.read_plot_config(join(path_config, fin))
-colors = utils.get_colors(cfg)
+colors = putils.get_colors(cfg)
 abund = cfg['General']['abundance']
 labels = cfg['General']['labels']
 
@@ -58,14 +61,14 @@ for i, (sim, color) in enumerate(zip(sims, colors)):
         fig = sns.jointplot('[Fe/H]', abund, data=sim, stat_func=None,
                             color=color, marginal_kws=marg_kws)
     else:
-        fig = utils.joint_overplot('[Fe/H]', abund, df=sim, fig=fig,
-                                   color=color, marg_kws=marg_kws)
+        fig = putils.joint_overplot('[Fe/H]', abund, df=sim, fig=fig,
+                                    color=color, marg_kws=marg_kws)
 
 # Make legend
-p = utils.get_path_collections(fig)
-leg_args = utils.get_leg_args(cfg)
+p = putils.get_path_collections(fig)
+leg_args = putils.get_leg_args(cfg)
 leg = fig.ax_joint.legend(p, labels, **leg_args)
 
 # Save plot
 fout = ''.join((fin.strip('.cfg'), '.pdf'))
-plt.savefig(join(path_plots, fout))
+plt.savefig(join(path_plot_out, fout))

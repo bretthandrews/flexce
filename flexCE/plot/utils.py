@@ -1,26 +1,8 @@
 from __future__ import print_function, division, absolute_import
 
-import os
-
 import matplotlib as mpl
 import matplotlib.pyplot as plt
 import seaborn as sns
-
-
-def get_filename(argv, path):
-    """Check that filename given on command line exists.
-
-    Args:
-        argv (list): Command line arguments.
-
-    Returns:
-        str: Filename.
-    """
-    fin = argv[1]
-    if not os.path.isfile(os.path.join(path, fin)):
-        print('\nConfig file does not exist.\n')
-        raise IOError
-    return fin
 
 
 def get_colors(cfg):
