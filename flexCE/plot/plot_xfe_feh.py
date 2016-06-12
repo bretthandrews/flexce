@@ -39,7 +39,11 @@ default_config_path = join(path_plots, 'config')
 default_output_path = join(path_flexce_top, 'output')
 fin, path_config = utils.set_path(sys.argv[1], default_config_path)
 
-stem = path_config.split('config/')[1]
+try:
+    stem = path_config.split('config/')[1]
+except IndexError:
+    stem = ''
+
 path_output = join(default_output_path, stem)
 
 path_plot_out = utils.substitute_dir_in_path(path_config, 'config', 'plots')
