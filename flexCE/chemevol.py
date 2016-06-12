@@ -440,8 +440,8 @@ class ChemEvol:
         except TypeError:
             print(traceback.print_exc())
             print('\nValid keywords:\n')
-            print('exponential: timescale, min_snia_time, norm_factor\n')
-            print('power_law: min_snia_time, norm_factor\n')
+            print('exponential: timescale, min_snia_time, snia_fraction\n')
+            print('power_law: min_snia_time, nia_per_mstar, slope\n')
             print('prompt_delayed: A, B,  min_snia_time\n')
             print('single_degenerate: no keywords\n')
 
