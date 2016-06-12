@@ -135,7 +135,6 @@ class Yields:
             fin = join(self.path_yldgen, 'lodders03_solar_photosphere.txt')
             solar_ab = pd.read_csv(fin, delim_whitespace=True, skiprows=8,
                                    usecols=[0, 1], names=['el', 'ab'])
-            print('solar_ab', solar_ab)
             self.solar_element = np.array(solar_ab['el'])
             self.solar_ab = np.array(solar_ab['ab'])
             self.solar_h = np.zeros(self.n_elements)
