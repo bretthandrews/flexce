@@ -71,3 +71,10 @@ def substitute_dir_in_path(path, olddir, newdir):
     pp = PurePath(path)
     parts = [p if p != olddir else newdir for p in pp.parts]
     return os.path.join(*parts)
+
+
+def none_to_empty_dict(x):
+    """If a variable is None, return an empty dictionary."""
+    if x is None:
+        x = {}
+    return x
