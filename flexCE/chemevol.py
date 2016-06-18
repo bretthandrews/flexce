@@ -10,6 +10,8 @@ import time
 import numpy as np
 import pandas as pd
 
+import utils
+
 
 def integrate_power_law(exponent, bins=None):
     """Integrate a power law distribution.
@@ -255,8 +257,10 @@ class ChemEvol:
             mass_breaks (array): Mass breaks between different power law
                slopes of user-defined stellar initial mass function.
         """
-        self.alpha = np.array(alpha)
-        self.mass_breaks = np.array(mass_breaks)
+        self.alpha = np.atleast_1d(np.array(alpha))
+        if mass_breaks is None:
+            mass_breaks = []
+        self.mass_breaks = np.atleast_1d(np.array(mass_breaks))
         self.imf_setup()
 
     def salpeter(self):
@@ -424,8 +428,9 @@ class ChemEvol:
         Args:
             func (str): functional form of DTD. Defaults to 'exponential'.
             kwargs (dict): keyword arguments to pass to individual DTD
-                functions. Defaults to {}.
+                functions. Defaults to None.
         """
+        kwargs = utils.none_to_empty_dict(kwargs)
         self.snia_param = dict(func=func, k=kwargs)
         self.snia_dtd_func = func
         try:
@@ -697,7 +702,7 @@ class ChemEvol:
             inflow = yields.bbmf
             return inflow
         elif self.inflow_ab_pattern == 'alpha_enhanced':
-            inftmp = pd.read_csv(path_yldgen + 'Z_0.1-Zsun_alpha_enhanced.txt',
+            inftmp = pd.read_csv(self.path_yldgen + 'Z_0.1-Zsun_alpha_enhanced.txt',
                                  skiprows=6, header=None)
             inflow_init = np.array(inftmp).T
             scaling_factor *= 10.
