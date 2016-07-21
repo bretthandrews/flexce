@@ -800,16 +800,32 @@ class ChemEvol:
         self.N_kslaw = N_kslaw
         self.sf_param = dict(nu=nu_kslaw, N=N_kslaw)
 
-    def sf_law(self, mgas):
-        '''Calculate the SFR [Msun/yr] given the gas mass and the two free
+    def sf_law(self, mgas, tstep):
+        '''Calculate the SFR using the Kennicutt Schmidt SF law.
+
+        Calculate the SFR [Msun/yr] given the gas mass and the two free
         parameters that determine the SF law: nu_kslaw [Gyr^-1] and N_kslaw
         (~1.0--2.0).
 
-        From Kennicutt (1998): Sigma_SFR = 2.5e-4 * Sigma_gas^1.4, where
-        Sigma_SFR [=] Msun yr^-1 kpc^-2 and Sigma_gas [=] Msun yr^-1.  nu =
-        2.5-10 if Sigma_SFR is converted into units of Msun yr^-1 pc^-2.
+        If nu_kslaw is a list, then select the appropriate value for the
+        current timestep.
+
+        Args:
+            mgas (float): Current gas mass of the simulation.
+            tstep (int): Timestep.
+
+        Returns:
+            float: mass of gas to turn into stars
         '''
-        return (self.nu_kslaw) * self.area * (mgas / self.area)**self.N_kslaw
+        if isinstance(self.nu_kslaw, float):
+            nu_kslaw = self.nu_kslaw
+        elif isinstance(self.nu_kslaw, list):
+            try:
+                nu_kslaw = self.nu_kslaw[tstep]
+            except IndexError:
+                raise IndexError('Number of values for nu_kslaw must be '
+                                 'N_timesteps - 1')
+        return (nu_kslaw) * self.area * (mgas / self.area)**self.N_kslaw
 
     def initialize_arrays(self, yld, long_output):
         self.agb = np.zeros((self.n_steps, yld.n_sym))
@@ -907,7 +923,7 @@ class ChemEvol:
                 self.mwarmfrac[i] = (self.mwarmgas_iso[i-1] /
                                      np.sum(self.mwarmgas_iso[i-1]))
             if sfh is None:
-                self.sfr[i] = self.sf_law(np.sum(self.mgas_iso[i-1]))
+                self.sfr[i] = self.sf_law(np.sum(self.mgas_iso[i-1]), tstep=i)
                 # mimic gap in SF in the two infall model caused by a SF
                 # threshold gas surface density
                 if two_infall:
