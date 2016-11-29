@@ -23,8 +23,9 @@ path_flexce = join('/'.join(path_calc_yields.split('/')[:-2]), '')
 path_fileio = join(path_flexce, 'fileio')
 path_data = join(path_flexce, 'data')
 path_yields = join(path_data, 'yields')
-path_yldgen = join(path_yields, 'general')
-path_k10 = join(path_yields, 'karakas10', 'iso_yields')
+# path_yldgen = join(path_yields, 'general')
+path_k10 = join(path_data, 'karakas10')
+path_k10_iso = join(path_k10, 'iso_yields')
 sys.path.append(path_fileio)
 #-------------------
 
@@ -304,7 +305,7 @@ for i in range(n_bins_low):
 
 
 # pickle the interpolated yields array and the metallicity grid used
-pickle_write(k10_final, join(path_k10, 'interp_yields.pck'))
-pickle_write(k10_final_mej, join(path_k10, 'interp_meject.pck'))
-pickle_write(k10_final_rem, join(path_k10, 'interp_mremnant.pck'))
+pickle_write(k10_final, join(path_k10_iso, 'interp_yields.pck'))
+pickle_write(k10_final_mej, join(path_k10_iso, 'interp_meject.pck'))
+pickle_write(k10_final_rem, join(path_k10_iso, 'interp_mremnant.pck'))
 # -----------------------------
