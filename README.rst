@@ -4,6 +4,7 @@ flexCE
 A flexible Chemical Evolution model in python
 ---------------------------------------------
 
+|ascl:1612.006|
 
 Documentation
 ^^^^^^^^^^^^^
