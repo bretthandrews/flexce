@@ -86,7 +86,7 @@ this code helpful in your research. You may also want to check out
 analytic model.
 
 The BibTeX entry for Andrews et al. (2016)::
-    
+
     @ARTICLE{2016arXiv160408613A,
            author = {{Andrews}, B.~H. and {Weinberg}, D.~H. and {Sch{\"o}nrich}, R. and {Johnson}, J.~A.},
             title = "{Inflow, Outflow, Yields, and Stellar Population Mixing in Chemical Evolution Models}",
@@ -99,3 +99,6 @@ The BibTeX entry for Andrews et al. (2016)::
            adsurl = {http://adsabs.harvard.edu/abs/2016arXiv160408613A},
           adsnote = {Provided by the SAO/NASA Astrophysics Data System}
     }
+
+.. |ascl:1612.006| image:: https://img.shields.io/badge/ascl-1612.006-blue.svg?colorB=262255
+   :target: http://ascl.net/1612.006
