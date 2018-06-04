@@ -5,7 +5,7 @@ import copy
 import numpy as np
 import pandas as pd
 
-from flexce.fileio.pickle_io import pickle_read
+from flexce.io.pck import pickle_read
 
 
 def create_yield_grids():

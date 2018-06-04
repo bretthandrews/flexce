@@ -30,14 +30,14 @@ except NameError as e:
 
 path_flexce_top = os.path.abspath(join(path_plot, '../..'))
 path_flexce = join(path_flexce_top, 'flexce')
-path_fileio = join(path_flexce_top, 'flexce', 'fileio')
+path_io = join(path_flexce_top, 'flexce', 'io')
 path_plots = join(path_flexce_top, 'plots')
 # ---------------------
 
 sys.path.insert(0, path_flexce)
 import utils
 import plot.utils as putils
-from fileio import txt_io, cfg_io
+from flexce.io import cfg, txt
 
 default_config_path = join(path_plots, 'config')
 default_output_path = join(path_flexce_top, 'output')
@@ -55,15 +55,15 @@ if not os.path.isdir(path_plot_out):
     os.makedirs(path_plot_out)
 
 # Read config file
-cfg = cfg_io.read_plot_config(join(path_config, fin))
-colors = putils.get_colors(cfg)
-abund = cfg['General']['abundance']
-labels = cfg['General']['labels']
+cfg_in = cfg.read_plot_config(join(path_config, fin))
+colors = putils.get_colors(cfg_in)
+abund = cfg_in['General']['abundance']
+labels = cfg_in['General']['labels']
 
 # Read in simulation results
 sims = []
-for sim_id in cfg['General']['sim_ids']:
-    sims.append(txt_io.load_dataframe(path_output, sim_id))
+for sim_id in cfg_in['General']['sim_ids']:
+    sims.append(txt.load_dataframe(path_output, sim_id))
 
 # Make plot
 for i, (sim, color) in enumerate(zip(sims, colors)):
@@ -78,7 +78,7 @@ for i, (sim, color) in enumerate(zip(sims, colors)):
 
 # Make legend
 p = putils.get_path_collections(fig)
-leg_args = putils.get_leg_args(cfg)
+leg_args = putils.get_leg_args(cfg_in)
 leg = fig.ax_joint.legend(p, labels, **leg_args)
 
 # Save plot

@@ -2,7 +2,7 @@
 
 import os
 from os.path import join
-from flexce.fileio.cfg_io import read_sim_cfg
+from flexce.io.cfg import read_sim_cfg
 from flexcel.utils import define_mass_bins, load_yields
 
 path_flexce = join(os.getenv('HOME'), 'flexce', 'flexce')

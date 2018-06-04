@@ -18,12 +18,12 @@ import pandas as pd
 # ---- Set Paths -----
 path_calc_yields = join(os.path.abspath(os.path.dirname(__file__)), '')
 path_flexce = join('/'.join(path_calc_yields.split('/')[:-2]), '')
-path_fileio = join(path_flexce, 'fileio')
+path_io = join(path_flexce, 'io')
 path_data = join(path_flexce, 'data')
 path_yields = join(path_data, 'yields')
 path_yldgen = join(path_yields, 'general')
 path_b01 = join(path_yields, 'busso01')
-sys.path.append(path_fileio)
+sys.path.append(path_io)
 # -------------------
 
 from pickle_io import pickle_read

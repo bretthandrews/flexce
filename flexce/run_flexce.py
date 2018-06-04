@@ -1,4 +1,19 @@
-"""Main script.
+# @Author: Brett Andrews <andrews>
+# @Date:   2018-05-30 17:05:89
+# @Last modified by:   andrews
+# @Last modified time: 2018-06-04 16:06:90
+
+"""
+FILE
+    run_flexce
+
+USAGE
+    run_flexce sim-config-file
+
+    run_flexce sim0.cfg
+
+DESCRIPTION
+    Main script.
 
 Command line args:
     config file that starts with "sim".
@@ -15,9 +30,9 @@ import sys
 
 import numpy as np
 
-from flexce.fileio.cfg_io import read_sim_cfg
-from flexce.fileio.pickle_io import pickle_write
-from flexce.fileio.txt_io import txt_write
+from flexce.io.cfg import read_sim_cfg
+from flexce.io.pck import pickle_write
+from flexce.io.txt import txt_write
 
 from flexce import utils
 from flexce.chemevol import ChemEvol
