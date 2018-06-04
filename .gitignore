@@ -8,3 +8,4 @@
 /env
 /flexce/data/yields/bravo
 flexce.egg-info/
+.pytest_cache/
