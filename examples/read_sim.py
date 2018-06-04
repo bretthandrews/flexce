@@ -2,8 +2,8 @@
 
 import os
 from os.path import join
-from fileio import pickle_io
-from fileio import txt_io
+from flexce.fileio import pickle_io
+from fileio.fileio import txt_io
 from flexce.chemevol import ChemEvol
 
 path_flexce = join(os.getenv('HOME'), 'flexce')
