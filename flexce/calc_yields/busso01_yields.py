@@ -26,8 +26,8 @@ path_b01 = join(path_yields, 'busso01')
 sys.path.append(path_io)
 # -------------------
 
-from pickle_io import pickle_read
-from pickle_io import pickle_write
+from pickle_io import pck_read
+from pickle_io import pck_write
 
 # ---- Load Data ----
 data_in = pd.read_csv(join(path_b01, 'busso01_sprocess.txt'),
@@ -95,7 +95,7 @@ for i in range(n_b01):
 # metallicity grid, which is evenly sampled in log(metallicity) between each
 # metallicity grid point ( 1e-6, 1e-4, 1e-3, 6e-3, 2e-2) for a total of 1001
 # values
-z_final = pickle_read(join(path_yldgen, 'interp_metallicity.pck'))
+z_final = pck_read(join(path_yldgen, 'interp_metallicity.pck'))
 n_metal_bin = len(z_final)
 
 # Extend the metallicity grid up to Z = 0.04 (twice solar), since Busso et
@@ -144,6 +144,6 @@ b01_final_ext = np.array([b01_final_ext]).transpose(1, 2, 0)
 #-----------------------------
 
 # pickle the interpolated yields array and the metallicity grid used
-pickle_write(b01_final, join(path_b01, 'busso01_yields.pck'))
-pickle_write(b01_final_ext, join(path_b01, 'busso01ext_yields.pck'))
-pickle_write(z_final3, join(path_b01, 'busso01ext_metallicity.pck'))
+pck_write(b01_final, join(path_b01, 'busso01_yields.pck'))
+pck_write(b01_final_ext, join(path_b01, 'busso01ext_yields.pck'))
+pck_write(z_final3, join(path_b01, 'busso01ext_metallicity.pck'))

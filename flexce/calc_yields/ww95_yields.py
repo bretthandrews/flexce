@@ -40,8 +40,8 @@ path_ww95_half_fe = join(path_ww95, 'half_fe')
 sys.path.append(path_io)
 # -------------------
 
-from pickle_io import pickle_read
-from pickle_io import pickle_write
+from pickle_io import pck_read
+from pickle_io import pck_write
 
 
 if not os.path.isdir(path_ww95_orig):
@@ -334,7 +334,7 @@ for i in range(4):
 # Interpolate WW95 yields onto Limongi & Chieffi (2006) metallicity grid, which
 # is evenly sampled in log(metallicity) between each metallicity grid point (
 # 1e-6, 1e-4, 1e-3, 6e-3, 2e-2) for a total of 1001 values
-z_final = pickle_read(join(path_yldgen, 'interp_metallicity.pck'))
+z_final = pck_read(join(path_yldgen, 'interp_metallicity.pck'))
 n_metal_bin = len(z_final)
 
 
@@ -414,26 +414,26 @@ tny86_final[ind_sp] = tnyIa
 
 
 # pickle the interpolated yields array and the metallicity grid used
-pickle_write(ww95_final, join(path_ww95_orig, 'interp_yields.pck'))
-pickle_write(ww95_final_mej, join(path_ww95_orig, 'interp_meject.pck'))
-pickle_write(ww95_final_rem, join(path_ww95_orig, 'interp_mremnant.pck'))
-# pickle_write(rv81_final, join(path_rv81, 'interp_yields.pck'))
-# pickle_write(rv81_final_mej, join(path_rv81, 'interp_meject.pck'))
-# pickle_write(rv81_final_rem, join(path_rv81, 'interp_mremnant.pck'))
-# pickle_write(tny86_final, join(path_tny86, 'w7_yields.pck'))
+pck_write(ww95_final, join(path_ww95_orig, 'interp_yields.pck'))
+pck_write(ww95_final_mej, join(path_ww95_orig, 'interp_meject.pck'))
+pck_write(ww95_final_rem, join(path_ww95_orig, 'interp_mremnant.pck'))
+# pck_write(rv81_final, join(path_rv81, 'interp_yields.pck'))
+# pck_write(rv81_final_mej, join(path_rv81, 'interp_meject.pck'))
+# pck_write(rv81_final_rem, join(path_rv81, 'interp_mremnant.pck'))
+# pck_write(tny86_final, join(path_tny86, 'w7_yields.pck'))
 
 
-pickle_write(ww95_final_half_fe, join(path_ww95_half_fe, 'interp_yields.pck'))
-pickle_write(ww95_final_mej_half_fe, join(path_ww95_half_fe,
+pck_write(ww95_final_half_fe, join(path_ww95_half_fe, 'interp_yields.pck'))
+pck_write(ww95_final_mej_half_fe, join(path_ww95_half_fe,
                                           'interp_meject.pck'))
-pickle_write(ww95_final_rem_half_fe, join(path_ww95_half_fe,
+pck_write(ww95_final_rem_half_fe, join(path_ww95_half_fe,
                                           'interp_mremnant.pck'))
 
-# pickle_write(ww95_final_half_fe_only, join(path_ww95_half_fe_only,
+# pck_write(ww95_final_half_fe_only, join(path_ww95_half_fe_only,
 #                                            'interp_yields.pck'))
-# pickle_write(ww95_final_mej_half_fe_only, join(path_ww95_half_fe_only,
+# pck_write(ww95_final_mej_half_fe_only, join(path_ww95_half_fe_only,
 #                                                'interp_meject.pck'))
-# pickle_write(ww95_final_rem_half_fe_only, join(path_ww95_half_fe_only,
+# pck_write(ww95_final_rem_half_fe_only, join(path_ww95_half_fe_only,
 #                                                'interp_mremnant.pck'))
 
 # generic Big Bang Mass Fraction of isotopes

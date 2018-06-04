@@ -9,7 +9,7 @@ import os
 import pickle
 
 
-def pickle_read(filename):
+def pck_read(filename):
     """Read pickle file.
 
     Args:
@@ -24,7 +24,7 @@ def pickle_read(filename):
     return obj
 
 
-def pickle_write(obj, filename):
+def pck_write(obj, filename):
     """Write object to pickle file.
 
     Args:
@@ -63,7 +63,7 @@ def box_read(path_out, sim_id):
         object: instance of ChemEvol class ('box' object).
     """
     fname = _make_sim_path(path_out, sim_id, stem='box')
-    return pickle_read(fname)
+    return pck_read(fname)
 
 
 def ab_read(path_out, sim_id):
@@ -77,7 +77,7 @@ def ab_read(path_out, sim_id):
         object: instance of Abundances class ('ab' object).
     """
     fname = _make_sim_path(path_out, sim_id, stem='ab')
-    return pickle_read(fname)
+    return pck_read(fname)
 
 
 def sim_read(path_out, sim_id):

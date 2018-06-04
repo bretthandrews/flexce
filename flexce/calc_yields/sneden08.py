@@ -22,7 +22,7 @@ path_yldgen = join(path_yields, 'general')
 sys.path.append(path_io)
 # -------------------
 
-from pickle_io import pickle_write
+from pickle_io import pck_write
 
 # ----- Load Data -----
 s08 = {}
@@ -71,4 +71,4 @@ for e in s08.keys():
         s08[e]['isotopic_fraction[s]'] = np.zeros(len(s08[e]['N[s]']))
 
 
-pickle_write(s08, join(path_yldgen, 'sneden08.pck'))
+pck_write(s08, join(path_yldgen, 'sneden08.pck'))

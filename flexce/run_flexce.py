@@ -1,7 +1,7 @@
 # @Author: Brett Andrews <andrews>
 # @Date:   2018-05-30 17:05:89
 # @Last modified by:   andrews
-# @Last modified time: 2018-06-04 16:06:90
+# @Last modified time: 2018-06-04 17:06:62
 
 """
 FILE
@@ -10,16 +10,13 @@ FILE
 USAGE
     run_flexce sim-config-file
 
-    run_flexce sim0.cfg
+    Example::
+
+        $ run_flexce sim0.cfg
 
 DESCRIPTION
-    Main script.
+    Run flexCE from the command line using a config file.
 
-Command line args:
-    config file that starts with "sim".
-
-Usage:
-    python flexce.py ../config/sim0.cfg
 """
 
 from __future__ import print_function, division, absolute_import
@@ -30,13 +27,12 @@ import sys
 
 import numpy as np
 
-from flexce.io.cfg import read_sim_cfg
-from flexce.io.pck import pickle_write
-from flexce.io.txt import txt_write
-
 from flexce import utils
-from flexce.chemevol import ChemEvol
 from flexce.abundances import Abundances
+from flexce.chemevol import ChemEvol
+from flexce.io.cfg import read_sim_cfg
+from flexce.io.pck import pck_write
+from flexce.io.txt import txt_write
 
 
 def evolve(yld, initialize_kws, snia_dtd_kws, inflows_kws, outflows_kws,
@@ -45,14 +41,15 @@ def evolve(yld, initialize_kws, snia_dtd_kws, inflows_kws, outflows_kws,
 
     Args:
         yld: Yields instance
-        initialize_kws (dict): args to initialize instance of ChemEvol class.
+        initialize_kws (dict): args to initialize instance of ChemEvol
+            instance.
         mass_bins_args (dict): args to define stellar mass bins.
         snia_dtd_kws (dict): args to set SNIa delay time distribution of
             ChemEvol instance.
         inflows_kws (dict): args to set inflow rate and composition of
             ChemEvol instance.
         outflows_kws (dict): args to set outflow rate and composition of
-            ChemEvol instance
+            ChemEvol instance.
         warmgasres_kws (dict): turn on warm ISM reservoir in ChemEvol
             instance.
         sf_kws (dict): args to set star formation rate in ChemEvol instance.
@@ -108,8 +105,8 @@ def output(path, sim_id, gal, abund):
     if not os.path.isdir(path_sim):
         os.mkdir(path_sim)
 
-    pickle_write(gal, join(path_sim, ''.join(('box', sim_id, '.pck'))))
-    pickle_write(abund, join(path_sim, ''.join(('ab', sim_id, '.pck'))))
+    pck_write(gal, join(path_sim, ''.join(('box', sim_id, '.pck'))))
+    pck_write(abund, join(path_sim, ''.join(('ab', sim_id, '.pck'))))
 
     txt_write(path_out, sim_id, gal, abund)
 

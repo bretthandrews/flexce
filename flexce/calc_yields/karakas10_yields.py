@@ -28,7 +28,7 @@ path_k10 = join(path_yields, 'karakas10', 'iso_yields')
 sys.path.append(path_io)
 #-------------------
 
-from pickle_io import pickle_write
+from pickle_io import pck_write
 
 #----- Read in Computed Yields -----
 
@@ -304,7 +304,7 @@ for i in range(n_bins_low):
 
 
 # pickle the interpolated yields array and the metallicity grid used
-pickle_write(k10_final, join(path_k10, 'interp_yields.pck'))
-pickle_write(k10_final_mej, join(path_k10, 'interp_meject.pck'))
-pickle_write(k10_final_rem, join(path_k10, 'interp_mremnant.pck'))
+pck_write(k10_final, join(path_k10, 'interp_yields.pck'))
+pck_write(k10_final_mej, join(path_k10, 'interp_meject.pck'))
+pck_write(k10_final_rem, join(path_k10, 'interp_mremnant.pck'))
 # -----------------------------

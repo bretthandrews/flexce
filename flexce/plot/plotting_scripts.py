@@ -1,13 +1,15 @@
 from __future__ import print_function, division, absolute_import
+
 import os
-import numpy as np
-from scipy.interpolate import interp1d
-from scipy.stats import gaussian_kde
+
 import matplotlib.pyplot as plt
 from matplotlib.patheffects import withStroke
 from matplotlib.ticker import MultipleLocator
-import matplotlib.pyplot as plt
-from general import pickle_read
+import numpy as np
+from scipy.interpolate import interp1d
+from scipy.stats import gaussian_kde
+
+from flexce.io.pck import pck_read
 
 class PlotSim:
     def __init__(self, suite_in):
@@ -27,10 +29,10 @@ class PlotSim:
         stem_reddy = stem_data + 'reddy/'
         stem_ramirez = stem_data + 'ramirez13/'
         stem_apogee_redclump = stem_data + 'apogee_redclump/'
-        self.reddy = pickle_read(stem_reddy + 'reddy.pck')
-        self.reddy03 = pickle_read(stem_reddy + 'reddy03.pck')
-        self.ramirez13 = pickle_read(stem_ramirez + 'ramirez13.pck')
-        self.apogee_redclump = pickle_read(stem_apogee_redclump + 
+        self.reddy = pck_read(stem_reddy + 'reddy.pck')
+        self.reddy03 = pck_read(stem_reddy + 'reddy03.pck')
+        self.ramirez13 = pck_read(stem_ramirez + 'ramirez13.pck')
+        self.apogee_redclump = pck_read(stem_apogee_redclump +
                                            'apogee_redclump_v402.pck')
 
     def plot_xfe(self,
@@ -210,7 +212,7 @@ class PlotSim:
                      ylabelpad=5):
         '''Plot [X/Fe]--[Fe/H] where element = X.  time_pts=True will add
         points to the line to indicate the speed of chemical evolution.
-        pts=True will plot as points instead of a line.  '''        
+        pts=True will plot as points instead of a line.  '''
         plt.rcParams['xtick.major.pad'] = 10
         plt.rcParams['ytick.major.pad'] = 8
         fig = plt.figure()
@@ -260,8 +262,8 @@ class PlotSim:
                 xs = []
                 ys = []
                 for tstep in range(1, sim['box'].n_steps):
-                    ndots = np.ones(np.around(sim['box'].survivors[tstep] / 
-                                    sampling_factor * 
+                    ndots = np.ones(np.around(sim['box'].survivors[tstep] /
+                                    sampling_factor *
                                     frac_stars[i]).astype(int))
                     xs.append(ndots * sim['ab'].feh[tstep-1])
                     ys.append(ndots * sim['ab'].xfe_all[ind][tstep-1])
@@ -494,7 +496,7 @@ class PlotSim:
 
 
     def plot_feh_time(self, runs='all', pts=False,
-                      range=[0.15, 0.15, 0.75, 0.75]):        
+                      range=[0.15, 0.15, 0.75, 0.75]):
         '''Plot [Fe/H] as a function of time.  pts=True will plot as points
         instead of a line.  '''
         fig = plt.figure()
@@ -524,7 +526,7 @@ class PlotSim:
 
 
     def plot_xfe_time(self, element, runs='all', pts=False,
-                      range=[0.15, 0.15, 0.75, 0.75]):        
+                      range=[0.15, 0.15, 0.75, 0.75]):
         '''Plot [X/Fe] as a function of time.  pts=True will plot as points
         instead of a line.  '''
         fig = plt.figure()
@@ -740,7 +742,7 @@ class PlotSim:
 
 
     def plot_mstar_time(self, runs='all', pts=False,
-                       range=[0.15, 0.15, 0.75, 0.75]):        
+                       range=[0.15, 0.15, 0.75, 0.75]):
         '''Plot stellar mass as a function of time.  pts=True will plot as
         points instead of a line.  '''
         fig = plt.figure()
@@ -772,7 +774,7 @@ class PlotSim:
 
 
     def plot_mgas_time(self, runs='all', pts=False,
-                       range=[0.15, 0.15, 0.75, 0.75]):        
+                       range=[0.15, 0.15, 0.75, 0.75]):
         '''Plot gas mass as a function of time.  pts=True will plot as points
         instead of a line.  '''
         fig = plt.figure()
@@ -803,7 +805,7 @@ class PlotSim:
 
 
     def plot_mass_time(self, runs='all', range=[0.15, 0.15, 0.75, 0.75]):
-        '''Plot stellar and gas mass as a function of time.'''        
+        '''Plot stellar and gas mass as a function of time.'''
         fig = plt.figure()
         ax = fig.add_axes(range)
         if runs == 'all':
@@ -861,7 +863,7 @@ class PlotSim:
                 inflow = np.sum(sim['box'].inflow[1:], axis=1) / dt
                 outflow = np.sum(sim['box'].outflow[1:], axis=1) / dt
                 gas_cooling = np.sum(sim['box'].gas_cooling[1:], axis=1) / dt
-                stellar_ej = ((np.sum(sim['box'].snii[1:], axis=1) + 
+                stellar_ej = ((np.sum(sim['box'].snii[1:], axis=1) +
                               np.sum(sim['box'].snia[1:], axis=1) +
                               np.sum(sim['box'].agb[1:], axis=1)) / dt)
                 val = dict(sfr=sfr, sfr_stat=sfr_stat, inflow=inflow,
@@ -905,9 +907,9 @@ class PlotSim:
 
 
     def plot_snia_time(self, runs='all', pts=False,
-                       range=[0.15, 0.15, 0.75, 0.75]):        
+                       range=[0.15, 0.15, 0.75, 0.75]):
         '''Plot number of SNIa as a function of time.  pts=True will plot as
-        points instead of a line.  '''        
+        points instead of a line.  '''
         fig = plt.figure()
         ax = fig.add_axes(range)
         if runs == 'all':
@@ -940,7 +942,7 @@ class PlotSim:
                  figlab=None, legtitle=None, legloc=2, leglabsp=0.01):
         '''Plot [Fe/X]--[X/H] where element = X.  time_pts=True will add
         points to the line to indicate the speed of chemical evolution.
-        pts=True will plot as points instead of a line.  '''        
+        pts=True will plot as points instead of a line.  '''
         plt.rcParams['xtick.major.pad'] = 10
         plt.rcParams['ytick.major.pad'] = 8
         fig = plt.figure()
@@ -1051,4 +1053,3 @@ class PlotSim:
                     ind_tmp = np.intersect1d(ind, ind_tmp0)
                     if len(ind_tmp > 0):
                         ax.scatter(metals[ind_tmp], alphafe[ind_tmp], c='k', s=5)
-

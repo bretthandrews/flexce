@@ -21,7 +21,7 @@ path_i99 = join(path_yields, 'iwamoto99')
 sys.path.append(path_io)
 # -------------------
 
-from pickle_io import pickle_write
+from pickle_io import pck_write
 
 
 # ---- Iwamoto et al. (1999) W70 SNIa yields ----
@@ -90,4 +90,4 @@ for k in i99.keys():
 
 # write to file
 for k in snia_yields.keys():
-    pickle_write(snia_yields[k], join(path_i99, k + '_yields.pck'))
+    pck_write(snia_yields[k], join(path_i99, k + '_yields.pck'))

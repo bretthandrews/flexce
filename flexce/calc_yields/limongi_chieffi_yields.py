@@ -32,7 +32,7 @@ path_lc06_el = join(path_yields, 'limongi06', 'el_yields')
 sys.path.append(path_io)
 # -------------------
 
-from pickle_io import pickle_write
+from pickle_io import pck_write
 
 # ---- Read in Computed Yields -----
 # CL04
@@ -449,10 +449,10 @@ for i in range(n_metal_bin):
 
 
 # pickle the interpolated yields array and the metallicity grid used
-pickle_write(z_final, join(path_yldgen, 'interp_metallicity.pck'))
-pickle_write(lc_final, join(path_lc06, 'interp_yields.pck'))
-pickle_write(lc_final_mej, join(path_lc06, 'interp_meject.pck'))
-pickle_write(lc_final_rem, join(path_lc06, 'interp_mremnant.pck'))
+pck_write(z_final, join(path_yldgen, 'interp_metallicity.pck'))
+pck_write(lc_final, join(path_lc06, 'interp_yields.pck'))
+pck_write(lc_final_mej, join(path_lc06, 'interp_meject.pck'))
+pck_write(lc_final_rem, join(path_lc06, 'interp_mremnant.pck'))
 
 
 ##############################

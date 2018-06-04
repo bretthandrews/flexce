@@ -27,8 +27,8 @@ path_c06 = join(path_yields, 'cescutti06')
 sys.path.append(path_io)
 # -------------------
 
-from pickle_io import pickle_read
-from pickle_io import pickle_write
+from pickle_io import pck_read
+from pickle_io import pck_write
 
 
 # ---- Load Data ----
@@ -86,7 +86,7 @@ for i in range(len(c06_orig)):
 
 
 # project into 3D arrays (metallicities, masses, isotopes)
-z_final = pickle_read(join(path_yldgen, 'interp_metallicity.pck'))
+z_final = pck_read(join(path_yldgen, 'interp_metallicity.pck'))
 n_metal_bin = len(z_final)
 c06_final = np.ones((n_metal_bin, n_bins_high, len(c06_orig)))
 c06_final[:] = c06_interp_metal
@@ -94,4 +94,4 @@ c06_final[:] = c06_interp_metal
 # -----------------------------
 
 # pickle the interpolated yields array and the metallicity grid used
-pickle_write(c06_final, join(path_c06, 'cescutti06_yields.pck'))
+pck_write(c06_final, join(path_c06, 'cescutti06_yields.pck'))
