@@ -7,6 +7,7 @@ flexCE's Change Log
 Added
 ^^^^^
 - Requirements file.
+- Ability to import ``flexce``.
 
 Removed
 ^^^^^^^
