@@ -2,8 +2,8 @@ from distutils.core import setup
 
 NAME = 'flexCE'
 # do not use x.x.x-dev.  things complain.  instead use x.x.xdev
-VERSION = '1.0.2dev'
-RELEASE = 'dev' not in VERSION
+VERSION = '1.0.2'
+# RELEASE = 'dev' not in VERSION
 
 setup(name=NAME,
       version=VERSION,
