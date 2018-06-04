@@ -6,13 +6,13 @@
 # @Author: Brett Andrews <andrews>
 # @Date:   2018-05-29 10:05:01
 # @Last modified by:   andrews
-# @Last modified time: 2018-06-04 10:06:88
+# @Last modified time: 2018-06-04 16:06:28
 
 
 import numpy as np
 import pytest
 
-from chemevol import function_x
+from flexce.chemevol import function_x
 
 
 class TestChemevol(object):
@@ -27,5 +27,5 @@ class TestChemevol(object):
         # if outflow is stellar_ejecta, don't account for it.
         # if outflow is ism, then account for it.
 
-        
+
         assert x >= 0

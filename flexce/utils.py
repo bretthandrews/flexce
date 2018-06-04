@@ -6,7 +6,7 @@ from pathlib import PurePath
 
 import numpy as np
 
-from yields import Yields
+from flexce.yields import Yields
 
 
 def define_mass_bins(low=0.1, high=100, dm_low=0.1, dm_high=1.):
