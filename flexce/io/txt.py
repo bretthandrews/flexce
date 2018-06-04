@@ -1,7 +1,7 @@
 """Read and write simulation abundances from .txt files.
 
 Only saves time, surviving stars, [Fe/H], and [X/Fe] abundances of each
-stellar generation. Use fileio.pickle_io to save all details of a simulation.
+stellar generation. Use flexce.io.pck to save all details of a simulation.
 """
 
 from __future__ import print_function, division, absolute_import
