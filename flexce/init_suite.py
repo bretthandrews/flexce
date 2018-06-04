@@ -15,6 +15,10 @@ DESCRIPTION
     simulations.
 """
 
+
+raise ValueError('Decouple package and output directory structures.')  # .............................................
+
+
 from __future__ import print_function, division, absolute_import
 import os
 import sys

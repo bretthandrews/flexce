@@ -9,6 +9,10 @@ DESCRIPTION
     Plot [X/Fe]--[Fe/H], MDF, and [X/Fe] distribution function.
 """
 
+
+raise ValueError('Decouple package and output directory structures.')  # .............................................
+
+
 from __future__ import print_function, division, absolute_import
 
 import os
