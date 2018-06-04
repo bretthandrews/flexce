@@ -4,4 +4,4 @@
 # @Last modified time: 2018-06-04 12:06:41
 
 # Set the flexCE version
-__version__ = '1.0.1'
+__version__ = '1.0.2'
