@@ -26,7 +26,7 @@ except NameError as e:
 
 path_flexce_top = os.path.abspath(join(path_plot, '../..'))
 path_flexce = join(path_flexce_top, 'flexce')
-path_fileio = join(path_flexce_top, 'flexCE', 'fileio')
+path_fileio = join(path_flexce_top, 'flexce', 'fileio')
 path_plots = join(path_flexce_top, 'plots')
 # ---------------------
 

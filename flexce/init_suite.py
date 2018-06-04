@@ -7,10 +7,10 @@ USAGE
 
 DESCRIPTION
     Creates subdirectories names "new-suite-name" within
-        - flexCE/config
-        - flexCE/output
-        - flexCE/plots/config
-        - flexCE/plots/plots
+        - flexce/config
+        - flexce/output
+        - flexce/plots/config
+        - flexce/plots/plots
     to organize the config files and output files for a new suite of
     simulations.
 """
