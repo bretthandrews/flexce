@@ -6,8 +6,8 @@ from flexce.fileio import pickle_io
 from fileio.fileio import txt_io
 from flexce.chemevol import ChemEvol
 
-path_flexce = join(os.getenv('HOME'), 'flexce')
-path_output = join(path_flexce, 'output')
+
+path_output = join(os.expanduer('~'), 'flexce_output')
 
 # Read in pickled box and ab objects individually...
 box0 = pickle_io.box_read(path_output, sim_id=0)
