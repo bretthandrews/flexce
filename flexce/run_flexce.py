@@ -15,13 +15,13 @@ import sys
 
 import numpy as np
 
-from fileio.cfg_io import read_sim_cfg
-from fileio.pickle_io import pickle_write
-from fileio.txt_io import txt_write
+from flexce.fileio.cfg_io import read_sim_cfg
+from flexce.fileio.pickle_io import pickle_write
+from flexce.fileio.txt_io import txt_write
 
-import utils
-from chemevol import ChemEvol
-from abundances import Abundances
+from flexce import utils
+from flexce.chemevol import ChemEvol
+from flexce.abundances import Abundances
 
 
 def evolve(yld, initialize_kws, snia_dtd_kws, inflows_kws, outflows_kws,
@@ -113,7 +113,7 @@ if __name__ == '__main__':
         default_config_path = join(path_flexce_root, 'config')
         fname, path_config = utils.set_path(argv[1], default_config_path)
     except IndexError:
-        path_config = join(os.getenv('HOME'), 'flexCE', 'examples')
+        path_config = join(os.getenv('HOME'), 'flexce', 'examples')
         fname = 'sim0.cfg'
         print('\nUsing default parameters in \n{}'.format(argv[1]))
 
