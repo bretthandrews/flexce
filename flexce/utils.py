@@ -78,3 +78,39 @@ def none_to_empty_dict(x):
     if x is None:
         x = {}
     return x
+
+
+def robust_random_poisson(xx):
+    """Poisson draw that robustly handles large numbers.
+
+    Draw a number from a Poisson distribution.  Used for determining
+    the number of actual stars to form given an expected value.
+    np.random.poisson cannot handle numbers larger than 2147483647
+    (~2.14e9) because it uses the C long type.  For numbers larger than
+    this value, round the expected (statistical) value to the nearest
+    integer.  Since 2e9 is a large number, the Poisson fluctuations
+    would have been relatively small anyway.
+
+    This function is intended to replace this line of code:
+    self.Nstar[i] = np.random.poisson(self.Nstar_stat[i])
+
+    Args:
+        xx (array): Input for Poisson draw.
+
+    Returns:
+        array: Poisson realization.
+    """
+    try:
+        yy = np.random.poisson(xx)
+
+    except ValueError:
+        yy = np.zeros(len(xx), dtype=np.int64)
+
+        for i, item in enumerate(xx):
+            try:
+                yy[i] = np.random.poisson(item)
+
+            except ValueError:
+                yy[i] = np.round(item)
+
+    return yy
