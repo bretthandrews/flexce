@@ -16,6 +16,8 @@ Removed
 Changed
 ^^^^^^^
 - package name to flexce (all lowercase).
+- run_flexce to be an entry_point script.
+- refactors IMF functions into ``imf.py``.
 
 Fixed
 ^^^^^
