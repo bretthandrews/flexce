@@ -1,7 +1,7 @@
 # @Author: Brett Andrews <andrews>
 # @Date:   2018-05-30 17:05:89
 # @Last modified by:   andrews
-# @Last modified time: 2018-06-04 20:06:98
+# @Last modified time: 2018-06-04 20:06:29
 
 """
 FILE
@@ -25,13 +25,15 @@ import os
 from os.path import join
 import sys
 
-from flexce import utils
+import flexce
+from flexce.chemevol import evolve
+from flexce.abundances import calc_abundances
 from flexce.io.cfg import read_sim_cfg
 from flexce.io.pck import pck_write
 from flexce.io.txt import txt_write
 
 
-def output(path, sim_id, gal, abund):
+def write_output(path, sim_id, gal, abund):
     """Write simulation results to pickle and txt files.
 
     Args:
@@ -62,7 +64,7 @@ if __name__ == '__main__':
 
     try:
         default_config_path = join(path_flexce_root, 'config')
-        fname, path_config = utils.set_path(argv[1], default_config_path)
+        fname, path_config = flexce.utils.set_path(argv[1], default_config_path)
     except IndexError:
         path_config = join(os.getenv('HOME'), 'flexce', 'examples')
         fname = 'sim0.cfg'
@@ -71,17 +73,17 @@ if __name__ == '__main__':
     file_in = join(path_config, fname)
 
     # TODO Add try...except to handle user-defined output path
-    path_out = utils.substitute_dir_in_path(path_config, 'config', 'output')
+    path_out = flexce.utils.substitute_dir_in_path(path_config, 'config', 'output')
 
     (simulation_id, yld_args, initialize_args, mass_bins_args, snia_dtd_args,
      inflows_args, outflows_args, warmgasres_args, sf_args) = \
         read_sim_cfg(file_in)
-    mass_bins = utils.define_mass_bins(**mass_bins_args)
-    ylds = utils.load_yields(path_data, yld_args, mass_bins)
+    mass_bins = flexce.utils.define_mass_bins(**mass_bins_args)
+    ylds = flexce.utils.load_yields(path_data, yld_args, mass_bins)
     box = evolve(ylds, initialize_args, snia_dtd_args, inflows_args,
                  outflows_args, warmgasres_args, sf_args)
     ab = calc_abundances(path_data, ylds.sym, box.mgas_iso, box.survivors,
                          box.t, box.param, box.sim_id)
-    output(path_out, simulation_id, box, ab)
+    write_output(path_out, simulation_id, box, ab)
 
 # TODO (specify elements_out in config file)
