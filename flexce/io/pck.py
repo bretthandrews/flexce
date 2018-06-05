@@ -13,7 +13,7 @@ def pck_read(filename):
     """Read pickle file.
 
     Args:
-        filename (str): name of pickle file.
+        filename (str): Name of pickle file.
 
     Returns:
         object
