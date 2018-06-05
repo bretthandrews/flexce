@@ -174,6 +174,39 @@ def random_poisson(x):
     return y
 
 
+def evolve(yld, initialize_kws, snia_dtd_kws, inflows_kws, outflows_kws,
+           warmgasres_kws, sf_kws):
+    """Evolve the galaxy.
+
+    Wrapper to initialize and run a simulation.
+
+    Args:
+        yld: Yields instance
+        initialize_kws (dict): args to initialize ChemEvol instance.
+        mass_bins_args (dict): args to define stellar mass bins.
+        snia_dtd_kws (dict): args to set SNIa delay time distribution of
+            ChemEvol instance.
+        inflows_kws (dict): args to set inflow rate and composition of
+            ChemEvol instance.
+        outflows_kws (dict): args to set outflow rate and composition of
+            ChemEvol instance.
+        warmgasres_kws (dict): turn on warm ISM reservoir in ChemEvol
+            instance.
+        sf_kws (dict): args to set star formation rate in ChemEvol instance.
+
+    Returns:
+        ChemEvol instance
+    """
+    gal = ChemEvol(yld.mass_bins, **initialize_kws)
+    gal.snia_dtd(**snia_dtd_kws)
+    gal.inflow_rx(**inflows_kws)
+    gal.outflow_rx(**outflows_kws)
+    gal.warmgasres_rx(**warmgasres_kws)
+    gal.star_formation(**sf_kws)
+    gal.evolve_box(yields=yld)
+    return gal
+
+
 class ChemEvol:
     """Run chemical evolution model."""
 

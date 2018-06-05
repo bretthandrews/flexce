@@ -1,7 +1,7 @@
 # @Author: Brett Andrews <andrews>
 # @Date:   2018-05-30 17:05:89
 # @Last modified by:   andrews
-# @Last modified time: 2018-06-04 17:06:62
+# @Last modified time: 2018-06-04 20:06:03
 
 """
 FILE
@@ -29,42 +29,9 @@ import numpy as np
 
 from flexce import utils
 from flexce.abundances import Abundances
-from flexce.chemevol import ChemEvol
 from flexce.io.cfg import read_sim_cfg
 from flexce.io.pck import pck_write
 from flexce.io.txt import txt_write
-
-
-def evolve(yld, initialize_kws, snia_dtd_kws, inflows_kws, outflows_kws,
-           warmgasres_kws, sf_kws):
-    """Evolve the galaxy.
-
-    Args:
-        yld: Yields instance
-        initialize_kws (dict): args to initialize instance of ChemEvol
-            instance.
-        mass_bins_args (dict): args to define stellar mass bins.
-        snia_dtd_kws (dict): args to set SNIa delay time distribution of
-            ChemEvol instance.
-        inflows_kws (dict): args to set inflow rate and composition of
-            ChemEvol instance.
-        outflows_kws (dict): args to set outflow rate and composition of
-            ChemEvol instance.
-        warmgasres_kws (dict): turn on warm ISM reservoir in ChemEvol
-            instance.
-        sf_kws (dict): args to set star formation rate in ChemEvol instance.
-
-    Returns:
-        ChemEvol instance
-    """
-    gal = ChemEvol(yld.mass_bins, **initialize_kws)
-    gal.snia_dtd(**snia_dtd_kws)
-    gal.inflow_rx(**inflows_kws)
-    gal.outflow_rx(**outflows_kws)
-    gal.warmgasres_rx(**warmgasres_kws)
-    gal.star_formation(**sf_kws)
-    gal.evolve_box(yields=yld)
-    return gal
 
 
 def calc_abundances(path, sym, mgas, survivors, time, parameters, sim_id):
