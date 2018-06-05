@@ -1,7 +1,7 @@
 # @Author: Brett Andrews <andrews>
 # @Date:   2018-06-05 11:06:56
 # @Last modified by:   andrews
-# @Last modified time: 2018-06-05 12:06:56
+# @Last modified time: 2018-06-05 12:06:92
 
 """
 FILE
@@ -33,7 +33,7 @@ def integrate_power_law(exponent, bins=None):
     return integral
 
 
-def integrate_multi_power_law(bins, exponents, breaks, mass_bins, norm_factor):
+def integrate_multi_power_law(bins, exponents, breaks, norm_factor):
     """Integrate over multi-slope power law distribution.
 
     Args:
@@ -47,7 +47,7 @@ def integrate_multi_power_law(bins, exponents, breaks, mass_bins, norm_factor):
         array
     """
     for bb in breaks:
-        assert np.around(bb, decimals=5) in np.around(mass_bins, decimals=5), \
+        assert np.around(bb, decimals=5) in np.around(bins, decimals=5), \
             'Breaks in power law IMF must be located at the edge of a mass bin.'
 
     assert (len(exponents) > 1) and (len(exponents) - len(breaks) == 1), \
