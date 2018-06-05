@@ -62,6 +62,7 @@ def box_read(path_out, sim_id):
     Returns:
         object: instance of ChemEvol class ('box' object).
     """
+    from flexce.chemevol import ChemEvol
     fname = _make_sim_path(path_out, sim_id, stem='box')
     return pck_read(fname)
 

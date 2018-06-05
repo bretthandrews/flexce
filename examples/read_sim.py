@@ -4,7 +4,6 @@ import os
 from os.path import join
 from flexce.io import pck
 from flexce.io import txt
-from flexce.chemevol import ChemEvol
 
 
 path_output = join(os.expanduer('~'), 'flexce_output')
