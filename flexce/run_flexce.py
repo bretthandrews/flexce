@@ -1,7 +1,7 @@
 # @Author: Brett Andrews <andrews>
 # @Date:   2018-05-30 17:05:89
 # @Last modified by:   andrews
-# @Last modified time: 2018-06-04 20:06:03
+# @Last modified time: 2018-06-04 20:06:98
 
 """
 FILE
@@ -25,38 +25,10 @@ import os
 from os.path import join
 import sys
 
-import numpy as np
-
 from flexce import utils
-from flexce.abundances import Abundances
 from flexce.io.cfg import read_sim_cfg
 from flexce.io.pck import pck_write
 from flexce.io.txt import txt_write
-
-
-def calc_abundances(path, sym, mgas, survivors, time, parameters, sim_id):
-    """Calculate abundances of box.
-
-    Args:
-        path (str): data directory.
-        sym (array): Isotope abbreviations.
-        mgas (array): Mass of each isotope in gas-phase at each timestep.
-        survivors (array): Number of stars from each timestep that survive to
-            the end of the simulation.
-        time (array): time in Myr.
-        parameters (dict): parameters of the simulation.
-        sim_id (str): simulation ID number.
-
-    Returns:
-        Abundances instance
-    """
-    abund = Abundances(path, sym, mgas, survivors, time, parameters, sim_id)
-    abund.load_solar_abund()
-    abund.calc_abundances()
-    apogee_el = np.array(['C', 'N', 'O', 'Na', 'Mg', 'Al', 'Si', 'S',
-                          'K', 'Ca', 'Ti', 'V', 'Cr', 'Mn', 'Co', 'Ni'])
-    abund.select_elements(apogee_el)
-    return abund
 
 
 def output(path, sim_id, gal, abund):

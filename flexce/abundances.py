@@ -6,6 +6,33 @@ import numpy as np
 import pandas as pd
 
 
+def calc_abundances(path, sym, mgas, survivors, time, parameters, sim_id):
+    """Calculate abundances of box.
+
+    Wrapper for Abundances class.
+
+    Args:
+        path (str): data directory.
+        sym (array): Isotope abbreviations.
+        mgas (array): Mass of each isotope in gas-phase at each timestep.
+        survivors (array): Number of stars from each timestep that survive to
+            the end of the simulation.
+        time (array): time in Myr.
+        parameters (dict): parameters of the simulation.
+        sim_id (str): simulation ID number.
+
+    Returns:
+        Abundances instance
+    """
+    abund = Abundances(path, sym, mgas, survivors, time, parameters, sim_id)
+    abund.load_solar_abund()
+    abund.calc_abundances()
+    apogee_el = np.array(['C', 'N', 'O', 'Na', 'Mg', 'Al', 'Si', 'S',
+                          'K', 'Ca', 'Ti', 'V', 'Cr', 'Mn', 'Co', 'Ni'])
+    abund.select_elements(apogee_el)
+    return abund
+
+
 class Abundances:
     """Compute abundances of model.
     """
