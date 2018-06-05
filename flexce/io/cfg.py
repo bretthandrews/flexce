@@ -7,24 +7,14 @@ except ImportError as e:
 
 
 def read_sim_cfg(file_in):
-    """Read in config file.
+    """Read in simulation config file.
 
     Args:
-        file_in (str): name of config file (can include path) with format
-            'sim<sim_id>.cfg' where sim_id is an integer.
+        file_in (str): config file name with format 'sim<sim_id>.cfg',
+            where '<sim_id>' is an integer.
 
     Returns:
-        str, dict, dict, dict, dict, dict, dict, dict, dict:
-        sim_id\: simulation ID number, yld_args\: args to initialize instance
-        of Yield class, initialize_args\: args to initialize instance of
-        ChemEvol class, mass_bins_args\: args to define stellar mass bins,
-        snia_dtd_args\: args to set SNIa delay time distribution of ChemEvol
-        instance, inflows_args\: args to set inflow rate and composition of
-        ChemEvol instance, outflows_args\: args to set outflow rate and
-        composition of ChemEvol instance, warmgasres_args\: turn on warm ISM
-        reservoir in ChemEvol instance, sf_args\: args to set star formation
-        rate in ChemEvol instance.
-
+        dict
     """
     sim_id = file_in.split('/')[-1].strip('sim').strip('.cfg')
 
@@ -94,8 +84,20 @@ def read_sim_cfg(file_in):
                 sf_args[k.split('sf_')[1]] = v
 
     f.close()
-    return (sim_id, yld_args, initialize_args, mass_bins_args, snia_dtd_args,
-            inflows_args, outflows_args, warmgasres_args, sf_args)
+
+    params = {
+        'sim_id': sim_id,
+        'yld_args': yld_args,
+        'initialize_args': initialize_args,
+        'mass_bins_args': mass_bins_args,
+        'snia_dtd_args': snia_dtd_args,
+        'inflows_args': inflows_args,
+        'outflows_args': outflows_args,
+        'warmgasres_args': warmgasres_args,
+        'sf_args': sf_args,
+    }
+
+    return params
 
 
 def _get_section(config, section):
