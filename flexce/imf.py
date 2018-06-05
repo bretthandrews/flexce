@@ -1,7 +1,7 @@
 # @Author: Brett Andrews <andrews>
 # @Date:   2018-06-05 11:06:56
 # @Last modified by:   andrews
-# @Last modified time: 2018-06-05 12:06:92
+# @Last modified time: 2018-06-05 12:06:70
 
 """
 FILE
@@ -44,7 +44,7 @@ def integrate_multi_power_law(bins, exponents, breaks, norm_factor):
         norm_factor (array): normalization factor of integrals.
 
     Returns:
-        array
+        array: IMF sampled over the bin sizes
     """
     for bb in breaks:
         assert np.around(bb, decimals=5) in np.around(bins, decimals=5), \
@@ -72,4 +72,5 @@ def integrate_multi_power_law(bins, exponents, breaks, norm_factor):
         ind_int = ind[:-1]
         integral[ind_int] = (integrate_power_law(exponents[ii], bins[ind]) *
                              norm_factor[ii])
+
     return integral
