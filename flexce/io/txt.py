@@ -1,7 +1,8 @@
 """Read and write simulation abundances from .txt files.
 
 Only saves time, surviving stars, [Fe/H], and [X/Fe] abundances of each
-stellar generation. Use flexce.io.pck to save all details of a simulation.
+stellar generation. Use flexce.io.pck to save all details of a
+simulation.
 """
 
 from __future__ import print_function, division, absolute_import
@@ -17,8 +18,8 @@ def _make_sim_path(path_out, sim_id):
     """Construct path to simulation output pickle file.
 
     Args:
-        path_out (str): output path
-        sim_id (str): simulation id number
+        path_out (str): Output path.
+        sim_id (str): Simulation ID number.
 
     Returns:
         str: file path and name
@@ -46,24 +47,23 @@ def _colnames(elements):
     return '  '.join(line) + '\n'
 
 
-def txt_write(path_out, sim_id, box, ab):
+def txt_write(box, ab, filename):
     """Write simulation abundances to a text file.
 
     Args:
-        path_out (str): output path
-        sim_id (str): simulation id number
-        box (obj): box object of simulation
-        ab (obj): ab object of simulation
+        box (obj): ChemEvol instance of simulation.
+        ab (obj): Abundances instance of simulation.
+        filename (str): Name of output text file.
     """
-    fname = _make_sim_path(path_out, sim_id)
-    with open(fname, 'w') as f:
+    with open(filename, 'w') as f:
         f.write(_colnames(ab.elements_out))
-        for t, s, fe, xfe in zip(box.t[1:], box.survivors[1:], ab.feh,
-                                 ab.xfe.T):
-            time = ['{:<7}'.format(t)]
-            survivors = ['{:10}'.format(s)]
+
+        for tt, sv, fe, xfe in zip(box.t[1:], box.survivors[1:], ab.feh, ab.xfe.T):
+            time = ['{:<7}'.format(tt)]
+            survivors = ['{:10}'.format(sv)]
             feh = ['{:8.5f}'.format(fe)]
             abunds = ['{:8.5f}'.format(item) for item in xfe]
+
             line = time + survivors + feh + abunds
             f.write('  '.join(line) + '\n')
 
