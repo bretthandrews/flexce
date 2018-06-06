@@ -1,7 +1,7 @@
 # @Author: Brett Andrews <andrews>
 # @Date:   2018-06-05 11:06:88
 # @Last modified by:   andrews
-# @Last modified time: 2018-06-05 13:06:42
+# @Last modified time: 2018-06-06 12:06:88
 
 """
 FILE
@@ -44,6 +44,9 @@ class ChemEvol:
     def set_yields(self):
         # check for existing yields
         # if not, then calculate them.
+        # path_flexce = join(os.path.abspath(os.path.dirname(__file__)), '')
+        # self.path_yldgen = join(path_flexce, 'data', 'yields', 'general', '')  # TODO fix
+
         pass
 
     def run(self):
@@ -75,9 +78,6 @@ class ChemEvol:
                ``imf`` to 'power_law'. Default is None.
             sim_id (str): Simulation ID number.
         """
-        path_flexce = join(os.path.abspath(os.path.dirname(__file__)), '')
-        self.path_yldgen = join(path_flexce, 'data', 'yields', 'general', '')  # TODO fix
-
         self.sim_id = 'box' + sim_id
 
         self.n_bins = len(self.mass_bins) - 1
