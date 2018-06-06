@@ -100,3 +100,68 @@ class ChemEvol:
 
         self.tau_m = flexce.lifetimes.stellar_lifetimes(self.mass_ave)
         self.ind_ev, self.frac_ev, self.frac_ev_tot = flexce.lifetimes.frac_evolve()
+
+    def set_imf(self, imf, imf_alpha, imf_mass_breaks):
+        """Choose IMF or input user-defined power-law IMF.
+
+        Available IMFs:
+            'salpeter': Salpeter (1955).
+            'kroupa': Kroupa (2001).
+            'bell': Bell & de Jong (2001) Fig 4 and Bell et al. (2003).
+            'power_law': User-defined power law slopes and breaks.
+
+        Args:
+            imf (str): Stellar initial mass function to use.
+            imf_alpha (array): Power law slopes of user-defined stellar initial
+                mass function. Must set ``imf`` to 'power_law'.
+            imf_mass_breaks (array): Mass breaks between different power law
+               slopes of user-defined stellar initial mass function. Must set
+               ``imf`` to 'power_law'.
+        """
+        # TODO convert to Warning
+        if imf_alpha is not None:
+            assert imf == 'power_law', 'Setting ``imf_alpha`` only sets IMF slope for a power law IMF'
+
+        # TODO convert to Warning
+        if imf_mass_breaks is not None:
+            assert imf == 'power_law', 'Setting ``imf_mass_breaks`` only sets IMF mass breaks for a power law IMF'
+
+        if imf == 'power_law':
+            self.alpha = np.atleast_1d(np.array(imf_alpha))
+
+            if imf_mass_breaks is None:
+                imf_mass_breaks = []
+
+            self.mass_breaks = np.atleast_1d(np.array(imf_mass_breaks))
+
+        elif imf == 'salpeter':
+            self.alpha = np.array([2.35])
+            self.mass_breaks = np.array([])
+
+        elif imf == 'kroupa':
+            self.alpha = np.array([1.3, 2.3])
+            self.mass_breaks = np.array([0.5])
+            flexce.imf.kroupa()
+
+        elif imf == 'bell':
+            self.alpha = np.array([1., 2.35])
+            self.mass_breaks = np.array([0.6])
+
+        else:
+            raise ValueError('Valid IMFs: "kroupa", "salpeter", "bell", or "power_law".')
+
+        assert len(self.alpha) - len(self.mass_breaks) == 1, \
+            ('Number of power law IMF slopes must be exactly ONE greater than the '
+             'number of breaks in the power law.')
+
+        alpha1 = (self.alpha - 1) * -1
+        alpha2 = (self.alpha - 2) * -1
+
+        norm = flexce.imf.normalize_imf()
+
+        self.mass_int = integrate_multi_power_law(self.mass_bins, alpha2, self.mass_breaks, norm)
+        self.num_int = integrate_multi_power_law(self.mass_bins, alpha1, self.mass_breaks, norm)
+        self.mass_ave = self.mass_int / self.num_int
+
+        aa = 1. / np.sum(self.mass_int)
+        self.mass_frac = aa * self.mass_int
