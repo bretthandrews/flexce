@@ -20,6 +20,9 @@ from os.path import join
 import numpy as np
 
 import flexce.utils
+import flexce.imf
+from flexce.imf import integrate_multi_power_law
+import flexce.lifetimes
 
 
 class ChemEvol:
