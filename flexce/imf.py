@@ -37,18 +37,19 @@ def integrate_multi_power_law(bins, exponents, breaks, norm_factor):
     """Integrate over multi-slope power law distribution.
 
     Args:
-        bins (array): stellar mass bins.
-        exponents (array): slope of power law.
-        breaks (array): stellar masses of breaks in multi-slope power
+        bins (array): Stellar mass bins to integrate over.
+        exponents (array): Power law slopes.
+        breaks (array): Stellar masses of breaks in multi-slope power
             law.
-        norm_factor (array): normalization factor of integrals.
+        norm_factor (array): Normalization factor of integrals.
 
     Returns:
         array: IMF sampled over the bin sizes
     """
     for bb in breaks:
-        assert np.around(bb, decimals=5) in np.around(bins, decimals=5), \
-            'Breaks in power law IMF must be located at the edge of a mass bin.'
+        if (bb >= np.min(bins)) and (bb <= np.max(bins)):
+            assert np.around(bb, decimals=5) in np.around(bins, decimals=5), \
+                'Breaks in power law IMF must be located at the edge of a mass bin.'
 
     assert (len(exponents) > 1) and (len(exponents) - len(breaks) == 1), \
         ('Number of power law IMF slopes must be exactly ONE greater than the number '
