@@ -90,10 +90,13 @@ class ChemEvol:
         self.radius = radius  # kpc
         self.area = self.radius**2. * np.pi * 1e6  # pc^2
 
-        self.timesteps(time_tot, dt)
+        self.time_tot = time_tot
+        self.dt = dt
+        self.t = np.arange(0., self.time_tot + 1., self.dt)
+        self.n_steps = int(self.time_tot / self.dt + 1.)
 
         self.imf = imf
         self.select_imf(imf, imf_alpha, imf_mass_breaks)
 
-        self.stellar_lifetimes()
-        self.frac_evolve()
+        self.tau_m = flexce.lifetimes.stellar_lifetimes(self.mass_ave)
+        self.ind_ev, self.frac_ev, self.frac_ev_tot = flexce.lifetimes.frac_evolve()
