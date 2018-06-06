@@ -1,7 +1,7 @@
 # @Author: Brett Andrews <andrews>
 # @Date:   2018-06-05 11:06:56
 # @Last modified by:   andrews
-# @Last modified time: 2018-06-05 12:06:70
+# @Last modified time: 2018-06-06 11:06:09
 
 """
 FILE
@@ -75,3 +75,18 @@ def integrate_multi_power_law(bins, exponents, breaks, norm_factor):
                              norm_factor[ii])
 
     return integral
+
+
+def normalize_imf(alpha, breaks):
+    """Normalize stellar initial mass function.
+
+    Args:
+        alpha (array): IMF slopes.
+        breaks (array): Power law break masses.
+
+    Returns:
+        array: Normalization factor for each power law segment.
+    """
+    norm_factor = np.ones(len(alpha))
+    norm_factor[1:] = breaks**(-alpha[:1]) / breaks**(-alpha[1:])
+    return norm_factor
