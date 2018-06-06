@@ -1,7 +1,7 @@
 # @Author: Brett Andrews <andrews>
 # @Date:   2018-06-05 11:06:88
 # @Last modified by:   andrews
-# @Last modified time: 2018-06-06 12:06:88
+# @Last modified time: 2018-06-06 12:06:19
 
 """
 FILE
@@ -99,7 +99,7 @@ class ChemEvol:
         self.select_imf(imf, imf_alpha, imf_mass_breaks)
 
         self.tau_m = flexce.lifetimes.stellar_lifetimes(self.mass_ave)
-        self.ind_ev, self.frac_ev, self.frac_ev_tot = flexce.lifetimes.frac_evolve()
+        self.ind_ev, self.frac_ev = flexce.lifetimes.frac_evolve()
 
     def set_imf(self, imf, imf_alpha, imf_mass_breaks):
         """Choose IMF or input user-defined power-law IMF.

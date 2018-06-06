@@ -1,7 +1,7 @@
 # @Author: Brett Andrews <andrews>
 # @Date:   2018-06-05 12:06:85
 # @Last modified by:   andrews
-# @Last modified time: 2018-06-06 11:06:23
+# @Last modified time: 2018-06-06 12:06:61
 
 """
 FILE
@@ -167,8 +167,4 @@ def frac_evolve(time, bins, alpha, breaks):
         fractmp = np.array(fractmp)[:, 0]
         frac_ev.append(fractmp)
 
-    frac_ev_tot = np.zeros(n_bins)
-    for kk in range(len(time) - 1):
-        frac_ev_tot[ind_ev[kk]] += frac_ev[kk]
-
-    return ind_ev, frac_ev, frac_ev_tot
+    return ind_ev, frac_ev
