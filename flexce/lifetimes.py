@@ -109,9 +109,13 @@ def frac_evolve(time, bins, alpha, breaks):
     bin will evolve (frac_ev).
 
     Args:
-        time, mass_bins, alpha, mass_breaks
+        time (array): Time.
+        mass_bins (array): Mass bins.
+        alpha (array): IMF power law slopes.
+        mass_breaks (arry): Break masses in multi-slope IMF.
     Returns:
-        ind_ev, frac_ev, frac_ev_tot
+        array, array: Index and fraction of mass bin of stars that will
+           evolve in a given time step.
     """
     # lowest mass star that would evolve in a timestep
     m_ev = invert_lifetime(time)
