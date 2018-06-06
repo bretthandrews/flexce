@@ -13,6 +13,9 @@ DESCRIPTION
 
 import numpy as np
 
+import flexce.imf
+from flexce.imf import integrate_multi_power_law
+
 
 def lifetime_int(mass):
     """Compute the lifetime of intermediate mass star (M=0.6-6.6 Msun).
@@ -80,3 +83,21 @@ def invert_lifetime_high(time):
         array: Stellar masses.
     """
     return (((time / 1000.) - 0.003) / 1.2)**(-1. / 1.85)
+
+
+def set_lifetimes(mass_ave):
+    """Stellar lifetimes adopted from Padovani & Matteucci (1993).
+
+    See Romano et al. (2005) for motivation.
+    """
+    tau = 160000. * np.ones(len(mass_ave))  # [Myr]
+
+    ind_mint = (mass_ave > 0.6) & (mass_ave <= 6.6)
+    ind_mhigh = (mass_ave > 6.6)
+
+    tau[ind_mint] = lifetime_int(mass_ave[ind_mint])
+    tau[ind_mhigh] = lifetime_high(mass_ave[ind_mhigh])
+
+    return tau
+
+
