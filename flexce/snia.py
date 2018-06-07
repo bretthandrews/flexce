@@ -149,67 +149,92 @@ def prompt_delayed(prob_prompt=2.6e3, prob_delay=4.4e-8, min_time=40.):
 
     return params_snia
 
-def snia_dtd_single_degenerate(
+
+def single_degenerate(
+    time,
+    dt,
+    alpha,
+    breaks,
+    num_int,
+    mass_int,
     A=5e-4,
     gam=2.,
     eps=1.,
     normalize=False,
-    nia_per_mstar=1.54e-3
+    nia_per_mstar=1.54e-3,
 ):
-    '''SNIa DTD for the single degenerate scenario (SDS).
+    """SNIa DTD for the single degenerate scenario.
 
-    Solve for the SNIa rate (ria) according to Greggio (2005).  The minimum
-    primary mass is either (1) the mass of the secondary, (2) the mass
-    required to form a carbon-oxygen white dwarf (2 Msun), or (3) the mass
-    needed such that the WD mass plus the envelope of the secondary
-    (accreted at an efficiency [eps]) equals the Chandrasekhar limit (1.4
-    Msun).
-    '''
-    t2 = np.arange(29., self.t[-1]+1., 1.)  # time in 1 Myr intervals
+    Solve for the SNIa rate (ria) according to Greggio (2005). The
+    minimum primary mass is either
+        (1) the mass of the secondary,
+        (2) the mass required to form a carbon-oxygen white dwarf
+            (2 Msun), or
+        (3) the mass needed such that the WD mass plus the envelope of
+        the secondary (accreted at an efficiency [eps]) equals the
+        Chandrasekhar limit (1.4 Msun).
+
+    Args:
+        time (array): Time steps.
+        dt (float): Length of time step.
+        alpha (array): Power law slopes of the IMF.
+        breaks (array): Mass of breaks in multi-slope IMF.
+        num_int (array): Number of stars per mass bin per stellar mass
+            formed.
+        mass_int (array): Mass of stars per mass bin per stellar mass
+            formed.
+        A (float): Constant.
+        gam (float): Power law index.
+        eps (float): Accretion efficiency.
+        normalize (bool): If ``True``, normalize the SNIa rate to match
+            ``nia_per_mstar``, the number of SNIa within 10 Gyr per
+            stellar mass formed. Default is ``False``.
+        nia_per_mstar (float): Number of SNIa within 10 Gyr per stellar
+            mass formed to normalize to if ``normalize`` is ``True``.
+    """
+    t2 = np.arange(29., time[-1] + 1., 1.)  # time in 1 Myr intervals
     m2 = invert_lifetime(t2)
-    # mass_int2_tmp = self.integrate_multi_power_law(
-    #     m2, self.alpha2 * -1, self.mass_breaks, self.mass_bins,
-    #     self.normalize_imf() * -1)
-    # num_int2_tmp = self.integrate_multi_power_law(
-    #     m2, self.alpha1 * -1, self.mass_breaks, self.mass_bins,
-    #     self.normalize_imf() * -1)
-    # mass_ave2 = mass_int2_tmp / num_int2_tmp
-    # a = 1. / self.mass_int.sum()
-    # a2 = 1. / np.sum(mass_int2_tmp)
+
     # calculate the envelope mass of the secondary
     m2ca = 0.3 * np.ones(len(t2))
     m2cb = 0.3 + 0.1 * (m2 - 2.)
     m2cc = 0.5 + 0.15 * (m2 - 4.)
     m2c = np.max((m2ca, m2cb, m2cc), axis=0)  # secondary core mass
     m2e = m2 - m2c  # secondary envelope mass
+
     mwdn = 1.4 - (eps * m2e)  # minimum WD mass
     m1na = 2. * np.ones(len(t2))
     m1nb = 2. + 10. * (mwdn - 0.6)
+
     # min prim. mass set by min CO WD mass
     m1n = np.max((m1na, m1nb), axis=0)  # min prim. mass
     m1low1 = invert_lifetime(t2)
     m1low = np.max((m1low1, m1n), axis=0)  # min primary mass
+
     m1up = 8.
-    k_alpha = self.num_int.sum() / self.mass_int.sum()
+    k_alpha = num_int.sum() / mass_int.sum()
     nm2 = np.zeros(len(m1low))
-    for i in range(len(self.alpha)):
-        if i == 0:
-            if len(self.mass_breaks) > 0:
-                ind = np.where(np.around(m1low, decimals=5) <=
-                               self.mass_breaks[0])[0]
+
+    for ii, aa in enumerate(alpha):
+        if ii == 0:
+            if len(breaks) > 0:
+                ind = np.where(np.around(m1low, decimals=5) <= breaks[0])[0]
             else:
                 ind = np.arange(len(m1low), dtype=int)
+
             ind_int = ind[:-1]
-        elif i != len(self.alpha) - 1:
-            ind = np.where((m1low >= self.mass_breaks[i-1]) &
-                           (m1low <= self.mass_breaks[i]))[0]
-            ind_int = ind[:-1]
+
+        elif ii != len(alpha) - 1:
+            ind_int = np.where((m1low >= breaks[ii - 1]) &
+                               (m1low <= breaks[ii]))[0][:-1]
+
         else:
-            ind = np.where(m1low >= self.mass_breaks[-1])[0]
-            ind_int = ind
-        nm2[ind_int] = ((m2[ind_int]**-self.alpha[i]) *
-                        ((m2[ind_int]/m1low[ind_int])**(self.alpha[i]+gam) -
-                         (m2[ind_int]/m1up)**(self.alpha[i] + gam)))
+            ind_int = np.where(m1low >= breaks[-1])[0]
+
+        nm2[ind_int] = ((m2[ind_int]**-aa) *
+                        ((m2[ind_int] / m1low[ind_int])**(aa + gam) -
+                         (m2[ind_int] / m1up)**(aa + gam)))
+
     # from Greggio (2005): t**-1.44 approximates log(dm/dt) = log(m) -
     # log(t), which works for either the Padovani & Matteucci (1993) or the
     # Greggio (2005)/Girardi et al. (2000) stellar lifetimes
@@ -217,14 +242,23 @@ def snia_dtd_single_degenerate(
     fia2 = nm2 / dm2dt
     fia = fia2 / fia2.sum()
     ria1 = k_alpha * A * fia
-    ind_tbin = np.where(t2 % self.dt == 0.)[0]
-    self.ria = np.zeros(self.n_steps - 1)
-    self.ria[0] = ria1[:ind_tbin[0]].sum()
-    for i in range(1, self.n_steps - 1):
-        self.ria[i] = ria1[ind_tbin[i-1]:ind_tbin[i]].sum()
+
+    ind_tbin = np.where(t2 % dt == 0.)[0]
+
+    ria = np.zeros(len(time) - 1)
+    ria[0] = ria1[:ind_tbin[0]].sum()
+    for i in range(1, len(time) - 1):
+        ria[i] = ria1[ind_tbin[i - 1]:ind_tbin[i]].sum()
+
     if normalize:
-        ind10000 = np.where(self.t <= 10000.)
-        self.ria = self.ria / self.ria[ind10000].sum() * nia_per_mstar
+        ind10000 = np.where(time <= 10000.)
+        ria = ria / ria[ind10000].sum() * nia_per_mstar
+
+    params = {
+        'ria': ria
+    }
+
+    return params
 
 
 def snia_ev(params, tstep, dt, Mwd_Ia, dMwd, ria, mstar, snia_mass, mstar_tot, sfr):
