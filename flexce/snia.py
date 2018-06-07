@@ -1,7 +1,7 @@
 # @Author: Brett Andrews <andrews>
 # @Date:   2018-06-06 12:06:40
 # @Last modified by:   andrews
-# @Last modified time: 2018-06-07 11:06:93
+# @Last modified time: 2018-06-07 11:06:63
 
 """
 FILE
@@ -199,3 +199,48 @@ def snia_dtd_single_degenerate(self, A=5e-4, gam=2., eps=1.,
     if normalize:
         ind10000 = np.where(self.t <= 10000.)
         self.ria = self.ria / self.ria[ind10000].sum() * nia_per_mstar
+
+
+def snia_ev(self, tstep, snia_mass, mstar_tot, sfr):
+    '''Calculate the expected number of SNIa of a stellar population from
+    a previous timestep.  The delay time distribution can be\:
+
+    1. exponential
+    2. empirical t^-1 power law
+    3. empirical two component model with a prompt [~SFR] component and
+       a delayed component [~Mstar]).
+    4. theoretical DTD based on the single degenerate scenario
+
+    Mannucci et al. (2005) find that the Rate SNIa / Rate SNII =
+    0.35 +/- 0.08 in young stellar populations. Maoz et al. (2011) find
+    that the time-integrated Rate SNII / Rate SNIa from a stellar
+    population is about 5:1.
+
+    snia_mass: mass of an individual SNIa
+
+    min_snia_time: the minimum delay time from the birth of a stellar
+    population
+    '''
+    if self.snia_dtd_func == 'exponential':
+        ind_min_t = (tstep -
+                     np.ceil(self.min_snia_time / self.dt).astype(int))
+        if ind_min_t > 0:
+            Nia_stat = np.sum(self.Mwd_Ia[:ind_min_t+1] * self.dMwd /
+                              snia_mass)
+            self.Mwd_Ia[:ind_min_t+1] *= 1. - self.dMwd
+        else:
+            Nia_stat = 0.
+    elif self.snia_dtd_func == 'power_law':
+        Nia_stat = np.sum(self.ria[:tstep] *
+                          np.sum(self.mstar[1:tstep+1], axis=1)[::-1])
+    elif self.snia_dtd_func == 'prompt_delayed':
+        ind = tstep - np.ceil(self.min_snia_time / self.dt)
+        if ind < 0.:
+            Nia_prompt = 0.
+        else:
+            Nia_prompt = sfr[ind] * self.prob_prompt
+        Nia_stat = (Nia_prompt + (mstar_tot * self.prob_delay)) * self.dt
+    elif self.snia_dtd_func == 'single_degenerate':
+        Nia_stat = np.sum(self.ria[:tstep] *
+                          np.sum(self.mstar[1:tstep+1], axis=1)[::-1])
+    return Nia_stat
