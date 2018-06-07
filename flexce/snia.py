@@ -1,7 +1,7 @@
 # @Author: Brett Andrews <andrews>
 # @Date:   2018-06-06 12:06:40
 # @Last modified by:   andrews
-# @Last modified time: 2018-06-07 12:06:18
+# @Last modified time: 2018-06-07 16:06:75
 
 """
 FILE
@@ -15,6 +15,7 @@ import traceback
 
 import numpy as np
 
+from flexce.lifetimes import invert_lifetime
 import flexce.utils
 
 
@@ -261,7 +262,7 @@ def single_degenerate(
     return params
 
 
-def snia_ev(params, tstep, dt, Mwd_Ia, dMwd, ria, mstar, snia_mass, mstar_tot, sfr):
+def snia_ev(params, tstep, dt, mstar, mstar_tot, sfr, Mwd_Ia):
     """Calculate the expected number of SNIa of a stellar population from
     a previous timestep.  The delay time distribution can be\:
 
@@ -276,30 +277,41 @@ def snia_ev(params, tstep, dt, Mwd_Ia, dMwd, ria, mstar, snia_mass, mstar_tot, s
     that the time-integrated Rate SNII / Rate SNIa from a stellar
     population is about 5:1.
 
-    snia_mass: mass of an individual SNIa
+    Args:
+        params (dict): SNIa DTD parameters.
+        tstep (int): Time step.
+        dt (float): Length of time step.
+        mstar (float): Stellar mass formed in each time step.
+        mstar_tot (float): Total stellar mass formed.
+        sfr (float): Star formation rate in each time step.
+        Mwd_Ia (float): Mass in white dwarfs that will explode as SNIa
+            (for exponetial DTD).
 
-    min_snia_time: the minimum delay time from the birth of a stellar
-    population
+    Returns:
+        float, float: Statistical expectation for the number of SNIa
+            that should explode in a given time step, and mass in white
+            dwarfs that will explode as SNIa (for exponetial DTD).
     """
-    if params['snia']['func'] == 'exponential':
-        ind_min_t = (tstep - np.ceil(params['snia']['min_time'] / dt).astype(int))
+
+    if params['func'] == 'exponential':
+        ind_min_t = (tstep - np.ceil(params['min_time'] / dt).astype(int))
         if ind_min_t > 0:
-            Nia_stat = np.sum(Mwd_Ia[:ind_min_t + 1] * dMwd / snia_mass)
-            Mwd_Ia[:ind_min_t + 1] *= 1. - dMwd
-            # TODO need to return Mwd_Ia
+            Nia_stat = np.sum(Mwd_Ia[:ind_min_t + 1] * params['dMwd'] / params['mass'])
+            Mwd_Ia[:ind_min_t + 1] *= 1. - params['dMwd']
+            # TODO return Mwd_Ia
         else:
             Nia_stat = 0.
 
-    elif params['snia']['func'] == 'power_law':
-        Nia_stat = np.sum(ria[:tstep] * np.sum(mstar[1:tstep + 1], axis=1)[::-1])
+    elif params['func'] == 'power_law':
+        Nia_stat = np.sum(params['ria'][:tstep] * np.sum(mstar[1:tstep + 1], axis=1)[::-1])
 
-    elif params['snia']['func'] == 'prompt_delayed':
-        ind = tstep - np.ceil(params['snia']['min_time'] / dt)
-        Nia_prompt = sfr[ind] * params['snia']['prob_prompt'] if ind > 0 else 0.
-        Nia_delay = mstar_tot * params['snia']['prob_delay']
+    elif params['func'] == 'prompt_delayed':
+        ind = tstep - np.ceil(params['min_time'] / dt)
+        Nia_prompt = sfr[ind] * params['prob_prompt'] if ind > 0 else 0.
+        Nia_delay = mstar_tot * params['prob_delay']
         Nia_stat = (Nia_prompt + Nia_delay) * dt
 
-    elif params['snia']['func'] == 'single_degenerate':
-        Nia_stat = np.sum(ria[:tstep] * np.sum(mstar[1:tstep + 1], axis=1)[::-1])
+    elif params['func'] == 'single_degenerate':
+        Nia_stat = np.sum(params['ria'][:tstep] * np.sum(mstar[1:tstep + 1], axis=1)[::-1])
 
-    return Nia_stat
+    return Nia_stat, Mwd_Ia
