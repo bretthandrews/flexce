@@ -87,22 +87,31 @@ def exponential(dt, mass, min_time=150., timescale=1500., fraction=0.078):
     }
 
     return params_snia
+
+
+def power_law(time, min_time=40., nia_per_mstar=2.2e-3, slope=-1.):
     """Implement power-law SNIa delay time distribution.
 
     Args:
         min_snia_time (float): Minimum delay time for SNIa in Myr.
             Defaults to 150.
-        nia_per_mstar (float): number of SNIa per stellar mass formed
-            that explode within 10 Gyr. Defaults to 2.2e-3.
-        slope (float): power law slope. Defaults to -1.
+        nia_per_mstar (float): Number of SNIa per stellar mass formed
+            that explode within 10 Gyr. Default is 2.2e-3.
+        slope (float): Power law slope. Default is -1.
     """
-    self.min_snia_time = min_snia_time
-    ind_min = np.where(self.t >= min_snia_time)
-    ind10000 = np.where(self.t <= 10000.)
-    ria = np.zeros(len(self.t))
-    ria[ind_min] = self.t[ind_min]**slope
+    ind_min = (time >= min_time)
+    ind10000 = (time <= 10000.)
+    ria = np.zeros(len(time))
+    ria[ind_min] = time[ind_min]**slope
     norm = nia_per_mstar / ria[ind10000].sum()
-    self.ria = ria * norm
+    ria = ria * norm
+
+    params_snia = {
+        'min_time': min_time,
+        'ria': ria,
+    }
+
+    return params_snia
 
 
 def dtd_prompt_delayed(A=4.4e-8, B=2.6e3, min_snia_time=40.):
