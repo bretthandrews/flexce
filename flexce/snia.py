@@ -114,36 +114,40 @@ def power_law(time, min_time=40., nia_per_mstar=2.2e-3, slope=-1.):
     return params_snia
 
 
-def dtd_prompt_delayed(A=4.4e-8, B=2.6e3, min_snia_time=40.):
+def prompt_delayed(prob_prompt=2.6e3, prob_delay=4.4e-8, min_time=40.):
     """Implement prompt plus delayed SNIa delay time distribution.
 
+    Scannapieco & Bildstein (2005) prompt (B) + delayed (A) components
+    to SNIa rate Equation 1\:
+        N_Ia / (100 yr)^-1 = A [Mstar / 10^10 Msun] +
+                             B [SFR / (10^10 Msun Gyr^-1)]
+
+        A = 4.4e-2 (errors: +1.6e-2 -1.4e-2)
+        B = 2.6 (errors: +/-1.1)
+
+    In units useful for flexCE\:
+        N_Ia per timestep = {4.4e-8 [Mstar / Msun] +
+                             2.6e3 [SFR / (Msun yr^-1)]} *
+                             (len of timestep in Myr)
+
+    See also Mannucci et al. (2005).
+
     Args:
-        A (float): coefficient connected to stellar mass of galaxy
-            (see extended description). Defaults to 4.4e-8.
-        B (float): Defaults to 2.6e3.
+        prob_prompt (float): Default is 2.6e3.
+        prob_delay (float): Coefficient connected to stellar mass of
+            galaxy (see extended description). Defaults to 4.4e-8.
         min_snia_time (float): Minimum delay time for SNIa in Myr.
             Defaults to 150.
 
-    Scannapieco & Bildstein (2005) prompt + delayed components to SNIa
-    rate Equation 1\:
 
-    N_Ia / (100 yr)^-1 = A [Mstar / 10^10 Msun] +
-    B [SFR / (10^10 Msun Gyr^-1)]
-
-    A = 4.4e-2 (errors: +1.6e-2 -1.4e-2)
-
-    B = 2.6 (errors: +/-1.1)
-
-    In units useful for flexCE\:
-    N_Ia per timestep = {4.4e-8 [Mstar / Msun] +
-    2.6e3 [SFR / (Msun yr^-1)]} * (len of timestep in Myr)
-    see also Mannucci et al. (2005)
     """
-    self.prob_delay = A
-    self.prob_prompt = B
-    self.min_snia_time = min_snia_time
-    return
+    params_snia = {
+        'min_time': min_time,
+        'prob_prompt': prob_prompt,
+        'prob_delay': prob_delay,
+    }
 
+    return params_snia
 
 def snia_dtd_single_degenerate(
     A=5e-4,
