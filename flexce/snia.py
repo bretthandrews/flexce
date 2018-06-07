@@ -54,7 +54,7 @@ def snia_dtd(func='exponential', kwargs=None):
     return snia_param
 
 
-def dtd_exp(min_snia_time=150., timescale=1500., snia_fraction=0.078):
+def exponential(dt, mass, min_time=150., timescale=1500., fraction=0.078):
     """Implement exponential SNIa delay time distribution.
 
     If we adopt the SNIa prescription of Schoenrich & Binney (2009a)
@@ -66,27 +66,27 @@ def dtd_exp(min_snia_time=150., timescale=1500., snia_fraction=0.078):
     dwarf mass will explode as SNIa.
 
     Args:
-        min_snia_time (float): Minimum delay time for SNIa in Myr.
-            Default is 150.
+        dt (float): Length of time step in Myr.
+        mass (float): Mass of an individual SNIa.
+        min_time (float): Minimum delay time for SNIa in Myr. Default
+            is 150.
         timescale (float): Exponential decay timescale of delay time
             distribution in Myr. Default is 1500.
         snia_fraction (float): Fraction of white dwarf mass formed from
            stars with initial mass M=3.2-8.0 Msun that will explode in
            SNIa (see extended description). Default is 0.078.
     """
-    ind_min_t = (tstep -
-                 np.ceil(self.min_snia_time / self.dt).astype(int))
-    if ind_min_t > 0:
-        Nia_stat = np.sum(self.Mwd_Ia[:ind_min_t+1] * self.dMwd /
-                          snia_mass)
-        self.Mwd_Ia[:ind_min_t+1] *= 1. - self.dMwd
-    self.snia_fraction = snia_fraction
-    self.min_snia_time = min_snia_time
-    self.snia_timescale = timescale
-    self.dMwd = self.dt / self.snia_timescale
+    dMwd = dt / timescale
 
+    params_snia = {
+        'min_time': min_time,
+        'timescale': timescale,
+        'fraction': fraction,
+        'dMwd': dMwd,
+        'mass': mass,
+    }
 
-def dtd_powerlaw(min_snia_time=40., nia_per_mstar=2.2e-3, slope=-1.):
+    return params_snia
     """Implement power-law SNIa delay time distribution.
 
     Args:
