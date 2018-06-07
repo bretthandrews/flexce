@@ -1,7 +1,7 @@
 # @Author: Brett Andrews <andrews>
 # @Date:   2018-06-06 12:06:40
 # @Last modified by:   andrews
-# @Last modified time: 2018-06-07 11:06:63
+# @Last modified time: 2018-06-07 12:06:18
 
 """
 FILE
@@ -53,6 +53,7 @@ def snia_dtd(func='exponential', kwargs=None):
 
     return snia_param
 
+
 def dtd_exp(min_snia_time=150., timescale=1500., snia_fraction=0.078):
     """Implement exponential SNIa delay time distribution.
 
@@ -73,13 +74,19 @@ def dtd_exp(min_snia_time=150., timescale=1500., snia_fraction=0.078):
            stars with initial mass M=3.2-8.0 Msun that will explode in
            SNIa (see extended description). Default is 0.078.
     """
+    ind_min_t = (tstep -
+                 np.ceil(self.min_snia_time / self.dt).astype(int))
+    if ind_min_t > 0:
+        Nia_stat = np.sum(self.Mwd_Ia[:ind_min_t+1] * self.dMwd /
+                          snia_mass)
+        self.Mwd_Ia[:ind_min_t+1] *= 1. - self.dMwd
     self.snia_fraction = snia_fraction
     self.min_snia_time = min_snia_time
     self.snia_timescale = timescale
     self.dMwd = self.dt / self.snia_timescale
 
 
-def dtd_powerlaw(self, min_snia_time=40., nia_per_mstar=2.2e-3, slope=-1.):
+def dtd_powerlaw(min_snia_time=40., nia_per_mstar=2.2e-3, slope=-1.):
     """Implement power-law SNIa delay time distribution.
 
     Args:
@@ -98,7 +105,7 @@ def dtd_powerlaw(self, min_snia_time=40., nia_per_mstar=2.2e-3, slope=-1.):
     self.ria = ria * norm
 
 
-def dtd_prompt_delayed(self, A=4.4e-8, B=2.6e3, min_snia_time=40.):
+def dtd_prompt_delayed(A=4.4e-8, B=2.6e3, min_snia_time=40.):
     """Implement prompt plus delayed SNIa delay time distribution.
 
     Args:
@@ -128,8 +135,14 @@ def dtd_prompt_delayed(self, A=4.4e-8, B=2.6e3, min_snia_time=40.):
     self.min_snia_time = min_snia_time
     return
 
-def snia_dtd_single_degenerate(self, A=5e-4, gam=2., eps=1.,
-                               normalize=False, nia_per_mstar=1.54e-3):
+
+def snia_dtd_single_degenerate(
+    A=5e-4,
+    gam=2.,
+    eps=1.,
+    normalize=False,
+    nia_per_mstar=1.54e-3
+):
     '''SNIa DTD for the single degenerate scenario (SDS).
 
     Solve for the SNIa rate (ria) according to Greggio (2005).  The minimum
@@ -201,8 +214,8 @@ def snia_dtd_single_degenerate(self, A=5e-4, gam=2., eps=1.,
         self.ria = self.ria / self.ria[ind10000].sum() * nia_per_mstar
 
 
-def snia_ev(self, tstep, snia_mass, mstar_tot, sfr):
-    '''Calculate the expected number of SNIa of a stellar population from
+def snia_ev(params, tstep, dt, Mwd_Ia, dMwd, ria, mstar, snia_mass, mstar_tot, sfr):
+    """Calculate the expected number of SNIa of a stellar population from
     a previous timestep.  The delay time distribution can be\:
 
     1. exponential
@@ -220,27 +233,26 @@ def snia_ev(self, tstep, snia_mass, mstar_tot, sfr):
 
     min_snia_time: the minimum delay time from the birth of a stellar
     population
-    '''
-    if self.snia_dtd_func == 'exponential':
-        ind_min_t = (tstep -
-                     np.ceil(self.min_snia_time / self.dt).astype(int))
+    """
+    if params['snia']['func'] == 'exponential':
+        ind_min_t = (tstep - np.ceil(params['snia']['min_time'] / dt).astype(int))
         if ind_min_t > 0:
-            Nia_stat = np.sum(self.Mwd_Ia[:ind_min_t+1] * self.dMwd /
-                              snia_mass)
-            self.Mwd_Ia[:ind_min_t+1] *= 1. - self.dMwd
+            Nia_stat = np.sum(Mwd_Ia[:ind_min_t + 1] * dMwd / snia_mass)
+            Mwd_Ia[:ind_min_t + 1] *= 1. - dMwd
+            # TODO need to return Mwd_Ia
         else:
             Nia_stat = 0.
-    elif self.snia_dtd_func == 'power_law':
-        Nia_stat = np.sum(self.ria[:tstep] *
-                          np.sum(self.mstar[1:tstep+1], axis=1)[::-1])
-    elif self.snia_dtd_func == 'prompt_delayed':
-        ind = tstep - np.ceil(self.min_snia_time / self.dt)
-        if ind < 0.:
-            Nia_prompt = 0.
-        else:
-            Nia_prompt = sfr[ind] * self.prob_prompt
-        Nia_stat = (Nia_prompt + (mstar_tot * self.prob_delay)) * self.dt
-    elif self.snia_dtd_func == 'single_degenerate':
-        Nia_stat = np.sum(self.ria[:tstep] *
-                          np.sum(self.mstar[1:tstep+1], axis=1)[::-1])
+
+    elif params['snia']['func'] == 'power_law':
+        Nia_stat = np.sum(ria[:tstep] * np.sum(mstar[1:tstep + 1], axis=1)[::-1])
+
+    elif params['snia']['func'] == 'prompt_delayed':
+        ind = tstep - np.ceil(params['snia']['min_time'] / dt)
+        Nia_prompt = sfr[ind] * params['snia']['prob_prompt'] if ind > 0 else 0.
+        Nia_delay = mstar_tot * params['snia']['prob_delay']
+        Nia_stat = (Nia_prompt + Nia_delay) * dt
+
+    elif params['snia']['func'] == 'single_degenerate':
+        Nia_stat = np.sum(ria[:tstep] * np.sum(mstar[1:tstep + 1], axis=1)[::-1])
+
     return Nia_stat
