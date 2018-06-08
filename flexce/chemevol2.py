@@ -1,7 +1,7 @@
 # @Author: Brett Andrews <andrews>
 # @Date:   2018-06-05 11:06:88
 # @Last modified by:   andrews
-# @Last modified time: 2018-06-07 21:06:73
+# @Last modified time: 2018-06-07 21:06:94
 
 """
 FILE
@@ -330,8 +330,14 @@ class ChemEvol:
 
             # gas flows
             self.sf[i] = np.sum(self.mstar[i]) * self.mfrac[i]
-            self.outflow[i] = self.outflow_calc(i, self.sf[i], self.snii[i],
-                                                self.agb[i], self.snia[i])
+            self.outflow[i] = self.outflow_calc(
+                params=self.params['outflows'],
+                eta=self.eta_outflow,
+                feject=self.feject,
+                timestep=i,
+                sfr=self.sf[i],
+                stellar_ejecta=self.snii[i] + self.agb[i] + self.snia[i],
+            )
 
             if self.tcool > 0.:
                 self.gas_cooling[i] = (self.mwarmgas_iso[i - 1] * self.dt / self.tcool)
