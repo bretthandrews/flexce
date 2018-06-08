@@ -1,7 +1,7 @@
 # @Author: Brett Andrews <andrews>
 # @Date:   2018-06-05 11:06:88
 # @Last modified by:   andrews
-# @Last modified time: 2018-06-07 20:06:78
+# @Last modified time: 2018-06-07 21:06:73
 
 """
 FILE
@@ -334,16 +334,20 @@ class ChemEvol:
                                                 self.agb[i], self.snia[i])
 
             if self.tcool > 0.:
-                self.gas_cooling[i] = (self.mwarmgas_iso[i - 1] * self.dt /
-                                       self.tcool)
+                self.gas_cooling[i] = (self.mwarmgas_iso[i - 1] * self.dt / self.tcool)
 
-            if self.inflow_func == 'constant_mgas':
-                self.inflow_rate[i] = (np.sum(
-                    self.sf[i] + self.outflow[i] - self.gas_cooling[i] -
-                    self.fdirect * (self.snii[i] + self.agb[i] + self.snia[i])) / self.dt)
+            if self.params['inflows']['func'] == 'constant_mgas':
+                self.inflow_rate[i] = (
+                    np.sum(
+                        self.sf[i] + self.outflow[i] - self.gas_cooling[i] -
+                        self.fdirect * (self.snii[i] + self.agb[i] + self.snia[i])
+                    ) / self.dt
+                )
 
-            self.inflow[i] = (self.inflow_composition(yields, i) *
-                              self.inflow_rate[i] * self.dt)
+            self.inflow[i] = (
+                self.inflow_composition(self.params['inflows'], yields, self.mgas_iso[i - 1]) *
+                self.inflow_rate[i] * self.dt
+            )
 
             self.mgas_iso[i] = (self.mgas_iso[i - 1] +
                                 (self.fdirect + self.feject) *
