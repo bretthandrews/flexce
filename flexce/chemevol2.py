@@ -1,7 +1,7 @@
 # @Author: Brett Andrews <andrews>
 # @Date:   2018-06-05 11:06:88
 # @Last modified by:   andrews
-# @Last modified time: 2018-06-07 16:06:95
+# @Last modified time: 2018-06-07 20:06:78
 
 """
 FILE
@@ -200,21 +200,28 @@ class ChemEvol:
         density for SF), sfe_thick = thick disk SFE / thin disk SFE
         '''
         self.initialize_arrays(yields, long_output)
+
         ind_yld = np.zeros(self.n_steps, dtype=int)
         ind8 = np.where(self.mass_bins == 8.)[0][0]
         ind_ia = np.where((self.mass_ave >= 3.2) & (self.mass_ave <= 8.))[0]
+
         start = time.time()
+
         # initial conditions
         self.mgas_iso[0] = yields.bbmf * self.mgas_init
         if self.warmgas_on:
             self.mwarmgas_iso[0] = (self.warmgas_ab_pattern *
                                     self.mwarmgas_init / 4.)
+
         ind_metal = np.where(yields.sym_mass > 4.)
         self.metallicity[0] = (np.sum(self.mgas_iso[0, ind_metal]) / self.mgas_iso[0, 0])
         self.mfrac[0] = self.mgas_iso[0] / np.sum(self.mgas_iso[0])
+
         if np.sum(self.mwarmgas_iso[0]) > 0.:
             self.mwarmfrac[0] = (self.mwarmgas_iso[0] / np.sum(self.mwarmgas_iso[0]))
+
         snii_agb_yields = np.append(yields.agb_yields, yields.snii_yields, axis=1)
+
         for i in range(1, self.n_steps):
             if self.t[i] % 1000 < self.dt:
                 print('time: {} Myr'.format(int(self.t[i])))
@@ -313,8 +320,8 @@ class ChemEvol:
                 params=self.params['snia'],
                 time=i,
                 dt=self.dt,
-                mstar=self.mstar,  # TODO is this the right mstar?
-                mstar_tot=self.mstar_left.sum(),  # TODO is this the right mstar_tot?
+                mstar=self.mstar,
+                mstar_tot=self.mstar_left.sum(),
                 sfr=self.sfr,
                 Mwd_Ia=self.Mwd_Ia,
             ))
