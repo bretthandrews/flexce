@@ -1,7 +1,7 @@
 # @Author: Brett Andrews <andrews>
 # @Date:   2018-06-07 21:06:39
 # @Last modified by:   andrews
-# @Last modified time: 2018-06-07 21:06:09
+# @Last modified time: 2018-06-07 21:06:90
 
 """
 FILE
@@ -13,45 +13,65 @@ DESCRIPTION
 
 
 def set_outflows(
-    outflow_source='ism',
-    eta_outflow=1.,
+    source='ism',
+    eta=1.,
     variable_eta=None,
     feject=0.15
 ):
-    """outflow_source = "ism" (ambient ISM is ejected in the wind; standard
-    Mdot_wind = eta * SFR treatment) or "stellar_ejecta" (the yields from
-    SNII, SNIa, and AGB stars makes up the wind; from Schoenrich & Binney
-    2009).
+    """Set outflow parameters.
+
+    Available outflow sources:
+        ism: ambient ISM is ejected in the wind (Mdot_out = eta * SFR)
+        stellar_ejecta: the yields from SNII, SNIa, and AGB stars make
+            up the wind as used in Schoenrich & Binney (2009).
+
+    Args:
+        source (str): Source of outflowing gas. Default is 'ism'.
+        eta (float): Outflow mass-loading parameter. Only used if
+            ``source`` is 'ism'. Default is 1.
+        variable_eta (array): Time variable outflow mass-loading
+            parameter. Only used if ``source`` is 'ism'. Default is
+            ``None``.
+        feject (float): Fraction of new stellar ejecta that leaves the
+            galaxy in the outflow (if ``source`` is 'stellar_ejecta').
+            Default is 0.15.
+
     """
     params = {
-        'outflow_source': outflow_source,
-        'eta_outflow': eta_outflow,
+        'source': source,
+        'eta': eta,
         'variable_eta': variable_eta,
         'feject': feject,
     }
 
-    if outflow_source == 'ism':
+    if source == 'ism':
         feject = 0.
 
         if variable_eta is not None:
-            eta_outflow = variable_eta
+            eta = variable_eta
 
-    elif outflow_source == 'stellar_ejecta':
-        eta_outflow = 0.
+    elif source == 'stellar_ejecta':
+        eta = 0.
 
     else:
         raise ValueError('Valid outflow sources: "ism" and "stellar_ejecta".')
 
-    return params, eta_outflow, feject
+    return params, eta, feject
 
 
-def outflow_calc(self, timestep, sfr, snii, agb, snia):
-    if self.outflow_source == 'ism':
-        if self.variable_eta is not None:
-            return self.eta_outflow[timestep] * sfr
+def outflow_calc(params, eta, feject, timestep, sfr, stellar_ejecta):
+
+    if params['source'] == 'ism':
+        if params['variable_eta'] is not None:
+            return eta[timestep] * sfr
+
         else:
-            return self.eta_outflow * sfr
-    elif self.outflow_source == 'stellar_ejecta':
-        return self.feject * (snii + agb + snia)
+            return eta * sfr
+
+    elif params['source'] == 'stellar_ejecta':
+        return feject * (stellar_ejecta)
+
     else:
-        print('\nValid outflow sources: "ism" and "stellar_ejecta"\n')
+        raise ValueError('Valid outflow sources: "ism" and "stellar_ejecta".')
+
+    return eta
