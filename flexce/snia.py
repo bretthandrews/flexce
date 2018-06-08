@@ -1,7 +1,7 @@
 # @Author: Brett Andrews <andrews>
 # @Date:   2018-06-06 12:06:40
 # @Last modified by:   andrews
-# @Last modified time: 2018-06-07 16:06:75
+# @Last modified time: 2018-06-07 20:06:04
 
 """
 FILE
@@ -282,7 +282,7 @@ def snia_ev(params, tstep, dt, mstar, mstar_tot, sfr, Mwd_Ia):
         tstep (int): Time step.
         dt (float): Length of time step.
         mstar (float): Stellar mass formed in each time step.
-        mstar_tot (float): Total stellar mass formed.
+        mstar_tot (float): Total stellar mass left.
         sfr (float): Star formation rate in each time step.
         Mwd_Ia (float): Mass in white dwarfs that will explode as SNIa
             (for exponetial DTD).
@@ -298,7 +298,6 @@ def snia_ev(params, tstep, dt, mstar, mstar_tot, sfr, Mwd_Ia):
         if ind_min_t > 0:
             Nia_stat = np.sum(Mwd_Ia[:ind_min_t + 1] * params['dMwd'] / params['mass'])
             Mwd_Ia[:ind_min_t + 1] *= 1. - params['dMwd']
-            # TODO return Mwd_Ia
         else:
             Nia_stat = 0.
 
