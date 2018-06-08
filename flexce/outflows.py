@@ -1,11 +1,11 @@
 # @Author: Brett Andrews <andrews>
 # @Date:   2018-06-07 21:06:39
 # @Last modified by:   andrews
-# @Last modified time: 2018-06-07 21:06:17
+# @Last modified time: 2018-06-07 21:06:32
 
 """
 FILE
-    inflows.py
+    outflows.py
 
 DESCRIPTION
     Functions for setting the inflow rate and composition.
