@@ -1,7 +1,7 @@
 # @Author: Brett Andrews <andrews>
 # @Date:   2018-06-07 20:06:05
 # @Last modified by:   andrews
-# @Last modified time: 2018-06-07 20:06:14
+# @Last modified time: 2018-06-07 21:06:42
 
 """
 FILE
@@ -128,10 +128,9 @@ def inflow_composition(params, yields, mgas_iso_last):
 
     elif params['ab_pattern'] == 'alpha_enhanced':
         path_yldgen = join(os.path.dirname(__file__), 'data', 'yields', 'general')
-
-        inftmp = pd.read_csv(join(path_yldgen, 'Z_0.1-Zsun_alpha_enhanced.txt'),
-                             skiprows=6, header=None)
-        inflow_init = np.array(inftmp).T
+        alpha_en = pd.read_csv(join(path_yldgen, 'Z_0.1-Zsun_alpha_enhanced.txt'),
+                               skiprows=6, header=None)
+        inflow_init = np.array(alpha_en).T
         scaling_factor *= 10.
 
     elif params['ab_pattern'] == 'scaled_solar':
@@ -139,7 +138,7 @@ def inflow_composition(params, yields, mgas_iso_last):
 
     elif params['ab_pattern'] == 'recycled':
         inflow_init = mgas_iso_last / mgas_iso_last.sum()
-        scaling_factor = (0.02 * scaling_factor / inflow_init[ind_metal].sum())
+        scaling_factor *= 0.02 / inflow_init[ind_metal].sum()
 
     else:
         raise ValueError('Valid inflow compositions: "bbns", "alpha_enhanced", '
@@ -147,10 +146,8 @@ def inflow_composition(params, yields, mgas_iso_last):
 
     inflow = np.zeros(yields.n_sym)
     inflow[ind_metal] = inflow_init[ind_metal] * scaling_factor
-    tmp = inflow.sum()
-
     # Set H & He mass fraction to 0.75 & 0.25 - Z, respectively.
     inflow[yields.sym == 'H1'] = 0.75
-    inflow[yields.sym == 'He4'] = 0.25 - tmp
+    inflow[yields.sym == 'He4'] = 0.25 - inflow.sum()
 
     return inflow
