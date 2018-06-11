@@ -1,7 +1,7 @@
 # @Author: Brett Andrews <andrews>
 # @Date:   2018-06-07 21:06:85
 # @Last modified by:   andrews
-# @Last modified time: 2018-06-07 21:06:79
+# @Last modified time: 2018-06-10 23:06:26
 
 """
 FILE
@@ -81,3 +81,13 @@ def set_warm_gas_reservoir(
         fdirect = 1. - feject
         tcool = 0.
         fwarm = 0.
+
+    params_warmgas = {
+        'warmgas_on': warmgas,
+        'mwarmgas_init': mwarmgas_init,
+        'fdirect': fdirect,
+        'fwarm': fwarm,
+        'tcool': tcool,
+    }
+
+    return params_warmgas, warmgas_ab_pattern
