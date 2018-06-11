@@ -62,6 +62,9 @@ def set_warm_gas_reservoir(
     Returns:
         dict, array,
     """
+    assert fdirect >= 0. and fdirect <= 1., \
+        '``fdirect`` is a fraction and so must be between 0 and 1 inclusive'
+
     if warmgas:
         filename = 'warmgas_abundance_pattern.txt'
         tmp = pd.read_csv(self.path_yldgen + filename,
