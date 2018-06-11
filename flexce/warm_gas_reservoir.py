@@ -1,7 +1,7 @@
 # @Author: Brett Andrews <andrews>
 # @Date:   2018-06-07 21:06:85
 # @Last modified by:   andrews
-# @Last modified time: 2018-06-10 23:06:26
+# @Last modified time: 2018-06-11 13:06:63
 
 """
 FILE
@@ -42,7 +42,8 @@ def set_warm_gas_reservoir(
 
     Schoenrich & Binney (2009) fiducial values:
         mwarmgas_init = 5e8 Msun
-        fdirect = 0.01 (feject=0.15 for R < 3.5 kpc and 0.04 for R > 3.5 kpc)
+        fdirect = 0.01 (feject = 0.15 for R < 3.5 kpc and 0.04 for
+            R > 3.5 kpc)
         tcool = 1200 Myr
         fwarm = 1 - fdirect - feject
 
