@@ -66,24 +66,18 @@ def set_warm_gas_reservoir(
         '``fdirect`` is a fraction and so must be between 0 and 1 inclusive'
 
     if warmgas:
-        filename = 'warmgas_abundance_pattern.txt'
-        tmp = pd.read_csv(self.path_yldgen + filename,
-                          delim_whitespace=True, skiprows=10,
-                          names=['el', 'ab'])
-        self.warmgas_ab_pattern = np.array(tmp['ab'])
-        self.mwarmgas_init = mwarmgas_init
-        self.fdirect = fdirect
-        self.tcool = tcool
-        self.fwarm = 1. - fdirect
-        if self.outflow_source == 'stellar_ejecta':
-            self.fwarm -= self.feject
+        path_yldgen = join(os.path.dirname(__file__), 'data', 'yields', 'general')
+        ab_pattern = pd.read_csv(join(path_yldgen, 'warmgas_abundance_pattern.txt'),
+                                 delim_whitespace=True, skiprows=10, names=['el', 'ab'])
+        warmgas_ab_pattern = np.array(ab_pattern['ab'])
+
+        fwarm = 1. - fdirect
+        if params['outflows']['source'] == 'stellar_ejecta':
+            fwarm -= feject
+
     else:
-        self.warmgas_ab_pattern = 0.
-        self.mwarmgas_init = 0.
-        self.fdirect = 1. - self.feject
-        self.tcool = 0.
-        self.fwarm = 0.
-    self.warmgasres_param = dict(warmgas_on=warmgas,
-                                 mwarmgas_init=mwarmgas_init,
-                                 fdirect=fdirect, fwarm=self.fwarm,
-                                 tcool=tcool)
+        warmgas_ab_pattern = None
+        mwarmgas_init = 0.
+        fdirect = 1. - feject
+        tcool = 0.
+        fwarm = 0.
