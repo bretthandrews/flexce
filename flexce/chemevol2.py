@@ -1,7 +1,7 @@
 # @Author: Brett Andrews <andrews>
 # @Date:   2018-06-05 11:06:88
 # @Last modified by:   andrews
-# @Last modified time: 2018-06-11 14:06:26
+# @Last modified time: 2018-06-11 15:06:24
 
 """
 FILE
@@ -14,8 +14,6 @@ DESCRIPTION
     Main module for running the chemical evolution model.
 """
 
-import os
-from os.path import join
 import time
 
 import numpy as np
