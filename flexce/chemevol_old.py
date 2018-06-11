@@ -10,8 +10,6 @@ import time
 import numpy as np
 import pandas as pd
 
-from flexce import utils
-
 
 def integrate_power_law(exponent, bins=None):
     """Integrate a power law distribution.
