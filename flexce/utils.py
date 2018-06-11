@@ -1,3 +1,16 @@
+# @Author: Brett Andrews <andrews>
+# @Date:   2018-04-16 20:04:48
+# @Last modified by:   andrews
+# @Last modified time: 2018-06-11 15:06:25
+
+"""
+FILE
+    utils.py
+
+DESCRIPTION
+    Utility functions for flexCE.
+"""
+
 from __future__ import print_function, division, absolute_import
 
 import os
@@ -9,7 +22,7 @@ import numpy as np
 from flexce.yields import Yields
 
 
-def define_mass_bins(low=0.1, high=100, dm_low=0.1, dm_high=1.):
+def set_mass_bins(low=0.1, high=100, dm_low=0.1, dm_high=1.):
     """Define stellar mass bins.
 
     Args:
