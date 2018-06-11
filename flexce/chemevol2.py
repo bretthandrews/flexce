@@ -1,7 +1,7 @@
 # @Author: Brett Andrews <andrews>
 # @Date:   2018-06-05 11:06:88
 # @Last modified by:   andrews
-# @Last modified time: 2018-06-11 14:06:23
+# @Last modified time: 2018-06-11 14:06:68
 
 """
 FILE
@@ -186,13 +186,19 @@ class ChemEvol:
         assert dm < 1e-4, f'Mass not conserved!\nmass_in - mass_out: {dm}'
 
     def snii_snia_rate(self):
-        '''Instantaneous Rate(SNII) / Rate(SNIa) ~ 3:1 (Li et al.).
-        Actually I think that it should be more like 5:1 (REF?)'''
-        ind_snii = np.where(self.mass_ave > 8.)[0]
+        """Prints ratio of SNII to SNIa rates in last 100 time steps.
+
+        Instantaneous Rate(SNII) / Rate(SNIa) ~ 3:1 (Li et al.).
+        Actually I think that it should be more like 5:1 (REF?)
+        """
+        ind_snii = (self.mass_ave > 8.)
         self.NII = np.sum(self.Nstar[:, ind_snii], axis=1)
+
         rate_snia_snii = np.zeros(len(self.NII))
-        ind = np.where((self.NII > 0) & (self.NIa > 0))[0]
+
+        ind = ((self.NII > 0) & (self.NIa > 0))
         rate_snia_snii[ind] = self.NIa[ind].astype(float) / self.NII[ind]
+
         print('Rate of SNII to SNIa in last 100 timesteps:',
               1. / np.mean(rate_snia_snii[-100:]))
 
