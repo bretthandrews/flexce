@@ -1,7 +1,7 @@
 # @Author: Brett Andrews <andrews>
 # @Date:   2018-06-11 13:06:00
 # @Last modified by:   andrews
-# @Last modified time: 2018-06-11 13:06:77
+# @Last modified time: 2018-06-11 14:06:94
 
 """
 FILE
@@ -35,4 +35,18 @@ def set_sflaw(nu_kslaw=1e-9, N_kslaw=1.):
     params = {'nu': nu_kslaw, 'N': N_kslaw}
 
     return params
-    return (self.nu_kslaw) * self.area * (mgas / self.area)**self.N_kslaw
+
+
+def sf_law(mgas, params):
+    """Calculate star formation rate.
+
+    Calculate the SFR [Msun/yr] given the gas mass and the two free
+    parameters that determine the SF law: ``nu_kslaw`` [Gyr^-1] and
+    ``N_kslaw`` (~1.0--2.0).
+
+    Args:
+        mgas (float): Gas mass.
+
+    """
+    return (params['sf']['nu_kslaw'] * params['box']['area'] *
+            (mgas / params['box']['area'])**params['sf']['N_kslaw'])
