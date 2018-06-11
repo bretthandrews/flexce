@@ -1,7 +1,7 @@
 # @Author: Brett Andrews <andrews>
 # @Date:   2018-06-05 11:06:88
 # @Last modified by:   andrews
-# @Last modified time: 2018-06-11 15:06:87
+# @Last modified time: 2018-06-11 17:06:67
 
 """
 FILE
@@ -13,7 +13,8 @@ USAGE
 DESCRIPTION
     Main module for running the chemical evolution model.
 """
-
+import os
+from os.path import join
 import time
 
 import numpy as np
@@ -34,32 +35,32 @@ class ChemEvol:
         # if any particular parameters are not specified,
         # then set them at the function call.
         params = params if params is not None else {}
+        props = ['mass_bins', 'box', 'yields', 'snia_dtd', 'inflows', 'outflows',
+                 'warmgasres', 'sf']
+        for prop in props:
+            if prop not in params.keys():
+                params[prop] = {}
+
         self.params = params
-        self.mass_bins = flexce.utils.set_mass_bins(params['mass_bins'])
-        self.set_box(params['box'])
-        self.set_yields(params['yields'], self.mass_bins)
+        self.mass_bins = flexce.utils.set_mass_bins(**params['mass_bins'])
+        self.set_box(**params['box'])
         self.snia_dtd(params['snia_dtd'])  # TODO rename set_snia_dtd
         self.inflow_rx(params['inflows'])  # TODO rename set_inflow
         self.outflow_rx(params['outflows'])  # TODO rename set_outflow
         self.warmgasres_rx(params['warmgasres'])  # TODO rename set_warmgas_res
         self.star_formation(params['sf'])  # TODO rename set_star_formation
 
-    def set_yields(self):
-        # check for existing yields
-        # if not, then calculate them.
-        # path_flexce = join(os.path.abspath(os.path.dirname(__file__)), '')
-        # self.path_yldgen = join(path_flexce, 'data', 'yields', 'general', '')  # TODO fix
-
-        pass
-
     def run(self):
-        pass
+        # TODO check for existing yields
+        # if not, then calculate them.
+        path_data = join(os.path.dirname(__file__), 'data')
+        yields = flexce.utils.load_yields(path_data, self.params['yields'], self.mass_bins)
 
     def set_box(
         self,
         radius=10.,
         time_tot=12000.,
-        dt=30.,
+        dtime=30.,
         imf='kroupa',
         imf_alpha=None,
         imf_mass_breaks=None,
@@ -81,19 +82,19 @@ class ChemEvol:
                ``imf`` to 'power_law'. Default is None.
             sim_id (str): Simulation ID number.
         """
-        self.sim_id = 'box' + sim_id
+        self.params['box']['sim_id'] = sim_id
 
         self.n_bins = len(self.mass_bins) - 1
         self.n_bins_high = len(np.where(self.mass_bins >= 8)[0]) - 1
         self.n_bins_low = len(np.where(self.mass_bins < 8)[0])
 
-        self.radius = radius  # kpc
-        self.area = self.radius**2. * np.pi * 1e6  # pc^2
+        self.params['box']['radius'] = radius  # kpc
+        self.params['box']['area'] = radius**2. * np.pi * 1e6  # pc^2
 
-        self.time_tot = time_tot
-        self.dt = dt
-        self.time = np.arange(0., self.time_tot + 1., self.dt)
-        self.n_steps = int(self.time_tot / self.dt + 1.)
+        self.params['box']['time_tot'] = time_tot
+        self.dtime = dtime
+        self.time = np.arange(0., time_tot + 1., self.dtime)
+        self.n_steps = int(time_tot / self.dtime + 1.)
 
         # IMF
         self.params['imf'] = flexce.imf.set_imf(imf, imf_alpha, imf_mass_breaks)
@@ -104,13 +105,20 @@ class ChemEvol:
         norm = flexce.imf.normalize_imf(self.params['imf']['alpha'],
                                         self.params['imf']['mass_breaks'])
 
-        self.mass_int = integrate_multi_power_law(self.mass_bins, alpha2, self.mass_breaks, norm)
-        self.num_int = integrate_multi_power_law(self.mass_bins, alpha1, self.mass_breaks, norm)
+        self.mass_int = integrate_multi_power_law(self.mass_bins, alpha2,
+                                                  self.params['imf']['mass_breaks'], norm)
+        self.num_int = integrate_multi_power_law(self.mass_bins, alpha1,
+                                                 self.params['imf']['mass_breaks'], norm)
         self.mass_ave = self.mass_int / self.num_int
         self.mass_frac = self.mass_int / np.sum(self.mass_int)
 
-        self.tau_m = flexce.lifetimes.stellar_lifetimes(self.mass_ave)
-        self.ind_ev, self.frac_ev = flexce.lifetimes.frac_evolve()
+        self.tau_m = flexce.lifetimes.set_lifetimes(self.mass_ave)
+        self.ind_ev, self.frac_ev = flexce.lifetimes.frac_evolve(
+            self.time,
+            self.mass_bins,
+            self.params['imf']['alpha'],
+            self.params['imf']['mass_breaks'],
+        )
 
     def check_mass_conservation(self, yields):
         """Checks for mass conservation.
@@ -244,7 +252,7 @@ class ChemEvol:
         snii_agb_yields = np.append(yields.agb_yields, yields.snii_yields, axis=1)
 
         for i in range(1, self.n_steps):
-            if self.time[i] % 1000 < self.dt:
+            if self.time[i] % 1000 < self.dtime:
                 print('time: {} Myr'.format(int(self.time[i])))
 
             self.metallicity[i] = (np.sum(self.mgas_iso[i - 1, ind_metal]) /
@@ -269,7 +277,7 @@ class ChemEvol:
                         self.sfr[i] = (self.sfr[i] * two_infall_args['sfe_thick'])
             else:
                 self.sfr[i] = sfh[i]  # [=] Msun/yr
-            self.dm_sfr[i] = self.sfr[i] * (self.dt * 1e6)
+            self.dm_sfr[i] = self.sfr[i] * (self.dtime * 1e6)
             # draw from IMF
             self.mstar_stat[i] = self.dm_sfr[i] * self.mass_frac
             self.Nstar_stat[i] = (self.dm_sfr[i] * self.mass_frac /
@@ -340,7 +348,7 @@ class ChemEvol:
             self.NIa[i] = np.random.poisson(self.snia_ev(
                 params=self.params['snia'],
                 time=i,
-                dt=self.dt,
+                dt=self.dtime,
                 mstar=self.mstar,
                 mstar_tot=self.mstar_left.sum(),
                 sfr=self.sfr,
@@ -361,19 +369,19 @@ class ChemEvol:
             )
 
             if self.tcool > 0.:
-                self.gas_cooling[i] = (self.mwarmgas_iso[i - 1] * self.dt / self.tcool)
+                self.gas_cooling[i] = (self.mwarmgas_iso[i - 1] * self.dtime / self.tcool)
 
             if self.params['inflows']['func'] == 'constant_mgas':
                 self.inflow_rate[i] = (
                     np.sum(
                         self.sf[i] + self.outflow[i] - self.gas_cooling[i] -
                         self.fdirect * (self.snii[i] + self.agb[i] + self.snia[i])
-                    ) / self.dt
+                    ) / self.dtime
                 )
 
             self.inflow[i] = (
                 self.inflow_composition(self.params['inflows'], yields, self.mgas_iso[i - 1]) *
-                self.inflow_rate[i] * self.dt
+                self.inflow_rate[i] * self.dtime
             )
 
             self.mgas_iso[i] = (self.mgas_iso[i - 1] +
@@ -398,7 +406,7 @@ class ChemEvol:
 
         print('Time elapsed:', time.time() - start)
 
-        self.outflow_rate = np.sum(self.outflow, axis=1) / self.dt
+        self.outflow_rate = np.sum(self.outflow, axis=1) / self.dtime
         self.check_mass_conservation(yields)
         self.snii_snia_rate()
 
