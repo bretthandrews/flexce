@@ -1,7 +1,7 @@
 # @Author: Brett Andrews <andrews>
 # @Date:   2018-06-05 11:06:88
 # @Last modified by:   andrews
-# @Last modified time: 2018-06-07 21:06:94
+# @Last modified time: 2018-06-11 14:06:03
 
 """
 FILE
@@ -93,7 +93,7 @@ class ChemEvol:
 
         self.time_tot = time_tot
         self.dt = dt
-        self.t = np.arange(0., self.time_tot + 1., self.dt)
+        self.time = np.arange(0., self.time_tot + 1., self.dt)
         self.n_steps = int(self.time_tot / self.dt + 1.)
 
         self.imf = imf
@@ -167,6 +167,40 @@ class ChemEvol:
         aa = 1. / np.sum(self.mass_int)
         self.mass_frac = aa * self.mass_int
 
+    def initialize_arrays(self, yld, long_output):
+        n_steps = len(self.time)
+        self.agb = np.zeros((n_steps, yld.n_sym))
+        self.gas_cooling = np.zeros((n_steps, yld.n_sym))
+        self.dm_sfr = np.zeros(n_steps)
+        self.inflow = np.zeros((n_steps, yld.n_sym))
+        self.metallicity = np.zeros(n_steps)
+        self.mfrac = np.zeros((n_steps, yld.n_sym))
+        self.mgas_iso = np.zeros((n_steps, yld.n_sym))
+        self.mremnant = np.zeros(n_steps)
+        self.mstar = np.zeros((n_steps, self.n_bins))
+        self.mstar_left = np.zeros((n_steps, self.n_bins))
+        self.mstar_stat = np.zeros((n_steps, self.n_bins))
+        self.mwarmfrac = np.zeros((n_steps, yld.n_sym))
+        self.mwarmgas_iso = np.zeros((n_steps, yld.n_sym))
+        self.Mwd = np.zeros(n_steps)
+        self.Mwd_Ia = np.zeros(n_steps)
+        self.Mwd_Ia_init = np.zeros(n_steps)
+        self.NIa = np.zeros(n_steps, dtype=int)
+        self.Nstar = np.zeros((n_steps, self.n_bins), dtype=np.int64)
+        self.Nstar_left = np.zeros((n_steps, self.n_bins))
+        self.Nstar_stat = np.zeros((n_steps, self.n_bins))
+        self.outflow = np.zeros((n_steps, yld.n_sym))
+        self.sf = np.zeros((n_steps, yld.n_sym))
+        self.sfr = np.zeros(n_steps)
+        self.snia = np.zeros((n_steps, yld.n_sym))
+        self.snii = np.zeros((n_steps, yld.n_sym))
+        self.random_num_state_Nstar = []
+        self.random_num_state_snia = []
+        if long_output:
+            self.snii_agb = np.zeros((n_steps, self.n_bins, yld.n_sym))
+            self.snii_agb_net = np.zeros((n_steps, self.n_bins, yld.n_sym))
+            self.snii_agb_rec = np.zeros((n_steps, self.n_bins, yld.n_sym))
+
     def evolve_box(self, yields, sfh=None, two_infall=False,
                    two_infall_args=None, set_state_Nstar=None,
                    set_state_snia=None, long_output=False):
@@ -223,8 +257,8 @@ class ChemEvol:
         snii_agb_yields = np.append(yields.agb_yields, yields.snii_yields, axis=1)
 
         for i in range(1, self.n_steps):
-            if self.t[i] % 1000 < self.dt:
-                print('time: {} Myr'.format(int(self.t[i])))
+            if self.time[i] % 1000 < self.dt:
+                print('time: {} Myr'.format(int(self.time[i])))
 
             self.metallicity[i] = (np.sum(self.mgas_iso[i - 1, ind_metal]) /
                                    self.mgas_iso[i - 1, 0])
@@ -241,10 +275,10 @@ class ChemEvol:
                 # mimic gap in SF in the two infall model caused by a SF
                 # threshold gas surface density
                 if two_infall:
-                    if ((self.t[i] > two_infall_args['t_sf_off'][0]) &
-                            (self.t[i] < two_infall_args['t_sf_off'][1])):
+                    if ((self.time[i] > two_infall_args['t_sf_off'][0]) &
+                            (self.time[i] < two_infall_args['t_sf_off'][1])):
                         self.sfr[i] = 0.
-                    elif self.t[i] < 1000.:
+                    elif self.time[i] < 1000.:
                         self.sfr[i] = (self.sfr[i] * two_infall_args['sfe_thick'])
             else:
                 self.sfr[i] = sfh[i]  # [=] Msun/yr
