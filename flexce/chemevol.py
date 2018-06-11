@@ -1,7 +1,7 @@
 # @Author: Brett Andrews <andrews>
 # @Date:   2018-06-05 11:06:88
 # @Last modified by:   andrews
-# @Last modified time: 2018-06-11 15:06:24
+# @Last modified time: 2018-06-11 15:06:37
 
 """
 FILE
@@ -30,10 +30,10 @@ class ChemEvol:
     Args:
         params (dict): parameters to set up simulation run.
     """
-    def __init__(self, params):
+    def __init__(self, params=None):
         # if any particular parameters are not specified,
         # then set them at the function call.
-        self.params = params
+        self.params = params if params is not None else {}
         self.mass_bins = flexce.utils.set_mass_bins(params['mass_bins'])
         self.set_box(params['box'])
         self.set_yields(params['yields'], self.mass_bins)
