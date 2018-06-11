@@ -1,7 +1,7 @@
 # @Author: Brett Andrews <andrews>
 # @Date:   2018-06-06 12:06:40
 # @Last modified by:   andrews
-# @Last modified time: 2018-06-07 20:06:04
+# @Last modified time: 2018-06-11 15:06:91
 
 """
 FILE
@@ -16,7 +16,6 @@ import traceback
 import numpy as np
 
 from flexce.lifetimes import invert_lifetime
-import flexce.utils
 
 
 def snia_dtd(func='exponential', kwargs=None):
@@ -30,18 +29,18 @@ def snia_dtd(func='exponential', kwargs=None):
     Returns:
         dict: SNIa params
     """
-    kwargs = flexce.utils.none_to_empty_dict(kwargs)
+    kwargs = kwargs if kwargs is not None else {}
     snia_param = {'func': func, 'k': kwargs}
     try:
         # TODO use map
         if func == 'exponential':
-            dtd_exp(**kwargs)
+            exponential(**kwargs)
         elif func == 'power_law':
-            dtd_powerlaw(**kwargs)
+            power_law(**kwargs)
         elif func == 'prompt_delayed':
-            dtd_prompt_delayed(**kwargs)
+            prompt_delayed(**kwargs)
         elif func == 'single_degenerate':
-            snia_dtd_single_degenerate(**kwargs)
+            single_degenerate(**kwargs)
     except TypeError:
         print(traceback.print_exc())
         print(
