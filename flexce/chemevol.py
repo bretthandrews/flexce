@@ -35,9 +35,10 @@ def integrate_multi_power_law(bins, exponents, breaks, mass_bins,
     """Integrate over each section of multi-slope power law distribution.
 
     Args:
-        bins (array): stellar mass bins.
+        bins (array): stellar mass bins to integrate over.
         exponents (array): slope of power law.
         breaks (array): stellar masses of breaks in multi-slope power law.
+        mass_bins (array): all stellar mass bins.
         norm_factor (array): normalization factor of integrals.
     """
     if check_multi_slope_compatibility(exponents, breaks, mass_bins):
@@ -345,6 +346,8 @@ class ChemEvol:
         self.mass_ave = self.mass_int / self.num_int
         a = 1. / np.sum(self.mass_int)
         self.mass_frac = a * self.mass_int
+
+        # NOT SURE IF FOLLOWING BLOCK IS USED
         # as a function of timestep
         self.mass_bins2 = invert_lifetime(self.t)
         self.mass_bins2[0] = self.mass_bins[-1]
