@@ -466,7 +466,7 @@ class ChemEvol:
             kwargs (dict): keyword arguments to pass to individual DTD
                 functions. Defaults to None.
         """
-        kwargs = utils.none_to_empty_dict(kwargs)
+        kwargs = kwargs if kwargs is not None else {}
         self.snia_param = dict(func=func, k=kwargs)
         self.snia_dtd_func = func
         try:
