@@ -1,7 +1,7 @@
 # @Author: Brett Andrews <andrews>
 # @Date:   2018-04-16 20:04:48
 # @Last modified by:   andrews
-# @Last modified time: 2018-06-11 15:06:25
+# @Last modified time: 2018-06-11 15:06:92
 
 """
 FILE
@@ -84,13 +84,6 @@ def substitute_dir_in_path(path, olddir, newdir):
     pp = PurePath(path)
     parts = [p if p != olddir else newdir for p in pp.parts]
     return os.path.join(*parts)
-
-
-def none_to_empty_dict(x):
-    """If a variable is None, return an empty dictionary."""
-    if x is None:
-        x = {}
-    return x
 
 
 def robust_random_poisson(xx):
