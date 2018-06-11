@@ -1,7 +1,7 @@
 # @Author: Brett Andrews <andrews>
 # @Date:   2018-06-05 11:06:56
 # @Last modified by:   andrews
-# @Last modified time: 2018-06-11 14:06:27
+# @Last modified time: 2018-06-11 14:06:96
 
 """
 FILE
@@ -10,6 +10,8 @@ FILE
 DESCRIPTION
     Utility functions for populating a stellar initial mass function.
 """
+
+import warnings
 
 import numpy as np
 
@@ -110,12 +112,12 @@ def set_imf(imf, alpha, mass_breaks):
            ``imf`` to 'power_law'.
     """
     # TODO convert to Warning
-    if alpha is not None:
-        assert imf == 'power_law', 'Setting ``imf_alpha`` only sets IMF slope for a power law IMF'
+    if (alpha is not None) and (imf != 'power_law'):
+        warnings.warn('Setting ``imf_alpha`` only sets IMF slope for a power law IMF')
 
     # TODO convert to Warning
-    if mass_breaks is not None:
-        assert imf == 'power_law', 'Setting ``imf_mass_breaks`` only sets IMF mass breaks for a power law IMF'
+    if (mass_breaks is not None) and (imf != 'power_law'):
+        warnings.warn('Setting ``imf_mass_breaks`` only sets IMF mass breaks for a power law IMF')
 
     if imf == 'power_law':
         alpha = np.atleast_1d(np.array(alpha))
