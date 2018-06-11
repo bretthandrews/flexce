@@ -1,7 +1,7 @@
 # @Author: Brett Andrews <andrews>
 # @Date:   2018-06-07 21:06:85
 # @Last modified by:   andrews
-# @Last modified time: 2018-06-11 13:06:63
+# @Last modified time: 2018-06-11 13:06:29
 
 """
 FILE
@@ -27,8 +27,7 @@ def set_warm_gas_reservoir(
     fdirect=0.01,
     tcool=1200.,
 ):
-    """
-    Set parameters about warm gas reservoir.
+    """Set parameters about warm gas reservoir.
 
     The concept of a warm gas reservoir is adopted from
     Schoenrich & Binney (2009).  In this model, stars eject a fraction
