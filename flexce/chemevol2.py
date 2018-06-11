@@ -1,7 +1,7 @@
 # @Author: Brett Andrews <andrews>
 # @Date:   2018-06-05 11:06:88
 # @Last modified by:   andrews
-# @Last modified time: 2018-06-11 14:06:03
+# @Last modified time: 2018-06-11 14:06:23
 
 """
 FILE
@@ -167,7 +167,43 @@ class ChemEvol:
         aa = 1. / np.sum(self.mass_int)
         self.mass_frac = aa * self.mass_int
 
+    def check_mass_conservation(self, yields):
+        """Checks for mass conservation.
+
+        ``inflow[0].sum()`` is fractionally larger than
+        ``inflow_rate.sum()`` by 7.5e-5 (due to
+        ``sum(bbmf)`` = 1. + 7.5e-5)
+
+        Args:
+            yields: ``Yields`` instance.
+        """
+        m_in = (self.inflow.sum() + self.mgas_iso[0].sum() + self.mwarmgas_iso[0].sum() * 4.)
+        m_out = self.outflow.sum()
+        m_gas = self.mgas_iso[-1].sum() + self.mwarmgas_iso[-1].sum()
+        m_star = (self.mstar.sum() - self.snii.sum() - self.agb.sum() -
+                  self.NIa.sum() * yields.snia_yields.sum())
+        dm = m_in - m_out - m_gas - m_star
+        assert dm < 1e-4, f'Mass not conserved!\nmass_in - mass_out: {dm}'
+
+    def snii_snia_rate(self):
+        '''Instantaneous Rate(SNII) / Rate(SNIa) ~ 3:1 (Li et al.).
+        Actually I think that it should be more like 5:1 (REF?)'''
+        ind_snii = np.where(self.mass_ave > 8.)[0]
+        self.NII = np.sum(self.Nstar[:, ind_snii], axis=1)
+        rate_snia_snii = np.zeros(len(self.NII))
+        ind = np.where((self.NII > 0) & (self.NIa > 0))[0]
+        rate_snia_snii[ind] = self.NIa[ind].astype(float) / self.NII[ind]
+        print('Rate of SNII to SNIa in last 100 timesteps:',
+              1. / np.mean(rate_snia_snii[-100:]))
+
     def initialize_arrays(self, yld, long_output):
+        """Initialize arrays for simulation.
+
+        Args:
+            yld: ``Yields`` instance.
+            long_output (bool): If ``True``, record SNII and AGB
+                yields.
+        """
         n_steps = len(self.time)
         self.agb = np.zeros((n_steps, yld.n_sym))
         self.gas_cooling = np.zeros((n_steps, yld.n_sym))
