@@ -1,7 +1,7 @@
 # @Author: Brett Andrews <andrews>
 # @Date:   2018-04-16 20:04:48
 # @Last modified by:   andrews
-# @Last modified time: 2018-06-12 14:06:17
+# @Last modified time: 2018-06-12 15:06:27
 
 """
 FILE
@@ -52,17 +52,23 @@ def load_yields(path, mass_bins, kwargs=None):
     Returns:
         Yields instance.
     """
+    kwargs_default = {
+        'snii_dir': join('limongi06', 'iso_yields'),
+        'agb_dir': join('karakas10', 'iso_yields'),
+        'snia_dir': 'iwamoto99',
+        'rprocess_dir': 'cescutti06',
+        'sprocess_dir': 'busso01',
+        'snia_model': 'w70',
+        'r_elements': ['Ba', 'Eu'],
+        's_elements': ['Ba'],
+    }
+
     if kwargs is None:
-        kwargs = {
-            'snii_dir': join('limongi06', 'iso_yields'),
-            'agb_dir': join('karakas10', 'iso_yields'),
-            'snia_dir': 'iwamoto99',
-            'rprocess_dir': 'cescutti06',
-            'sprocess_dir': 'busso01',
-            'snia_model': 'w70',
-            'r_elements': ['Ba', 'Eu'],
-            's_elements': ['Ba'],
-        }
+        kwargs = {}
+
+    for key, val in kwargs_default.items():
+        if key not in kwargs.keys():
+            kwargs[key] = val
 
     try:
         ylds = Yields(path, mbins=mass_bins, **kwargs)
