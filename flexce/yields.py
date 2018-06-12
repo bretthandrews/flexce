@@ -44,18 +44,22 @@ class Yields:
         """Initialize Yields instance.
 
         Args:
-            path_parent (str): data directory.
-            snii_dir (str): directory of SNII yields.
-            agb_dir (str): directory of AGB yields.
-            snia_dir (str): directory of SNII yields.
-            rprocess_dir (str): directory of SNII yields.
-            sprocess_dir (str): directory of SNII yields.
-            snia_model (str): SNIa model. Defaults to 'w70'.
-            sprocess_supersolar (bool): If True use super-solar metallicity
-                s-process yields.
-            r_elements (list): r-process elements to track.
-            s_elements (list): s-process elements to track.
-            mbins (array): stellar mass bins. Defaults to None.
+            path_parent (str): Data directory.
+            snii_dir (str): SNII yield directory. Default is ``None``.
+            agb_dir (str): AGB yield directory. Default is ``None``.
+            snia_dir (str): SNIa yield directory. Default is ``None``.
+            rprocess_dir (str): r-process yield directory. Default is
+                ``None``.
+            sprocess_dir (str): s-process yield directory. Default is
+                ``None``.
+            snia_model (str): SNIa model. Default is 'w70'.
+            sprocess_supersolar (bool): If ``True``, use super-solar
+                metallicity s-process yields.
+            r_elements (list): r-process elements to track. Default is
+                ``None``.
+            s_elements (list): s-process elements to track. Default is
+                ``None``.
+            mbins (array): stellar mass bins. Defaults to ``None``.
         """
         self.path_parent = path_parent
         self.path_yields = join(self.path_parent, 'yields')
