@@ -1,7 +1,7 @@
 # @Author: Brett Andrews <andrews>
 # @Date:   2018-06-06 12:06:40
 # @Last modified by:   andrews
-# @Last modified time: 2018-06-11 15:06:91
+# @Last modified time: 2018-06-11 17:06:97
 
 """
 FILE
@@ -18,7 +18,7 @@ import numpy as np
 from flexce.lifetimes import invert_lifetime
 
 
-def snia_dtd(func='exponential', kwargs=None):
+def set_snia_dtd(func='exponential', kwargs=None):
     """Set SNIa delay time distribution.
 
     Args:
@@ -30,17 +30,20 @@ def snia_dtd(func='exponential', kwargs=None):
         dict: SNIa params
     """
     kwargs = kwargs if kwargs is not None else {}
-    snia_param = {'func': func, 'k': kwargs}
+
     try:
         # TODO use map
         if func == 'exponential':
-            exponential(**kwargs)
+            params_snia = exponential(**kwargs)
         elif func == 'power_law':
-            power_law(**kwargs)
+            params_snia = power_law(**kwargs)
         elif func == 'prompt_delayed':
-            prompt_delayed(**kwargs)
+            params_snia = prompt_delayed(**kwargs)
         elif func == 'single_degenerate':
-            single_degenerate(**kwargs)
+            params_snia = single_degenerate(**kwargs)
+
+        params_snia['func'] = func
+
     except TypeError:
         print(traceback.print_exc())
         print(
@@ -51,7 +54,7 @@ def snia_dtd(func='exponential', kwargs=None):
             'single_degenerate: no keywords\n'
         )
 
-    return snia_param
+    return params_snia
 
 
 def exponential(dt, mass, min_time=150., timescale=1500., fraction=0.078):
