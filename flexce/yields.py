@@ -27,11 +27,20 @@ class Yields:
     """Yield grids.
     """
 
-    def __init__(self, path_parent, snii_dir, agb_dir, snia_dir,
-                 rprocess_dir=None, sprocess_dir=None,
-                 snia_model='w70', sprocess_supersolar=False,
-                 r_elements=None, s_elements=None,
-                 mbins=None):
+    def __init__(
+        self,
+        path_parent,
+        snii_dir=None,
+        agb_dir=None,
+        snia_dir=None,
+        rprocess_dir=None,
+        sprocess_dir=None,
+        snia_model='w70',
+        sprocess_supersolar=False,
+        r_elements=None,
+        s_elements=None,
+        mbins=None
+    ):
         """Initialize Yields instance.
 
         Args:
