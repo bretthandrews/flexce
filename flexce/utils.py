@@ -1,7 +1,7 @@
 # @Author: Brett Andrews <andrews>
 # @Date:   2018-04-16 20:04:48
 # @Last modified by:   andrews
-# @Last modified time: 2018-06-11 17:06:14
+# @Last modified time: 2018-06-12 14:06:17
 
 """
 FILE
@@ -14,6 +14,7 @@ DESCRIPTION
 from __future__ import print_function, division, absolute_import
 
 import os
+from os.path import join
 import sys
 from pathlib import PurePath
 
@@ -39,27 +40,33 @@ def set_mass_bins(low=0.1, high=100, dm_low=0.1, dm_high=1.):
     return mbins
 
 
-def load_yields(path, args, mass_bins):
+def load_yields(path, mass_bins, kwargs=None):
     """Load yield grids.
 
     Args:
-        path (str): data directory.
-        args (dict):
-        mass_bins (array): stellar mass bins.
+        path (str): Data directory.
+        mass_bins (array): Stellar mass bins.
+        kwargs (dict): Keyword arguments to pass to ``Yields``. Default
+            is ``None``.
 
     Returns:
-        Yields instance
-
+        Yields instance.
     """
+    if kwargs is None:
+        kwargs = {
+            'snii_dir': join('limongi06', 'iso_yields'),
+            'agb_dir': join('karakas10', 'iso_yields'),
+            'snia_dir': 'iwamoto99',
+            'rprocess_dir': 'cescutti06',
+            'sprocess_dir': 'busso01',
+            'snia_model': 'w70',
+            'r_elements': ['Ba', 'Eu'],
+            's_elements': ['Ba'],
+        }
+
     try:
-        yld = Yields(path, snii_dir=args['snii_dir'],
-                     agb_dir=args['agb_dir'], snia_dir=args['snia_dir'],
-                     rprocess_dir=args['rprocess_dir'],
-                     sprocess_dir=args['sprocess_dir'],
-                     snia_model=args['snia_model'],
-                     r_elements=args['r_elements'],
-                     s_elements=args['s_elements'],
-                     mbins=mass_bins)
+        ylds = Yields(path, mbins=mass_bins, **kwargs)
+
     except IOError as e:
         print()
         print(e)
@@ -67,7 +74,8 @@ def load_yields(path, args, mass_bins):
         print('\nPlease create yield grids with')
         print('python make_yield_grids.py\n')
         sys.exit(1)
-    return yld
+
+    return ylds
 
 
 def set_path(path_in, default_path):
