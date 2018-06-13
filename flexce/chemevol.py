@@ -1,7 +1,7 @@
 # @Author: Brett Andrews <andrews>
 # @Date:   2018-06-05 11:06:88
 # @Last modified by:   andrews
-# @Last modified time: 2018-06-13 09:06:83
+# @Last modified time: 2018-06-13 09:06:56
 
 """
 FILE
@@ -21,6 +21,7 @@ import numpy as np
 
 import flexce.imf
 from flexce.imf import integrate_multi_power_law
+import flexce.inflows
 import flexce.lifetimes
 import flexce.snia
 import flexce.utils
@@ -62,7 +63,11 @@ class ChemEvol:
             num_int=self.num_int,
             **params['snia_dtd'])
 
-        self.inflow_rx(params['inflows'])  # TODO rename set_inflow
+        self.params['inflows'], self.inflow_rate = flexce.inflows.set_inflows(
+            time=self.time,
+            **params['inflows'],
+        )
+
         self.outflow_rx(params['outflows'])  # TODO rename set_outflow
         self.warmgasres_rx(params['warmgasres'])  # TODO rename set_warmgas_res
         self.star_formation(params['sf'])  # TODO rename set_star_formation

@@ -1,7 +1,7 @@
 # @Author: Brett Andrews <andrews>
 # @Date:   2018-06-07 20:06:05
 # @Last modified by:   andrews
-# @Last modified time: 2018-06-07 21:06:42
+# @Last modified time: 2018-06-13 09:06:87
 
 """
 FILE
@@ -20,9 +20,9 @@ import pandas as pd
 
 
 def set_inflows(
-    time,
-    func='double_exp',
-    mgas_init=0.,
+    time=None,
+    func='exp',
+    mgas_init=2e10,
     coeff=None,
     inflow_rate=None,
     inflow_ab_pattern='bbns',
@@ -48,19 +48,23 @@ def set_inflows(
         recycled: Abundance pattern of last time step.
 
     Args:
-        time (array): Time steps.
-        func (str): Functional form of inflow rate. Default is
-            'double_exp'.
-        mgas_init (float): Initial gas mass [Msun]. Default is 0.
+        time (array): Time steps. Default is ``None``.
+        func (str): Functional form of inflow rate. Default is 'exp'.
+        mgas_init (float): Initial gas mass [Msun]. Default is 2e10.
         coeff (dict): Coefficients defining inflow rate functions.
             Default is ``None``.
         inflow_rate (array): User-defined inflow rate [Msun/Myr] if
-            ``func`` is 'custom'. Default is None.
+            ``func`` is 'custom'. Default is ``None``.
         inflow_ab_pattern (str): Inflow abundance pattern. Default is
             'bbns'.
         inflow_metallicity (float): Scaling of inflow metallicity
             (i.e., solar = 1). Default is 1.
     """
+    assert time is not None, 'Must pass in ``time``.'
+
+    if coeff is None:
+        coeff = {'M1': 4e11, 'b1': 6000.}
+
     params = {
         'mgas_init': mgas_init,
         'func': func,
