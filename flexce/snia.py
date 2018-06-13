@@ -58,7 +58,14 @@ def set_snia_dtd(func='exponential', **kwargs):
     return params_snia
 
 
-def exponential(dt, mass, min_time=150., timescale=1500., fraction=0.078):
+def exponential(
+    dtime=30.,
+    mass=1.4,
+    min_time=150.,
+    timescale=1500.,
+    fraction=0.078,
+    **kwargs,
+):
     """Implement exponential SNIa delay time distribution.
 
     If we adopt the SNIa prescription of Schoenrich & Binney (2009a)
@@ -70,8 +77,8 @@ def exponential(dt, mass, min_time=150., timescale=1500., fraction=0.078):
     dwarf mass will explode as SNIa.
 
     Args:
-        dt (float): Length of time step in Myr.
-        mass (float): Mass of an individual SNIa.
+        dtime (float): Length of time step in Myr. Default is 30.
+        mass (float): Mass of an individual SNIa. Default is 1.4
         min_time (float): Minimum delay time for SNIa in Myr. Default
             is 150.
         timescale (float): Exponential decay timescale of delay time
@@ -80,7 +87,7 @@ def exponential(dt, mass, min_time=150., timescale=1500., fraction=0.078):
            stars with initial mass M=3.2-8.0 Msun that will explode in
            SNIa (see extended description). Default is 0.078.
     """
-    dMwd = dt / timescale
+    dMwd = dtime / timescale
 
     params_snia = {
         'min_time': min_time,
