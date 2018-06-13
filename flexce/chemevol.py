@@ -1,7 +1,7 @@
 # @Author: Brett Andrews <andrews>
 # @Date:   2018-06-05 11:06:88
 # @Last modified by:   andrews
-# @Last modified time: 2018-06-11 17:06:67
+# @Last modified time: 2018-06-13 09:06:83
 
 """
 FILE
@@ -22,6 +22,7 @@ import numpy as np
 import flexce.imf
 from flexce.imf import integrate_multi_power_law
 import flexce.lifetimes
+import flexce.snia
 import flexce.utils
 
 
@@ -45,11 +46,22 @@ class ChemEvol:
         self.params = params
         self.mass_bins = flexce.utils.set_mass_bins(**params['mass_bins'])
         self.set_box(**params['box'])
-        self.snia_dtd(params['snia_dtd'])  # TODO rename set_snia_dtd
+
         if ylds is None:
             path_data = join(os.path.dirname(__file__), 'data')
             # TODO try to load existing yields. If they don't exist, then calculate them.
             ylds = flexce.utils.load_yields(path_data, self.mass_bins, params['yields'])
+
+        self.params['snia_dtd'] = flexce.snia.set_snia_dtd(
+            time=self.time,
+            dtime=self.dtime,
+            mass=ylds.snia_yields.sum(),
+            alpha=self.params['imf']['alpha'],
+            breaks=self.params['imf']['mass_breaks'],
+            mass_int=self.mass_int,
+            num_int=self.num_int,
+            **params['snia_dtd'])
+
         self.inflow_rx(params['inflows'])  # TODO rename set_inflow
         self.outflow_rx(params['outflows'])  # TODO rename set_outflow
         self.warmgasres_rx(params['warmgasres'])  # TODO rename set_warmgas_res
