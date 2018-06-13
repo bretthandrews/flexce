@@ -1,7 +1,7 @@
 # @Author: Brett Andrews <andrews>
 # @Date:   2018-06-06 12:06:40
 # @Last modified by:   andrews
-# @Last modified time: 2018-06-11 17:06:97
+# @Last modified time: 2018-06-13 09:06:21
 
 """
 FILE
@@ -129,7 +129,12 @@ def power_law(time=None, min_time=40., nia_per_mstar=2.2e-3, slope=-1., **kwargs
     return params_snia
 
 
-def prompt_delayed(prob_prompt=2.6e3, prob_delay=4.4e-8, min_time=40.):
+def prompt_delayed(
+    prob_prompt=2.6e3,
+    prob_delay=4.4e-8,
+    min_time=40.,
+    **kwargs,
+):
     """Implement prompt plus delayed SNIa delay time distribution.
 
     Scannapieco & Bildstein (2005) prompt (B) + delayed (A) components
@@ -148,13 +153,12 @@ def prompt_delayed(prob_prompt=2.6e3, prob_delay=4.4e-8, min_time=40.):
     See also Mannucci et al. (2005).
 
     Args:
-        prob_prompt (float): Default is 2.6e3.
-        prob_delay (float): Coefficient connected to stellar mass of
-            galaxy (see extended description). Defaults to 4.4e-8.
+        prob_prompt (float): Coefficient connected to SFR to estimate
+            probability of a prompt SNIa. Default is 2.6e3.
+        prob_delay (float): Coefficient connected to stellar mass to
+            estimate probability of a delayed SNIa. Default is 4.4e-8.
         min_snia_time (float): Minimum delay time for SNIa in Myr.
-            Defaults to 150.
-
-
+            Default is 150.
     """
     params_snia = {
         'min_time': min_time,
@@ -166,17 +170,18 @@ def prompt_delayed(prob_prompt=2.6e3, prob_delay=4.4e-8, min_time=40.):
 
 
 def single_degenerate(
-    time,
-    dt,
-    alpha,
-    breaks,
-    num_int,
-    mass_int,
+    time=None,
+    dtime=None,
+    alpha=None,
+    breaks=None,
+    mass_int=None,
+    num_int=None,
     A=5e-4,
     gam=2.,
     eps=1.,
     normalize=False,
     nia_per_mstar=1.54e-3,
+    **kwargs,
 ):
     """SNIa DTD for the single degenerate scenario.
 
@@ -190,23 +195,30 @@ def single_degenerate(
         Chandrasekhar limit (1.4 Msun).
 
     Args:
-        time (array): Time steps.
-        dt (float): Length of time step.
-        alpha (array): Power law slopes of the IMF.
-        breaks (array): Mass of breaks in multi-slope IMF.
-        num_int (array): Number of stars per mass bin per stellar mass
-            formed.
+        time (array): Time steps. Default is ``None``.
+        dtime (float): Length of time step. Default is ``None``.
+        alpha (array): IMF power law slopes. Default is ``None``.
+        breaks (array): Mass of breaks in multi-slope IMF. Default is
+            ``None``.
         mass_int (array): Mass of stars per mass bin per stellar mass
-            formed.
-        A (float): Constant.
-        gam (float): Power law index.
-        eps (float): Accretion efficiency.
+            formed. Default is ``None``.
+        num_int (array): Number of stars per mass bin per stellar mass
+            formed. Default is ``None``.
+        A (float): Constant.  Default is 5e-4.
+        gam (float): Power law index. Default is 2.
+        eps (float): Accretion efficiency. Default is 1.
         normalize (bool): If ``True``, normalize the SNIa rate to match
             ``nia_per_mstar``, the number of SNIa within 10 Gyr per
             stellar mass formed. Default is ``False``.
         nia_per_mstar (float): Number of SNIa within 10 Gyr per stellar
             mass formed to normalize to if ``normalize`` is ``True``.
+            Default is 1.54e-3.
     """
+    for it in [time, dtime, alpha, breaks, num_int, mass_int]:
+        assert it is not None, \
+            ('Must pass in ``time``, ``dtime``, ``alpha``, ``breaks``, ``num_int``, '
+             'and ``mass_int`` to snia.single_degenerate().')
+
     t2 = np.arange(29., time[-1] + 1., 1.)  # time in 1 Myr intervals
     m2 = invert_lifetime(t2)
 
@@ -258,7 +270,7 @@ def single_degenerate(
     fia = fia2 / fia2.sum()
     ria1 = k_alpha * A * fia
 
-    ind_tbin = np.where(t2 % dt == 0.)[0]
+    ind_tbin = np.where(t2 % dtime == 0.)[0]
 
     ria = np.zeros(len(time) - 1)
     ria[0] = ria1[:ind_tbin[0]].sum()
@@ -276,7 +288,7 @@ def single_degenerate(
     return params
 
 
-def snia_ev(params, tstep, dt, mstar, mstar_tot, sfr, Mwd_Ia):
+def snia_ev(params, tstep, dtime, mstar, mstar_tot, sfr, Mwd_Ia):
     """Calculate the expected number of SNIa of a stellar population from
     a previous timestep.  The delay time distribution can be\:
 
@@ -294,7 +306,7 @@ def snia_ev(params, tstep, dt, mstar, mstar_tot, sfr, Mwd_Ia):
     Args:
         params (dict): SNIa DTD parameters.
         tstep (int): Time step.
-        dt (float): Length of time step.
+        dtime (float): Length of time step.
         mstar (float): Stellar mass formed in each time step.
         mstar_tot (float): Total stellar mass left.
         sfr (float): Star formation rate in each time step.
@@ -308,7 +320,7 @@ def snia_ev(params, tstep, dt, mstar, mstar_tot, sfr, Mwd_Ia):
     """
 
     if params['func'] == 'exponential':
-        ind_min_t = (tstep - np.ceil(params['min_time'] / dt).astype(int))
+        ind_min_t = (tstep - np.ceil(params['min_time'] / dtime).astype(int))
         if ind_min_t > 0:
             Nia_stat = np.sum(Mwd_Ia[:ind_min_t + 1] * params['dMwd'] / params['mass'])
             Mwd_Ia[:ind_min_t + 1] *= 1. - params['dMwd']
@@ -319,10 +331,10 @@ def snia_ev(params, tstep, dt, mstar, mstar_tot, sfr, Mwd_Ia):
         Nia_stat = np.sum(params['ria'][:tstep] * np.sum(mstar[1:tstep + 1], axis=1)[::-1])
 
     elif params['func'] == 'prompt_delayed':
-        ind = tstep - np.ceil(params['min_time'] / dt)
+        ind = tstep - np.ceil(params['min_time'] / dtime)
         Nia_prompt = sfr[ind] * params['prob_prompt'] if ind > 0 else 0.
         Nia_delay = mstar_tot * params['prob_delay']
-        Nia_stat = (Nia_prompt + Nia_delay) * dt
+        Nia_stat = (Nia_prompt + Nia_delay) * dtime
 
     elif params['func'] == 'single_degenerate':
         Nia_stat = np.sum(params['ria'][:tstep] * np.sum(mstar[1:tstep + 1], axis=1)[::-1])
