@@ -228,43 +228,69 @@ class ChemEvol:
         self.random_num_state_Nstar = []
         self.random_num_state_snia = []
         if long_output:
-
-    def evolve_box(self, yields, sfh=None, two_infall=False,
-                   two_infall_args=None, set_state_Nstar=None,
-                   set_state_snia=None, long_output=False):
-        '''Start with a box of primordial gas.  Calculate the metallicity and
-        mass fraction of each isotope (mfrac).  SFR is calculated assuming a
-        constant gas depletion timescale.  Statistical expectation for total
-        mass of stars formed is calculated (dm_sfr).  The statistical
-        expectation of mass and number of stars formed per bin are calculated
-        (mstar_stat, Nstar_stat).  The expected number of stars per bin is fed
-        into a Poisson random number generator, which returns the
-        stochastically sampled number of stars formed per bin (Nstar_high) and
-        the mass per bin (mstar).
-
-        High mass stars explode as SNe II, and low mass stars evolve as AGB
-        stars.  Both sources return gas to the ISM according to
-        metallicity-dependent yields (dmgas_iso).  The amount of mass locked up
-        in remnants (neutron stars and white dwarfs) is calculated (mremnant).
-        The mass of each isotope in the gas reservoir is calculated by taking
-        the gas mass from the previous time-step, adding the gas mass of each
-        isotope returned by SNe II and AGB stars, and then subtracting the gas
-        mass of each isotope that went into stars (mgas_iso).
-
-        The model is destroying more of certain isotopes (e.g., N15) than
-        exist, so it forces isotopes with negative quantities to be a very
-        small, positive quantity.
-
-        sfh: manually set the star formation history of the zone
             self.snii_agb = np.zeros((n_steps, self.n_bins, n_sym))
             self.snii_agb_net = np.zeros((n_steps, self.n_bins, n_sym))
             self.snii_agb_rec = np.zeros((n_steps, self.n_bins, n_sym))
 
+    def evolve_box(
+        self,
+        ylds,
+        sfh=None,
+        two_infall=False,
+        two_infall_kwargs=None,
+        set_state_Nstar=None,
+        set_state_snia=None,
+        long_output=False,
+    ):
+        """Run the chemical evolution model.
+
+        Start with a box of primordial gas. Calculate the metallicity
+        and mass fraction of each isotope (``mfrac``). SFR is
+        calculated assuming a constant gas depletion timescale.
+        Statistical expectation for total mass of stars formed is
+        calculated (``dm_sfr``). The statistical expectation of mass
+        and number of stars formed per bin are calculated
+        (``mstar_stat`` and ``Nstar_stat``, respectively).  The
+        expected number of stars per bin is fed into a Poisson random
+        number generator, which returns the stochastically sampled
+        number of stars formed per bin (``Nstar_high``) and the mass
+        per bin (``mstar``).
+
+        High mass stars explode as SNe II, and low mass stars evolve as
+        AGB stars. Both sources return gas to the ISM according to
+        metallicity-dependent yields (``dmgas_iso``).  The amount of
+        mass locked up in remnants (neutron stars and white dwarfs) is
+        calculated (``mremnant``). The mass of each isotope in the gas
+        reservoir is calculated by taking the gas mass from the
+        previous time-step, adding the gas mass of each isotope
+        returned by SNe II and AGB stars, and then subtracting the gas
+        mass of each isotope that went into stars (``mgas_iso``).
+
+        The model is destroying more of certain isotopes (e.g., N15)
+        than exist, so it forces isotopes with negative quantities to
+        be a very small, positive quantity.
+
         two infall model: t_sf_off = time span ([0]=start, [1]=end) when no SF
         occurs (to mimic the gas surface density dropping below a threshold
         density for SF), sfe_thick = thick disk SFE / thin disk SFE
-        '''
-        self.initialize_arrays(yields, long_output)
+
+        Args:
+            ylds: ``Yields`` instance.
+            sfh (array): Manually set the star formation history.
+                Default is ``None``.
+            two_infall (bool): If ``True``, use two inflows episodes.
+                Default is ``False``.
+            two_infall_kwargs (dict): Parameters for inflow rate in two
+                infall model. Only used if two_infall is ``True``.
+                Default is ``None``.
+            set_state_Nstar (array): Set the random state of the Nstar
+                draw at each time step. Default is ``None``.
+            set_state_snia (array): Set the random state of the SNIa
+                draw at each time step for every previous time step.
+                Default is ``None``.
+            long_output (bool): If ``True``, return total, net, and
+                recycled yields from each previous time step. Default
+                is ``False``.
 
         ind_yld = np.zeros(self.n_steps, dtype=int)
         ind8 = np.where(self.mass_bins == 8.)[0][0]
