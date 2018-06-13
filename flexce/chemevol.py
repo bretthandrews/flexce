@@ -455,11 +455,12 @@ class ChemEvol:
                 self.inflow_rate[i] * self.dtime
             )
 
-            self.mgas_iso[i] = (self.mgas_iso[i - 1] +
-                                (self.fdirect + self.feject) *
-                                (self.snii[i] + self.agb[i] + self.snia[i]) +
-                                self.gas_cooling[i] - self.sf[i] +
-                                self.inflow[i] - self.outflow[i])
+            self.mgas_iso[i] = (
+                self.mgas_iso[i - 1] +
+                ((self.params['warmgas']['fdirect'] + self.params['outflows']['feject']) *
+                 (self.snii[i] + self.agb[i] + self.snia[i])) +
+                self.gas_cooling[i] - self.sf[i] + self.inflow[i] - self.outflow[i]
+            )
 
             self.mwarmgas_iso[i] = (
                 self.mwarmgas_iso[i - 1] - self.gas_cooling[i] + self.fwarm *
