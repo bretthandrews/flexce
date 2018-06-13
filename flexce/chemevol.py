@@ -228,9 +228,6 @@ class ChemEvol:
         self.random_num_state_Nstar = []
         self.random_num_state_snia = []
         if long_output:
-            self.snii_agb = np.zeros((n_steps, self.n_bins, yld.n_sym))
-            self.snii_agb_net = np.zeros((n_steps, self.n_bins, yld.n_sym))
-            self.snii_agb_rec = np.zeros((n_steps, self.n_bins, yld.n_sym))
 
     def evolve_box(self, yields, sfh=None, two_infall=False,
                    two_infall_args=None, set_state_Nstar=None,
@@ -259,6 +256,9 @@ class ChemEvol:
         small, positive quantity.
 
         sfh: manually set the star formation history of the zone
+            self.snii_agb = np.zeros((n_steps, self.n_bins, n_sym))
+            self.snii_agb_net = np.zeros((n_steps, self.n_bins, n_sym))
+            self.snii_agb_rec = np.zeros((n_steps, self.n_bins, n_sym))
 
         two infall model: t_sf_off = time span ([0]=start, [1]=end) when no SF
         occurs (to mimic the gas surface density dropping below a threshold
