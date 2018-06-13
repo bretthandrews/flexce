@@ -1,7 +1,7 @@
 # @Author: Brett Andrews <andrews>
 # @Date:   2018-06-05 11:06:88
 # @Last modified by:   andrews
-# @Last modified time: 2018-06-13 14:06:37
+# @Last modified time: 2018-06-13 16:06:44
 
 """
 FILE
@@ -47,7 +47,11 @@ class ChemEvol:
                 params[prop] = {}
 
         self.params = params
-        self.mass_bins = flexce.utils.set_mass_bins(**params['mass_bins'])
+
+        self.params['mass_bins'], self.mass_bins = flexce.utils.set_mass_bins(
+            **params['mass_bins']
+        )
+
         self.set_box(**params['box'])
 
         if ylds is None:
@@ -409,8 +413,8 @@ class ChemEvol:
                 # that is born in the current timestep
                 self.Mwd[i] = np.sum(self.Nstar[i, ind_ia] *
                                      ylds.agb_rem[ind_yld[i], ind_ia])
-                self.Mwd_Ia[i] = self.Mwd[i] * self.snia_fraction
-                self.Mwd_Ia_init[i] = self.Mwd[i] * self.snia_fraction
+                self.Mwd_Ia[i] = self.Mwd[i] * self.params['snia_dtd']['fraction']
+                self.Mwd_Ia_init[i] = self.Mwd[i] * self.params['snia_dtd']['fraction']
 
             self.random_num_state_snia.append(np.random.get_state())
             if set_state_snia is not None:
@@ -467,11 +471,11 @@ class ChemEvol:
             )
 
             self.mwarmgas_iso[i] = (
-                self.mwarmgas_iso[i - 1] - self.gas_cooling[i] + self.fwarm *
-                (self.snii[i] + self.agb[i] + self.snia[i])
+                self.mwarmgas_iso[i - 1] - self.gas_cooling[i] +
+                self.params['warmgas']['fwarm'] * (self.snii[i] + self.agb[i] + self.snia[i])
             )
 
-            if (i < 4) & self.warmgas_on:
+            if (i < 4) and self.params['warmgas']['warmgas_on']:
                 self.mwarmgas_iso[i] += (self.warmgas_ab_pattern * self.mwarmgas_init / 4.)
 
         self.Nstar_left = self.Nstar_left.astype(int)
