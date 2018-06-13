@@ -1,7 +1,7 @@
 # @Author: Brett Andrews <andrews>
 # @Date:   2018-06-06 12:06:40
 # @Last modified by:   andrews
-# @Last modified time: 2018-06-13 09:06:62
+# @Last modified time: 2018-06-13 16:06:08
 
 """
 FILE
@@ -62,7 +62,7 @@ def exponential(
     mass=1.4,
     min_time=150.,
     timescale=1500.,
-    fraction=0.078,
+    fraction=0.135,
     **kwargs,
 ):
     """Implement exponential SNIa delay time distribution.
@@ -84,7 +84,7 @@ def exponential(
             distribution in Myr. Default is 1500.
         snia_fraction (float): Fraction of white dwarf mass formed from
            stars with initial mass M=3.2-8.0 Msun that will explode in
-           SNIa (see extended description). Default is 0.078.
+           SNIa (see extended description). Default is 0.135.
     """
     dMwd = dtime / timescale
 
