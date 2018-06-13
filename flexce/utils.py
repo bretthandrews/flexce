@@ -1,7 +1,7 @@
 # @Author: Brett Andrews <andrews>
 # @Date:   2018-04-16 20:04:48
 # @Last modified by:   andrews
-# @Last modified time: 2018-06-12 15:06:27
+# @Last modified time: 2018-06-13 16:06:24
 
 """
 FILE
@@ -23,21 +23,32 @@ import numpy as np
 from flexce.yields import Yields
 
 
-def set_mass_bins(low=0.1, high=100, dm_low=0.1, dm_high=1.):
-    """Define stellar mass bins.
+def set_mass_bins(low=0.1, high=100, dm_low=0.1, dm_high=1., break_mass=8):
+    """Set stellar mass bins.
 
     Args:
-        low (float): low end of lowest mass bin. Defaults to 0.1 Msun.
-        high (float): high end of higher mass bin. Defaults to 100 Msun.
-        dm_low (float): mass bin size below 8 Msun. Defaults to 0.1 Msun.
-        dm_high (float): mass bin size above 8 Msun. Defaults to 1 Msun.
+        low (float): Low end of lowest mass bin. Default is 0.1.
+        high (float): High end of higher mass bin. Default is 100.
+        dm_low (float): Mass bin size below break mass. Default is 0.1.
+        dm_high (float): Mass bin size above break mass. Default is 1.
+        break (float): Dividing mass between low and high mass bins.
+            Default is 8.
 
     Returns:
-        array: stellar mass bins
+        dict, array: Stellar mass bin parameters; stellar mass bins.
     """
-    mbins = np.concatenate((np.arange(low, 8., dm_low),
-                            np.arange(8., high + 0.001, dm_high)))
-    return mbins
+    mbins = np.concatenate((np.arange(low, break_mass, dm_low),
+                            np.arange(break_mass, high + 0.001, dm_high)))
+
+    params = {
+        'low': low,
+        'high': high,
+        'dm_low': dm_low,
+        'dm_high': dm_high,
+        'break_mass': break_mass
+    }
+
+    return params, mbins
 
 
 def load_yields(path, mass_bins, kwargs=None):
