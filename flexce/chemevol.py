@@ -30,6 +30,7 @@ class ChemEvol:
 
     Args:
         params (dict): parameters to set up simulation run.
+        ylds: Yields instance. Default is ``None``.
     """
     def __init__(self, params=None):
         # if any particular parameters are not specified,
@@ -45,6 +46,10 @@ class ChemEvol:
         self.mass_bins = flexce.utils.set_mass_bins(**params['mass_bins'])
         self.set_box(**params['box'])
         self.snia_dtd(params['snia_dtd'])  # TODO rename set_snia_dtd
+        if ylds is None:
+            path_data = join(os.path.dirname(__file__), 'data')
+            # TODO try to load existing yields. If they don't exist, then calculate them.
+            ylds = flexce.utils.load_yields(path_data, self.mass_bins, params['yields'])
         self.inflow_rx(params['inflows'])  # TODO rename set_inflow
         self.outflow_rx(params['outflows'])  # TODO rename set_outflow
         self.warmgasres_rx(params['warmgasres'])  # TODO rename set_warmgas_res
