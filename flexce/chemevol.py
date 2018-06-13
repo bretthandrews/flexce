@@ -291,6 +291,8 @@ class ChemEvol:
             long_output (bool): If ``True``, return total, net, and
                 recycled yields from each previous time step. Default
                 is ``False``.
+        """
+        self.initialize_arrays(ylds.n_sym, long_output)
 
         ind_yld = np.zeros(self.n_steps, dtype=int)
         ind8 = np.where(self.mass_bins == 8.)[0][0]
