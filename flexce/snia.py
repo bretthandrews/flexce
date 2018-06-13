@@ -18,7 +18,7 @@ import numpy as np
 from flexce.lifetimes import invert_lifetime
 
 
-def set_snia_dtd(func='exponential', kwargs=None):
+def set_snia_dtd(func='exponential', **kwargs):
     """Set SNIa delay time distribution.
 
     Args:
