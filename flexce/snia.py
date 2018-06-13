@@ -1,7 +1,7 @@
 # @Author: Brett Andrews <andrews>
 # @Date:   2018-06-06 12:06:40
 # @Last modified by:   andrews
-# @Last modified time: 2018-06-13 09:06:21
+# @Last modified time: 2018-06-13 09:06:62
 
 """
 FILE
@@ -32,7 +32,6 @@ def set_snia_dtd(func='exponential', **kwargs):
     kwargs = kwargs if kwargs is not None else {}
 
     try:
-        # TODO use map
         if func == 'exponential':
             params_snia = exponential(**kwargs)
         elif func == 'power_law':
