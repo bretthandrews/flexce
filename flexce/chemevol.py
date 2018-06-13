@@ -55,12 +55,6 @@ class ChemEvol:
         self.warmgasres_rx(params['warmgasres'])  # TODO rename set_warmgas_res
         self.star_formation(params['sf'])  # TODO rename set_star_formation
 
-    def run(self):
-        # TODO check for existing yields
-        # if not, then calculate them.
-        path_data = join(os.path.dirname(__file__), 'data')
-        yields = flexce.utils.load_yields(path_data, self.params['yields'], self.mass_bins)
-
     def set_box(
         self,
         radius=10.,
