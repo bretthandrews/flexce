@@ -48,10 +48,11 @@ def set_snia_dtd(func='exponential', **kwargs):
         print(traceback.print_exc())
         print(
             '\nValid keywords:\n'
-            'exponential: timescale, min_snia_time, snia_fraction\n'
-            'power_law: min_snia_time, nia_per_mstar, slope\n'
-            'prompt_delayed: A, B, min_snia_time\n'
-            'single_degenerate: no keywords\n'
+            'exponential: dtime, mass, min_time, timescale, fraction\n'
+            'power_law: time, min_time, nia_per_mstar, slope\n'
+            'prompt_delayed: prob_prompt, prob_delay, min_time\n'
+            'single_degenerate: time, dtime, alpha, breaks, num_int, mass_int, A,'
+            'gam, eps=, normalize, nia_per_mstar\n'
         )
 
     return params_snia
