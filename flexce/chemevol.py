@@ -1,7 +1,7 @@
 # @Author: Brett Andrews <andrews>
 # @Date:   2018-06-05 11:06:88
 # @Last modified by:   andrews
-# @Last modified time: 2018-06-13 10:06:79
+# @Last modified time: 2018-06-13 11:06:12
 
 """
 FILE
@@ -333,11 +333,11 @@ class ChemEvol:
                 # mimic gap in SF in the two infall model caused by a SF
                 # threshold gas surface density
                 if two_infall:
-                    if ((self.time[i] > two_infall_args['t_sf_off'][0]) &
-                            (self.time[i] < two_infall_args['t_sf_off'][1])):
+                    if ((self.time[i] > two_infall_kwargs['t_sf_off'][0]) &
+                            (self.time[i] < two_infall_kwargs['t_sf_off'][1])):
                         self.sfr[i] = 0.
                     elif self.time[i] < 1000.:
-                        self.sfr[i] = (self.sfr[i] * two_infall_args['sfe_thick'])
+                        self.sfr[i] = (self.sfr[i] * two_infall_kwargs['sfe_thick'])
             else:
                 self.sfr[i] = sfh[i]  # [=] Msun/yr
             self.dm_sfr[i] = self.sfr[i] * (self.dtime * 1e6)
