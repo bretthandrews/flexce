@@ -1,7 +1,7 @@
 # @Author: Brett Andrews <andrews>
 # @Date:   2018-06-05 11:06:88
 # @Last modified by:   andrews
-# @Last modified time: 2018-06-13 11:06:22
+# @Last modified time: 2018-06-13 14:06:37
 
 """
 FILE
@@ -439,20 +439,24 @@ class ChemEvol:
                 stellar_ejecta=self.snii[i] + self.agb[i] + self.snia[i],
             )
 
-            if self.tcool > 0.:
-                self.gas_cooling[i] = (self.mwarmgas_iso[i - 1] * self.dtime / self.tcool)
+            if self.params['warmgas']['tcool'] > 0.:
+                self.gas_cooling[i] = (self.mwarmgas_iso[i - 1] * self.dtime /
+                                       self.params['warmgas']['tcool'])
 
             if self.params['inflows']['func'] == 'constant_mgas':
                 self.inflow_rate[i] = (
                     np.sum(
                         self.sf[i] + self.outflow[i] - self.gas_cooling[i] -
-                        self.fdirect * (self.snii[i] + self.agb[i] + self.snia[i])
+                        (self.params['warmgas']['fdirect'] * (self.snii[i] + self.agb[i] + self.snia[i]))
                     ) / self.dtime
                 )
 
             self.inflow[i] = (
-                self.inflow_composition(self.params['inflows'], ylds, self.mgas_iso[i - 1]) *
-                self.inflow_rate[i] * self.dtime
+                flexce.inflows.inflow_composition(
+                    params=self.params['inflows'],
+                    yields=ylds,
+                    mgas_iso_last=self.mgas_iso[i - 1],
+                ) * self.inflow_rate[i] * self.dtime
             )
 
             self.mgas_iso[i] = (
@@ -464,11 +468,11 @@ class ChemEvol:
 
             self.mwarmgas_iso[i] = (
                 self.mwarmgas_iso[i - 1] - self.gas_cooling[i] + self.fwarm *
-                (self.snii[i] + self.agb[i] + self.snia[i]))
+                (self.snii[i] + self.agb[i] + self.snia[i])
+            )
 
             if (i < 4) & self.warmgas_on:
-                self.mwarmgas_iso[i] += (self.warmgas_ab_pattern *
-                                         self.mwarmgas_init / 4.)
+                self.mwarmgas_iso[i] += (self.warmgas_ab_pattern * self.mwarmgas_init / 4.)
 
         self.Nstar_left = self.Nstar_left.astype(int)
         self.mstar_left[np.where(np.abs(self.mstar_left) < -1e-8)] = 0.
