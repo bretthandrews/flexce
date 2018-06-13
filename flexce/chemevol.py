@@ -301,10 +301,9 @@ class ChemEvol:
         start = time.time()
 
         # initial conditions
-        self.mgas_iso[0] = yields.bbmf * self.mgas_init
-        if self.warmgas_on:
-            self.mwarmgas_iso[0] = (self.warmgas_ab_pattern *
-                                    self.mwarmgas_init / 4.)
+        self.mgas_iso[0] = ylds.bbmf * self.params['inflows']['mgas_init']
+        if self.params['warmgas']['warmgas_on']:
+            self.mwarmgas_iso[0] = (self.warmgas_ab_pattern * self.params['mwarmgas_init'] / 4.)
 
         ind_metal = np.where(yields.sym_mass > 4.)
         self.metallicity[0] = (np.sum(self.mgas_iso[0, ind_metal]) / self.mgas_iso[0, 0])
