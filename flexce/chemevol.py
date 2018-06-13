@@ -395,7 +395,7 @@ class ChemEvol:
 
             # SNIa
 
-            if self.params['snia']['func'] == 'exponential':
+            if self.params['snia_dtd']['func'] == 'exponential':
                 # mass of WDs that will be formed from the stellar population
                 # that is born in the current timestep
                 self.Mwd[i] = np.sum(self.Nstar[i, ind_ia] *
@@ -408,7 +408,7 @@ class ChemEvol:
                 np.random.set_state(set_state_snia[i - 1][i - 1])
 
             self.NIa[i] = np.random.poisson(self.snia_ev(
-                params=self.params['snia'],
+                params=self.params['snia_dtd'],
                 time=i,
                 dt=self.dtime,
                 mstar=self.mstar,
