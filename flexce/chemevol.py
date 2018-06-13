@@ -70,12 +70,10 @@ class ChemEvol:
             **params['inflows'],
         )
 
-        self.params['outflows'], self.eta, self.feject = flexce.outflows.set_outflows(
-            **params['outflows'],
-        )
+        self.params['outflows'] = flexce.outflows.set_outflows(**params['outflows'])
 
         self.params['warmgas'], self.warmgas_ab_pattern = warmgas.set_warm_gas_reservoir(
-            feject=self.feject,
+            feject=self.params['outflows']['feject'],
             outflow_source=self.params['outflows']['source'],
             **params['warmgasres'],
         )
@@ -434,10 +432,8 @@ class ChemEvol:
 
             # gas flows
             self.sf[i] = np.sum(self.mstar[i]) * self.mfrac[i]
-            self.outflow[i] = self.outflow_calc(
+            self.outflow[i] = flexce.outflows.outflow_calc(
                 params=self.params['outflows'],
-                eta=self.eta_outflow,
-                feject=self.feject,
                 timestep=i,
                 sfr=self.sf[i],
                 stellar_ejecta=self.snii[i] + self.agb[i] + self.snia[i],

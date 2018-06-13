@@ -1,7 +1,7 @@
 # @Author: Brett Andrews <andrews>
 # @Date:   2018-06-07 21:06:39
 # @Last modified by:   andrews
-# @Last modified time: 2018-06-13 10:06:82
+# @Last modified time: 2018-06-13 14:06:45
 
 """
 FILE
@@ -41,13 +41,6 @@ def set_outflows(
             parameter; and fraction of stellar ejecta that leaves in
             the outflow.
     """
-    params = {
-        'source': source,
-        'eta': eta,
-        'variable_eta': variable_eta,
-        'feject': feject,
-    }
-
     if source == 'ism':
         feject = 0.
 
@@ -60,18 +53,21 @@ def set_outflows(
     else:
         raise ValueError('Valid outflow sources: "ism" and "stellar_ejecta".')
 
-    return params, eta, feject
+    params = {
+        'source': source,
+        'eta': eta,
+        'variable_eta': variable_eta,
+        'feject': feject,
+    }
+
+    return params
 
 
-def outflow_calc(params, eta, feject, timestep, sfr, stellar_ejecta):
+def outflow_calc(params, timestep, sfr, stellar_ejecta):
     """Calculate outflowing mass.
 
     Args:
         params (dict): Outflow parameters.
-        eta (float): Outflow mass-loading parameter. Only used if
-            ``source`` is 'ism'.
-        feject (float): Fraction of new stellar ejecta that leaves the
-            galaxy in the outflow (if ``source`` is 'stellar_ejecta').
         timestep (int): Time step.
         sfr (float): Star formation rate.
         stellar_ejecta (float): Mass ejected by CCSN, SNIa, and AGB
@@ -83,15 +79,13 @@ def outflow_calc(params, eta, feject, timestep, sfr, stellar_ejecta):
 
     if params['source'] == 'ism':
         if params['variable_eta'] is not None:
-            return eta[timestep] * sfr
+            return params['eta'][timestep] * sfr
 
         else:
-            return eta * sfr
+            return params['eta'] * sfr
 
     elif params['source'] == 'stellar_ejecta':
-        return feject * (stellar_ejecta)
+        return params['feject'] * (stellar_ejecta)
 
     else:
         raise ValueError('Valid outflow sources: "ism" and "stellar_ejecta".')
-
-    return eta
