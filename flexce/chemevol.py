@@ -324,8 +324,7 @@ class ChemEvol:
             self.mfrac[i] = self.mgas_iso[i - 1] / np.sum(self.mgas_iso[i - 1])
 
             if np.sum(self.mwarmgas_iso[i - 1]) > 0.:
-                self.mwarmfrac[i] = (self.mwarmgas_iso[i - 1] /
-                                     np.sum(self.mwarmgas_iso[i - 1]))
+                self.mwarmfrac[i] = self.mwarmgas_iso[i - 1] / np.sum(self.mwarmgas_iso[i - 1])
 
             if sfh is None:
                 self.sfr[i] = self.sf_law(np.sum(self.mgas_iso[i - 1]))
@@ -336,22 +335,28 @@ class ChemEvol:
                     if ((self.time[i] > two_infall_kwargs['t_sf_off'][0]) &
                             (self.time[i] < two_infall_kwargs['t_sf_off'][1])):
                         self.sfr[i] = 0.
+
                     elif self.time[i] < 1000.:
                         self.sfr[i] = (self.sfr[i] * two_infall_kwargs['sfe_thick'])
+
             else:
                 self.sfr[i] = sfh[i]  # [=] Msun/yr
+
             self.dm_sfr[i] = self.sfr[i] * (self.dtime * 1e6)
+
             # draw from IMF
             self.mstar_stat[i] = self.dm_sfr[i] * self.mass_frac
-            self.Nstar_stat[i] = (self.dm_sfr[i] * self.mass_frac /
-                                  self.mass_ave)
+            self.Nstar_stat[i] = self.dm_sfr[i] * self.mass_frac / self.mass_ave
+
             self.random_num_state_Nstar.append(np.random.get_state())
             if set_state_Nstar is not None:
                 np.random.set_state(set_state_Nstar[i - 1])
+
             self.Nstar[i] = flexce.utils.robust_random_poisson(self.Nstar_stat[i])
             self.mstar[i] = self.Nstar[i] * self.mass_ave
             self.Nstar_left[i] = self.Nstar[i]
             self.mstar_left[i] = self.mstar[i]
+
             # SNII and AGB yields
             if self.metallicity[i] < ylds.snii_agb_z[0]:
                 ind_yld[i] = 0
