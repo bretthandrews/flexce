@@ -1,7 +1,7 @@
 # @Author: Brett Andrews <andrews>
 # @Date:   2018-06-05 11:06:88
 # @Last modified by:   andrews
-# @Last modified time: 2018-06-13 10:06:56
+# @Last modified time: 2018-06-13 10:06:79
 
 """
 FILE
@@ -24,6 +24,7 @@ from flexce.imf import integrate_multi_power_law
 import flexce.inflows
 import flexce.lifetimes
 import flexce.outflows
+import flexce.star_formation
 import flexce.snia
 import flexce.utils
 import flexce.warm_gas_reservoir as warmgas
@@ -33,8 +34,7 @@ class ChemEvol:
     """Chemical evolution model.
 
     Args:
-        params (dict): Parameters to set up simulation run. Default is
-            ``None``.
+        params (dict): Parameters of simulation. Default is ``None``.
         ylds: Yields instance. Default is ``None``.
     """
     def __init__(self, params=None, ylds=None):
@@ -80,7 +80,7 @@ class ChemEvol:
             **params['warmgasres'],
         )
 
-        self.star_formation(params['sf'])
+        self.params['sf'] = flexce.star_formation.set_sflaw(**params['sf'])
 
     def set_box(
         self,
