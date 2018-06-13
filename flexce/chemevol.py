@@ -305,14 +305,14 @@ class ChemEvol:
         if self.params['warmgas']['warmgas_on']:
             self.mwarmgas_iso[0] = (self.warmgas_ab_pattern * self.params['mwarmgas_init'] / 4.)
 
-        ind_metal = np.where(yields.sym_mass > 4.)
+        ind_metal = np.where(ylds.sym_mass > 4.)
         self.metallicity[0] = (np.sum(self.mgas_iso[0, ind_metal]) / self.mgas_iso[0, 0])
         self.mfrac[0] = self.mgas_iso[0] / np.sum(self.mgas_iso[0])
 
         if np.sum(self.mwarmgas_iso[0]) > 0.:
             self.mwarmfrac[0] = (self.mwarmgas_iso[0] / np.sum(self.mwarmgas_iso[0]))
 
-        snii_agb_yields = np.append(yields.agb_yields, yields.snii_yields, axis=1)
+        snii_agb_yields = np.append(ylds.agb_yields, ylds.snii_yields, axis=1)
 
         for i in range(1, self.n_steps):
             if self.time[i] % 1000 < self.dtime:
@@ -353,16 +353,15 @@ class ChemEvol:
             self.Nstar_left[i] = self.Nstar[i]
             self.mstar_left[i] = self.mstar[i]
             # SNII and AGB yields
-            if self.metallicity[i] < yields.snii_agb_z[0]:
+            if self.metallicity[i] < ylds.snii_agb_z[0]:
                 ind_yld[i] = 0
-            elif self.metallicity[i] > yields.snii_agb_z[-1]:
+            elif self.metallicity[i] > ylds.snii_agb_z[-1]:
                 ind_yld[i] = -1
             else:
-                ind_yld[i] = np.where(self.metallicity[i] <
-                                      yields.snii_agb_z)[0][0]
+                ind_yld[i] = np.where(self.metallicity[i] <  ylds.snii_agb_z)[0][0]
             # ind_yld[i] = -1 # uncomment for solar metallicity yields only
             # Evolve stars from previous timesteps
-            snii_agb_tmp = np.zeros((self.n_bins, yields.n_sym))
+            snii_agb_tmp = np.zeros((self.n_bins, ylds.n_sym))
             # mass_returned_tot = 0.
             mass_remnant_tot = 0.
             for j in range(1, i + 1):
@@ -374,8 +373,8 @@ class ChemEvol:
                 abs_yld = (snii_agb_yields[ind_yld[j]] +
                            (self.mfrac[j] *
                             ((self.mass_ave -
-                              yields.snii_agb_rem[ind_yld[j]]) *
-                             np.ones((yields.n_sym, self.n_bins))).T))
+                              ylds.snii_agb_rem[ind_yld[j]]) *
+                             np.ones((ylds.n_sym, self.n_bins))).T))
                 # number of stars to evolve
                 N_ev = self.Nstar[j, ind] * self.frac_ev[i - j]
                 snii_agb_tmp[ind] += (N_ev * abs_yld[ind].T).T
@@ -385,7 +384,7 @@ class ChemEvol:
                 # mass_returned (300); mass_returned_tot (300)
                 # mass_returned = np.sum(N_ev * abs_yld[ind].T, axis=1)
                 # mass_returned_tot += mass_returned
-                mass_remnant_tot += np.sum(yields.snii_agb_rem[ind_yld[j], ind] * N_ev)
+                mass_remnant_tot += np.sum(ylds.snii_agb_rem[ind_yld[j], ind] * N_ev)
                 self.Nstar_left[j, ind] -= N_ev
                 self.mstar_left[j, ind] -= (self.mstar[j, ind] *
                                             self.frac_ev[i - j])
@@ -400,7 +399,7 @@ class ChemEvol:
                 # mass of WDs that will be formed from the stellar population
                 # that is born in the current timestep
                 self.Mwd[i] = np.sum(self.Nstar[i, ind_ia] *
-                                     yields.agb_rem[ind_yld[i], ind_ia])
+                                     ylds.agb_rem[ind_yld[i], ind_ia])
                 self.Mwd_Ia[i] = self.Mwd[i] * self.snia_fraction
                 self.Mwd_Ia_init[i] = self.Mwd[i] * self.snia_fraction
 
@@ -417,8 +416,8 @@ class ChemEvol:
                 sfr=self.sfr,
                 Mwd_Ia=self.Mwd_Ia,
             ))
-            self.snia[i] = yields.snia_yields * self.NIa[i]
-            self.mremnant[i] = (mass_remnant_tot - self.NIa[i] * yields.snia_yields.sum())
+            self.snia[i] = ylds.snia_yields * self.NIa[i]
+            self.mremnant[i] = (mass_remnant_tot - self.NIa[i] * ylds.snia_yields.sum())
 
             # gas flows
             self.sf[i] = np.sum(self.mstar[i]) * self.mfrac[i]
@@ -443,7 +442,7 @@ class ChemEvol:
                 )
 
             self.inflow[i] = (
-                self.inflow_composition(self.params['inflows'], yields, self.mgas_iso[i - 1]) *
+                self.inflow_composition(self.params['inflows'], ylds, self.mgas_iso[i - 1]) *
                 self.inflow_rate[i] * self.dtime
             )
 
@@ -470,7 +469,7 @@ class ChemEvol:
         print('Time elapsed:', time.time() - start)
 
         self.outflow_rate = np.sum(self.outflow, axis=1) / self.dtime
-        self.check_mass_conservation(yields)
+        self.check_mass_conservation(ylds)
         self.snii_snia_rate()
 
         # Set all negative masses equal to a small positive number.
@@ -484,4 +483,4 @@ class ChemEvol:
         # self.param = dict(sim_id=self.sim_id, inflow=self.inflow_param,
         #                   outflow=self.outflow_param,
         #                   warmgas=self.warmgasres_param, sf=self.sf_param,
-        #                   snia=self.snia_param, yields=yields.sources)
+        #                   snia_dtd=self.snia_param, yields=ylds.sources)
