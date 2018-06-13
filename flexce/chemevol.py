@@ -29,12 +29,12 @@ class ChemEvol:
     """Chemical evolution model.
 
     Args:
-        params (dict): parameters to set up simulation run.
+        params (dict): Parameters to set up simulation run. Default is
+            ``None``.
         ylds: Yields instance. Default is ``None``.
     """
-    def __init__(self, params=None):
-        # if any particular parameters are not specified,
-        # then set them at the function call.
+    def __init__(self, params=None, ylds=None):
+
         params = params if params is not None else {}
         props = ['mass_bins', 'box', 'yields', 'snia_dtd', 'inflows', 'outflows',
                  'warmgasres', 'sf']
