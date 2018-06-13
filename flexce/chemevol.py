@@ -1,7 +1,7 @@
 # @Author: Brett Andrews <andrews>
 # @Date:   2018-06-05 11:06:88
 # @Last modified by:   andrews
-# @Last modified time: 2018-06-13 11:06:12
+# @Last modified time: 2018-06-13 11:06:11
 
 """
 FILE
@@ -327,7 +327,10 @@ class ChemEvol:
                 self.mwarmfrac[i] = self.mwarmgas_iso[i - 1] / np.sum(self.mwarmgas_iso[i - 1])
 
             if sfh is None:
-                self.sfr[i] = self.sf_law(np.sum(self.mgas_iso[i - 1]))
+                self.sfr[i] = flexce.star_formation.sf_law(
+                    mgas=np.sum(self.mgas_iso[i - 1]),
+                    params=self.params
+                )
 
                 # mimic gap in SF in the two infall model caused by a SF
                 # threshold gas surface density
