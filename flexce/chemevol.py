@@ -82,6 +82,16 @@ class ChemEvol:
 
         self.params['sf'] = flexce.star_formation.set_sflaw(**params['sf'])
 
+        self.evolve_box(
+            ylds=ylds,
+            sfh=None,                # TODO set as params['sf']['sfh']
+            two_infall=False,        # TODO set as params['inflows']['two_infall']
+            two_infall_kwargs=None,  # TODO set as params['inflows']['two_infall_kwargs']
+            set_state_Nstar=None,    # TODO set as params['box']['set_state_Nstar']
+            set_state_snia=None,     # TODO set as params['box']['set_state_snia']
+            long_output=False,       # TODO set as params['box']['long_output']
+        )
+
     def set_box(
         self,
         radius=10.,
