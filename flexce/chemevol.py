@@ -363,8 +363,11 @@ class ChemEvol:
             elif self.metallicity[i] > ylds.snii_agb_z[-1]:
                 ind_yld[i] = -1
             else:
-                ind_yld[i] = np.where(self.metallicity[i] <  ylds.snii_agb_z)[0][0]
+                ind_yld[i] = np.where(self.metallicity[i] < ylds.snii_agb_z)[0][0]
+
+            # TODO add solar metallicity yields as a config option
             # ind_yld[i] = -1 # uncomment for solar metallicity yields only
+
             # Evolve stars from previous timesteps
             snii_agb_tmp = np.zeros((self.n_bins, ylds.n_sym))
             # mass_returned_tot = 0.
