@@ -1,7 +1,7 @@
 # @Author: Brett Andrews <andrews>
 # @Date:   2018-06-11 13:06:00
 # @Last modified by:   andrews
-# @Last modified time: 2018-06-11 14:06:94
+# @Last modified time: 2018-06-13 11:06:35
 
 """
 FILE
@@ -48,5 +48,5 @@ def sf_law(mgas, params):
         mgas (float): Gas mass.
 
     """
-    return (params['sf']['nu_kslaw'] * params['box']['area'] *
-            (mgas / params['box']['area'])**params['sf']['N_kslaw'])
+    return (params['sf']['nu'] * params['box']['area'] *
+            (mgas / params['box']['area'])**params['sf']['N'])
