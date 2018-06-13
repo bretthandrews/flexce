@@ -100,18 +100,22 @@ def exponential(
     return params_snia
 
 
-def power_law(time, min_time=40., nia_per_mstar=2.2e-3, slope=-1.):
+def power_law(time=None, min_time=40., nia_per_mstar=2.2e-3, slope=-1., **kwargs):
     """Implement power-law SNIa delay time distribution.
 
     Args:
-        min_snia_time (float): Minimum delay time for SNIa in Myr.
-            Defaults to 150.
+        time (array): Time. Default is ``None``.
+        min_time (float): Minimum delay time for SNIa in Myr. Default
+            is 150.
         nia_per_mstar (float): Number of SNIa per stellar mass formed
             that explode within 10 Gyr. Default is 2.2e-3.
         slope (float): Power law slope. Default is -1.
     """
+    assert time is not None, 'Must pass ``time`` array into snia.power_law()'
+
     ind_min = (time >= min_time)
     ind10000 = (time <= 10000.)
+
     ria = np.zeros(len(time))
     ria[ind_min] = time[ind_min]**slope
     norm = nia_per_mstar / ria[ind10000].sum()
