@@ -1,7 +1,7 @@
 # @Author: Brett Andrews <andrews>
 # @Date:   2018-06-07 21:06:39
 # @Last modified by:   andrews
-# @Last modified time: 2018-06-07 21:06:73
+# @Last modified time: 2018-06-13 10:06:82
 
 """
 FILE
@@ -33,8 +33,8 @@ def set_outflows(
             parameter. Only used if ``source`` is 'ism'. Default is
             ``None``.
         feject (float): Fraction of new stellar ejecta that leaves the
-            galaxy in the outflow (if ``source`` is 'stellar_ejecta').
-            Default is 0.15.
+            galaxy in the outflow. Only used if ``source`` is
+            'stellar_ejecta'. Default is 0.15.
 
     Returns:
         dict, float, float: Outflow parameters; outflow mass-loading
