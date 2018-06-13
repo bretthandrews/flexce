@@ -1,7 +1,7 @@
 # @Author: Brett Andrews <andrews>
 # @Date:   2018-06-05 11:06:88
 # @Last modified by:   andrews
-# @Last modified time: 2018-06-13 11:06:61
+# @Last modified time: 2018-06-13 11:06:22
 
 """
 FILE
@@ -418,7 +418,7 @@ class ChemEvol:
             if set_state_snia is not None:
                 np.random.set_state(set_state_snia[i - 1][i - 1])
 
-            self.NIa[i] = np.random.poisson(flexce.snia.snia_ev(
+            NIa_stat, self.Mwd_Ia = flexce.snia.snia_ev(
                 params=self.params['snia_dtd'],
                 tstep=i,
                 dtime=self.dtime,
@@ -426,7 +426,9 @@ class ChemEvol:
                 mstar_tot=self.mstar_left.sum(),
                 sfr=self.sfr,
                 Mwd_Ia=self.Mwd_Ia,
-            ))
+            )
+            self.NIa[i] = np.random.poisson(NIa_stat)
+
             self.snia[i] = ylds.snia_yields * self.NIa[i]
             self.mremnant[i] = (mass_remnant_tot - self.NIa[i] * ylds.snia_yields.sum())
 
