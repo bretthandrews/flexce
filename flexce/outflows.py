@@ -1,7 +1,7 @@
 # @Author: Brett Andrews <andrews>
 # @Date:   2018-06-07 21:06:39
 # @Last modified by:   andrews
-# @Last modified time: 2018-06-13 14:06:45
+# @Last modified time: 2018-06-13 15:06:20
 
 """
 FILE
@@ -14,7 +14,7 @@ DESCRIPTION
 
 def set_outflows(
     source='ism',
-    eta=1.,
+    eta=2.5,
     variable_eta=None,
     feject=0.15
 ):
