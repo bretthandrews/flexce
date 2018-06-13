@@ -1,7 +1,7 @@
 # @Author: Brett Andrews <andrews>
 # @Date:   2018-06-05 11:06:88
 # @Last modified by:   andrews
-# @Last modified time: 2018-06-13 10:06:16
+# @Last modified time: 2018-06-13 10:06:56
 
 """
 FILE
@@ -26,6 +26,7 @@ import flexce.lifetimes
 import flexce.outflows
 import flexce.snia
 import flexce.utils
+import flexce.warm_gas_reservoir as warmgas
 
 
 class ChemEvol:
@@ -73,8 +74,13 @@ class ChemEvol:
             **params['outflows'],
         )
 
-        self.warmgasres_rx(params['warmgasres'])  # TODO rename set_warmgas_res
-        self.star_formation(params['sf'])  # TODO rename set_star_formation
+        self.params['warmgas'], self.warmgas_ab_pattern = warmgas.set_warm_gas_reservoir(
+            feject=self.feject,
+            outflow_source=self.params['outflows']['source'],
+            **params['warmgasres'],
+        )
+
+        self.star_formation(params['sf'])
 
     def set_box(
         self,

@@ -1,7 +1,7 @@
 # @Author: Brett Andrews <andrews>
 # @Date:   2018-06-07 21:06:85
 # @Last modified by:   andrews
-# @Last modified time: 2018-06-11 13:06:29
+# @Last modified time: 2018-06-13 10:06:66
 
 """
 FILE
@@ -20,12 +20,12 @@ import pandas as pd
 
 
 def set_warm_gas_reservoir(
-    params,
-    feject,
+    feject=None,
     warmgas=False,
     mwarmgas_init=0.,
     fdirect=0.01,
     tcool=1200.,
+    outflow_source=None,
 ):
     """Set parameters about warm gas reservoir.
 
@@ -47,8 +47,8 @@ def set_warm_gas_reservoir(
         fwarm = 1 - fdirect - feject
 
     Args:
-        params (dict): Simulation parameters.
         feject (float): Fraction of stellar yields ejected from galaxy.
+            Default is ``None``.
         warmgas (bool): Include a warm gas reservoir in the model.
             Default is ``False``.
         mwarmgas_init (float): Initial gas mass of warm gas reservoir.
@@ -58,10 +58,15 @@ def set_warm_gas_reservoir(
             ``warmgas`` is ``False``, then ``1 - feject``.
         tcool (float): Exponential gas cooling timescale for gas to
             flow to cold gas reservoir. Default is 1200 [Myr].
+        outflow_source (str): Outflow source ('ism' or
+            'stellar ejecta'). Default is ``None``.
 
     Returns:
-        dict, array,
+        dict, array: warm gas reservoir parameters; warm gas abundance
+            pattern
     """
+    assert feject is not None, 'Must pass in ``feject``.'
+
     assert fdirect >= 0. and fdirect <= 1., \
         '``fdirect`` is a fraction and so must be between 0 and 1 inclusive'
 
@@ -72,7 +77,7 @@ def set_warm_gas_reservoir(
         warmgas_ab_pattern = np.array(ab_pattern['ab'])
 
         fwarm = 1. - fdirect
-        if params['outflows']['source'] == 'stellar_ejecta':
+        if outflow_source == 'stellar_ejecta':
             fwarm -= feject
 
     else:
