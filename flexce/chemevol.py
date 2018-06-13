@@ -191,28 +191,28 @@ class ChemEvol:
         print('Rate of SNII to SNIa in last 100 timesteps:',
               1. / np.mean(rate_snia_snii[-100:]))
 
-    def initialize_arrays(self, yld, long_output):
+    def initialize_arrays(self, n_sym, long_output):
         """Initialize arrays for simulation.
 
         Args:
-            yld: ``Yields`` instance.
+            n_sym (int): Number of isotopes in ``Yields`` instance.
             long_output (bool): If ``True``, record SNII and AGB
                 yields.
         """
         n_steps = len(self.time)
-        self.agb = np.zeros((n_steps, yld.n_sym))
-        self.gas_cooling = np.zeros((n_steps, yld.n_sym))
+        self.agb = np.zeros((n_steps, n_sym))
+        self.gas_cooling = np.zeros((n_steps, n_sym))
         self.dm_sfr = np.zeros(n_steps)
-        self.inflow = np.zeros((n_steps, yld.n_sym))
+        self.inflow = np.zeros((n_steps, n_sym))
         self.metallicity = np.zeros(n_steps)
-        self.mfrac = np.zeros((n_steps, yld.n_sym))
-        self.mgas_iso = np.zeros((n_steps, yld.n_sym))
+        self.mfrac = np.zeros((n_steps, n_sym))
+        self.mgas_iso = np.zeros((n_steps, n_sym))
         self.mremnant = np.zeros(n_steps)
         self.mstar = np.zeros((n_steps, self.n_bins))
         self.mstar_left = np.zeros((n_steps, self.n_bins))
         self.mstar_stat = np.zeros((n_steps, self.n_bins))
-        self.mwarmfrac = np.zeros((n_steps, yld.n_sym))
-        self.mwarmgas_iso = np.zeros((n_steps, yld.n_sym))
+        self.mwarmfrac = np.zeros((n_steps, n_sym))
+        self.mwarmgas_iso = np.zeros((n_steps, n_sym))
         self.Mwd = np.zeros(n_steps)
         self.Mwd_Ia = np.zeros(n_steps)
         self.Mwd_Ia_init = np.zeros(n_steps)
@@ -220,11 +220,11 @@ class ChemEvol:
         self.Nstar = np.zeros((n_steps, self.n_bins), dtype=np.int64)
         self.Nstar_left = np.zeros((n_steps, self.n_bins))
         self.Nstar_stat = np.zeros((n_steps, self.n_bins))
-        self.outflow = np.zeros((n_steps, yld.n_sym))
-        self.sf = np.zeros((n_steps, yld.n_sym))
+        self.outflow = np.zeros((n_steps, n_sym))
+        self.sf = np.zeros((n_steps, n_sym))
         self.sfr = np.zeros(n_steps)
-        self.snia = np.zeros((n_steps, yld.n_sym))
-        self.snii = np.zeros((n_steps, yld.n_sym))
+        self.snia = np.zeros((n_steps, n_sym))
+        self.snii = np.zeros((n_steps, n_sym))
         self.random_num_state_Nstar = []
         self.random_num_state_snia = []
         if long_output:
