@@ -1,7 +1,7 @@
 # @Author: Brett Andrews <andrews>
 # @Date:   2018-04-16 20:04:48
 # @Last modified by:   andrews
-# @Last modified time: 2018-06-14 14:06:21
+# @Last modified time: 2018-06-14 14:06:94
 
 import numpy as np
 import pytest
@@ -18,6 +18,5 @@ class TestUtils(object):
           np.concatenate((np.arange(0.1, 8, 0.1), np.arange(8, 101)))),
          ])
     def test_set_mass_bins(self, params, expected):
-        params_out, mbins = flexce.utils.set_mass_bins(**params)
-        assert params == params_out
+        mbins = flexce.utils.set_mass_bins(**params)
         assert mbins == pytest.approx(expected)

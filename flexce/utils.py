@@ -1,7 +1,7 @@
 # @Author: Brett Andrews <andrews>
 # @Date:   2018-04-16 20:04:48
 # @Last modified by:   andrews
-# @Last modified time: 2018-06-13 16:06:24
+# @Last modified time: 2018-06-14 14:06:18
 
 """
 FILE
@@ -35,20 +35,12 @@ def set_mass_bins(low=0.1, high=100, dm_low=0.1, dm_high=1., break_mass=8):
             Default is 8.
 
     Returns:
-        dict, array: Stellar mass bin parameters; stellar mass bins.
+        array: Stellar mass bins.
     """
     mbins = np.concatenate((np.arange(low, break_mass, dm_low),
                             np.arange(break_mass, high + 0.001, dm_high)))
 
-    params = {
-        'low': low,
-        'high': high,
-        'dm_low': dm_low,
-        'dm_high': dm_high,
-        'break_mass': break_mass
-    }
-
-    return params, mbins
+    return mbins
 
 
 def load_yields(path, mass_bins, kwargs=None):

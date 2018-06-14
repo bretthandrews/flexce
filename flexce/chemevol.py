@@ -55,9 +55,7 @@ class ChemEvol:
 
         self.state = state
 
-        self.params['mass_bins'], self.mass_bins = flexce.utils.set_mass_bins(
-            **params['mass_bins']
-        )
+        self.mass_bins = flexce.utils.set_mass_bins(**params['mass_bins'])
 
         self.set_box(**params['box'])
 
