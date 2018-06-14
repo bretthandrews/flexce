@@ -1,7 +1,7 @@
 # @Author: Brett Andrews <andrews>
 # @Date:   2018-06-05 11:06:88
 # @Last modified by:   andrews
-# @Last modified time: 2018-06-13 22:06:45
+# @Last modified time: 2018-06-14 11:06:66
 
 """
 FILE
@@ -496,9 +496,3 @@ class ChemEvol:
 
         self.survivors = np.sum(self.Nstar_left[:, 1:], axis=1)
         self.survivors = self.survivors.round().astype(int)
-
-        # TODO set self.param before evolving the box
-        # self.param = dict(sim_id=self.sim_id, inflow=self.inflow_param,
-        #                   outflow=self.outflow_param,
-        #                   warmgas=self.warmgasres_param, sf=self.sf_param,
-        #                   snia_dtd=self.snia_param, yields=ylds.sources)
