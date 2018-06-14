@@ -99,6 +99,9 @@ class TestFiducialSim(object):
 
     def test_params_sf(self, gal, box0):
         for k, v in gal.params['sf'].items():
+            if k == 'sfh':
+                continue
+
             assert box0.param['sf'][k] == v, k
 
     def test_params_snia_dtd(self, gal, box0):

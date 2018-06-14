@@ -91,7 +91,6 @@ class ChemEvol:
 
         self.evolve_box(
             ylds=ylds,
-            sfh=None,                # TODO set as params['sf']['sfh']
             two_infall=False,        # TODO set as params['inflows']['two_infall']
             two_infall_kwargs=None,  # TODO set as params['inflows']['two_infall_kwargs']
             long_output=False,       # TODO set as params['box']['long_output']
@@ -238,7 +237,6 @@ class ChemEvol:
     def evolve_box(
         self,
         ylds,
-        sfh=None,
         two_infall=False,
         two_infall_kwargs=None,
         long_output=False,
@@ -277,8 +275,6 @@ class ChemEvol:
 
         Args:
             ylds: ``Yields`` instance.
-            sfh (array): Manually set the star formation history.
-                Default is ``None``.
             two_infall (bool): If ``True``, use two inflows episodes.
                 Default is ``False``.
             two_infall_kwargs (dict): Parameters for inflow rate in two
@@ -325,7 +321,7 @@ class ChemEvol:
             if np.sum(self.mwarmgas_iso[i - 1]) > 0.:
                 self.mwarmfrac[i] = self.mwarmgas_iso[i - 1] / np.sum(self.mwarmgas_iso[i - 1])
 
-            if sfh is None:
+            if self.params['sf']['sfh'] is None:
                 self.sfr[i] = flexce.star_formation.sf_law(
                     mgas=np.sum(self.mgas_iso[i - 1]),
                     params=self.params
@@ -342,7 +338,7 @@ class ChemEvol:
                         self.sfr[i] = (self.sfr[i] * two_infall_kwargs['sfe_thick'])
 
             else:
-                self.sfr[i] = sfh[i]  # [=] Msun/yr
+                self.sfr[i] = self.params['sf']['sfh'][i]  # [=] Msun/yr
 
             self.dm_sfr[i] = self.sfr[i] * (self.dtime * 1e6)
 

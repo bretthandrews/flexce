@@ -1,7 +1,7 @@
 # @Author: Brett Andrews <andrews>
 # @Date:   2018-06-11 13:06:00
 # @Last modified by:   andrews
-# @Last modified time: 2018-06-13 11:06:35
+# @Last modified time: 2018-06-14 14:06:35
 
 """
 FILE
@@ -12,7 +12,7 @@ DESCRIPTION
 """
 
 
-def set_sflaw(nu_kslaw=1e-9, N_kslaw=1.):
+def set_sflaw(nu_kslaw=1e-9, N_kslaw=1., sfh=None):
     """Set parameters of the star formation law.
 
     From Kennicutt (1998):
@@ -28,11 +28,13 @@ def set_sflaw(nu_kslaw=1e-9, N_kslaw=1.):
             Msun yr^-1 pc^-2).
         N_kslaw (float): Power law slope of Kennicutt-Schmidt Law.
             Default is 1.
+        sfh (array): User-defined star formation history. Default is
+            ``None``.
 
     Returns:
         dict: Star formation law parameters.
     """
-    params = {'nu': nu_kslaw, 'N': N_kslaw}
+    params = {'nu': nu_kslaw, 'N': N_kslaw, 'sfh': sfh}
 
     return params
 
