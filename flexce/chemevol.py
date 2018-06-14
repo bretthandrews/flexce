@@ -1,7 +1,7 @@
 # @Author: Brett Andrews <andrews>
 # @Date:   2018-06-05 11:06:88
 # @Last modified by:   andrews
-# @Last modified time: 2018-06-13 16:06:44
+# @Last modified time: 2018-06-13 22:06:45
 
 """
 FILE
@@ -36,8 +36,10 @@ class ChemEvol:
     Args:
         params (dict): Parameters of simulation. Default is ``None``.
         ylds: Yields instance. Default is ``None``.
+        state (dict): Random number state for drawing from the IMF and
+            exploding SNIa. Default is ``None``.
     """
-    def __init__(self, params=None, ylds=None):
+    def __init__(self, params=None, ylds=None, state=None):
 
         params = params if params is not None else {}
         props = ['mass_bins', 'box', 'yields', 'snia_dtd', 'inflows', 'outflows',
@@ -47,6 +49,11 @@ class ChemEvol:
                 params[prop] = {}
 
         self.params = params
+
+        if state is None:
+            state = {'Nstar': [], 'snia': []}
+
+        self.state = state
 
         self.params['mass_bins'], self.mass_bins = flexce.utils.set_mass_bins(
             **params['mass_bins']
@@ -89,8 +96,6 @@ class ChemEvol:
             sfh=None,                # TODO set as params['sf']['sfh']
             two_infall=False,        # TODO set as params['inflows']['two_infall']
             two_infall_kwargs=None,  # TODO set as params['inflows']['two_infall_kwargs']
-            set_state_Nstar=None,    # TODO set as params['box']['set_state_Nstar']
-            set_state_snia=None,     # TODO set as params['box']['set_state_snia']
             long_output=False,       # TODO set as params['box']['long_output']
         )
 
@@ -227,8 +232,6 @@ class ChemEvol:
         self.sfr = np.zeros(n_steps)
         self.snia = np.zeros((n_steps, n_sym))
         self.snii = np.zeros((n_steps, n_sym))
-        self.random_num_state_Nstar = []
-        self.random_num_state_snia = []
         if long_output:
             self.snii_agb = np.zeros((n_steps, self.n_bins, n_sym))
             self.snii_agb_net = np.zeros((n_steps, self.n_bins, n_sym))
@@ -240,8 +243,6 @@ class ChemEvol:
         sfh=None,
         two_infall=False,
         two_infall_kwargs=None,
-        set_state_Nstar=None,
-        set_state_snia=None,
         long_output=False,
     ):
         """Run the chemical evolution model.
@@ -285,11 +286,6 @@ class ChemEvol:
             two_infall_kwargs (dict): Parameters for inflow rate in two
                 infall model. Only used if two_infall is ``True``.
                 Default is ``None``.
-            set_state_Nstar (array): Set the random state of the Nstar
-                draw at each time step. Default is ``None``.
-            set_state_snia (array): Set the random state of the SNIa
-                draw at each time step for every previous time step.
-                Default is ``None``.
             long_output (bool): If ``True``, return total, net, and
                 recycled yields from each previous time step. Default
                 is ``False``.
@@ -299,6 +295,9 @@ class ChemEvol:
         ind_yld = np.zeros(self.n_steps, dtype=int)
         ind8 = np.where(self.mass_bins == 8.)[0][0]
         ind_ia = np.where((self.mass_ave >= 3.2) & (self.mass_ave <= 8.))[0]
+
+        preset_state_Nstar = bool(self.state['Nstar'])
+        preset_state_snia = bool(self.state['snia'])
 
         start = time.time()
 
@@ -353,9 +352,10 @@ class ChemEvol:
             self.mstar_stat[i] = self.dm_sfr[i] * self.mass_frac
             self.Nstar_stat[i] = self.dm_sfr[i] * self.mass_frac / self.mass_ave
 
-            self.random_num_state_Nstar.append(np.random.get_state())
-            if set_state_Nstar is not None:
-                np.random.set_state(set_state_Nstar[i - 1])
+            if preset_state_Nstar:
+                np.random.set_state(self.state['Nstar'][i - 1])
+            else:
+                self.state['Nstar'].append(np.random.get_state())
 
             self.Nstar[i] = flexce.utils.robust_random_poisson(self.Nstar_stat[i])
             self.mstar[i] = self.Nstar[i] * self.mass_ave
@@ -407,7 +407,6 @@ class ChemEvol:
                 self.snii_agb[i] = snii_agb_tmp
 
             # SNIa
-
             if self.params['snia_dtd']['func'] == 'exponential':
                 # mass of WDs that will be formed from the stellar population
                 # that is born in the current timestep
@@ -416,9 +415,10 @@ class ChemEvol:
                 self.Mwd_Ia[i] = self.Mwd[i] * self.params['snia_dtd']['fraction']
                 self.Mwd_Ia_init[i] = self.Mwd[i] * self.params['snia_dtd']['fraction']
 
-            self.random_num_state_snia.append(np.random.get_state())
-            if set_state_snia is not None:
-                np.random.set_state(set_state_snia[i - 1][i - 1])
+            if preset_state_snia:
+                np.random.set_state(self.state['snia'][i - 1])
+            else:
+                self.state['snia'].append(np.random.get_state())
 
             NIa_stat, self.Mwd_Ia = flexce.snia.snia_ev(
                 params=self.params['snia_dtd'],
