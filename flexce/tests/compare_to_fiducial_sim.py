@@ -28,7 +28,7 @@ keys_box0 = []
 # Box
 for k, v in gal.params['box'].items():
     if k == 'sim_id':
-        continue
+        keys_box0.append(k)
 
     assert box0.__dict__[k] == v, k
     keys_box0.append(k)
@@ -149,6 +149,16 @@ for item in lists:
     keys_gal.append(item)
     keys_box0.append(item)
 
+
+ignore = ['frac_ev_tot', 'warmgas_on', 'alpha1', 'inflow_func', 'tcool', 'num_int2',
+          'eta_outflow', 'mgas_init', 'snia_dtd_func', 'mass_frac2', 'mwarmgas_init',
+          'min_snia_time', 'inflow_ab_pattern', 'mass_bins2', 'alpha', 'fwarm', 'sim_id',
+          'N_kslaw', 'sf_param', 'snia_param', 'mass_breaks', 'alpha2', 'nu_kslaw',
+          'warmgasres_param', 'fdirect', 'inflow_param', 'snia_fraction', 'variable_eta',
+          'mass_int2', 'outflow_source', 'imf', 'outflow_param', 'inflow_metallicity',
+          'snia_timescale', 'mass_ave2']
+
+keys_box0 += ignore
 
 diff_gal = set(gal.__dict__.keys()) - set(keys_gal)
 diff_box0 = set(box0.__dict__.keys()) - set(keys_box0)
