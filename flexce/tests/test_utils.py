@@ -1,16 +1,23 @@
-from __future__ import print_function, division, absolute_import
+# @Author: Brett Andrews <andrews>
+# @Date:   2018-04-16 20:04:48
+# @Last modified by:   andrews
+# @Last modified time: 2018-06-14 14:06:21
 
-import unittest
 import numpy as np
-import utils
+import pytest
 
-class UtilsTestCase(unittest.TestCase):
-    """Tests from 'utils.py'."""
+import flexce.utils
 
-    def test_define_mass_bins(self):
-        mbins = utils.define_mass_bins(low=1, high=100, dm_low=1, dm_high=1.)
-        tmp = np.arange(1, 101)
-        np.testing.assert_array_almost_equal(mbins, tmp)
 
-if __name__ == '__main__':
-    unittest.main()
+class TestUtils(object):
+
+    @pytest.mark.parametrize(
+        'params, expected',
+        [({'low': 1, 'high': 100, 'dm_low': 1, 'dm_high': 1., 'break_mass': 8}, np.arange(1, 101)),
+         ({'low': 0.1, 'high': 100, 'dm_low': 0.1, 'dm_high': 1., 'break_mass': 8},
+          np.concatenate((np.arange(0.1, 8, 0.1), np.arange(8, 101)))),
+         ])
+    def test_set_mass_bins(self, params, expected):
+        params_out, mbins = flexce.utils.set_mass_bins(**params)
+        assert params == params_out
+        assert mbins == pytest.approx(expected)
