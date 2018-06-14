@@ -1,7 +1,7 @@
 # @Author: Brett Andrews <andrews>
 # @Date:   2018-06-05 11:06:88
 # @Last modified by:   andrews
-# @Last modified time: 2018-06-14 11:06:66
+# @Last modified time: 2018-06-14 14:06:50
 
 """
 FILE
@@ -72,7 +72,8 @@ class ChemEvol:
             breaks=self.params['imf']['mass_breaks'],
             mass_int=self.mass_int,
             num_int=self.num_int,
-            **params['snia_dtd'])
+            **params['snia_dtd'],
+        )
 
         self.params['inflows'], self.inflow_rate = flexce.inflows.set_inflows(
             time=self.time,
@@ -93,7 +94,6 @@ class ChemEvol:
             ylds=ylds,
             two_infall=False,        # TODO set as params['inflows']['two_infall']
             two_infall_kwargs=None,  # TODO set as params['inflows']['two_infall_kwargs']
-            long_output=False,       # TODO set as params['box']['long_output']
         )
 
     def set_box(
@@ -104,25 +104,33 @@ class ChemEvol:
         imf='kroupa',
         imf_alpha=None,
         imf_mass_breaks=None,
-        sim_id=None
+        sim_id=None,
+        long_output=False,
     ):
         """Initialize box.
 
         Args:
-            radius (float): Radius of zone [kpc]. Only invoked if N_kslaw not
-                equal to 1. Default is 10.
-            time_tot (float): length of simulation [Myr]. Default is 12000.
+            radius (float): Radius of zone [kpc]. Only invoked if
+                N_kslaw is not equal to 1. Default is 10.
+            time_tot (float): length of simulation [Myr]. Default is
+                12000.
             dt (float): length of time step [Myr]. Default is 30.
-            imf (str): Stellar initial mass function. Default is 'kroupa'.
+            imf (str): Stellar initial mass function. Default is
+                'kroupa'.
             imf_alpha (array): Power law slopes of user-defined stellar
-                initial mass function. Must set ``imf`` to 'power_law'. Default
-                is ``None``.
-            imf_mass_breaks (array): Mass breaks between different power law
-               slopes of user-defined stellar initial mass function. Must set
-               ``imf`` to 'power_law'. Default is None.
-            sim_id (str): Simulation ID number.
+                initial mass function. Must set ``imf`` to 'power_law'.
+                Default is ``None``.
+            imf_mass_breaks (array): Mass breaks between different
+                power law slopes of user-defined stellar initial mass
+                function. Must set ``imf`` to 'power_law'. Default is
+                ``None``.
+            sim_id (str): Simulation ID number. Default is ``None``.
+            long_output (bool): If ``True``, record total, net, and
+                recycled SNII and AGB yields from each previous time
+                step. Default is ``False``.
         """
         self.params['box']['sim_id'] = sim_id
+        self.params['box']['long_output'] = long_output
 
         self.n_bins = len(self.mass_bins) - 1
         self.n_bins_high = len(np.where(self.mass_bins >= 8)[0]) - 1
@@ -195,13 +203,12 @@ class ChemEvol:
         print('Rate of SNII to SNIa in last 100 timesteps:',
               1. / np.mean(rate_snia_snii[-100:]))
 
-    def initialize_arrays(self, n_sym, long_output):
+    def initialize_arrays(self, n_sym):
         """Initialize arrays for simulation.
 
         Args:
             n_sym (int): Number of isotopes in ``Yields`` instance.
-            long_output (bool): If ``True``, record SNII and AGB
-                yields.
+
         """
         n_steps = len(self.time)
         self.agb = np.zeros((n_steps, n_sym))
@@ -229,7 +236,7 @@ class ChemEvol:
         self.sfr = np.zeros(n_steps)
         self.snia = np.zeros((n_steps, n_sym))
         self.snii = np.zeros((n_steps, n_sym))
-        if long_output:
+        if self.params['box']['long_output']:
             self.snii_agb = np.zeros((n_steps, self.n_bins, n_sym))
             self.snii_agb_net = np.zeros((n_steps, self.n_bins, n_sym))
             self.snii_agb_rec = np.zeros((n_steps, self.n_bins, n_sym))
@@ -239,7 +246,6 @@ class ChemEvol:
         ylds,
         two_infall=False,
         two_infall_kwargs=None,
-        long_output=False,
     ):
         """Run the chemical evolution model.
 
@@ -280,11 +286,8 @@ class ChemEvol:
             two_infall_kwargs (dict): Parameters for inflow rate in two
                 infall model. Only used if two_infall is ``True``.
                 Default is ``None``.
-            long_output (bool): If ``True``, return total, net, and
-                recycled yields from each previous time step. Default
-                is ``False``.
         """
-        self.initialize_arrays(ylds.n_sym, long_output)
+        self.initialize_arrays(ylds.n_sym)
 
         ind_yld = np.zeros(self.n_steps, dtype=int)
         ind8 = np.where(self.mass_bins == 8.)[0][0]
@@ -385,7 +388,7 @@ class ChemEvol:
                 # number of stars to evolve
                 N_ev = self.Nstar[j, ind] * self.frac_ev[i - j]
                 snii_agb_tmp[ind] += (N_ev * abs_yld[ind].T).T
-                if long_output:
+                if self.params['box']['long_output']:
                     self.snii_agb_net[i, ind] += (
                         N_ev * snii_agb_yields[ind_yld[j], ind].T).T
                 # mass_returned (300); mass_returned_tot (300)
@@ -397,7 +400,7 @@ class ChemEvol:
                                             self.frac_ev[i - j])
             self.snii[i] = np.sum(snii_agb_tmp[ind8:], axis=0)
             self.agb[i] = np.sum(snii_agb_tmp[:ind8], axis=0)
-            if long_output:
+            if self.params['box']['long_output']:
                 self.snii_agb[i] = snii_agb_tmp
 
             # SNIa
@@ -475,7 +478,7 @@ class ChemEvol:
         self.Nstar_left = self.Nstar_left.astype(int)
         self.mstar_left[np.where(np.abs(self.mstar_left) < -1e-8)] = 0.
 
-        if long_output:
+        if self.params['box']['long_output']:
             self.snii_agb_rec = self.snii_agb - self.snii_agb_net
 
         print('Time elapsed:', time.time() - start)
