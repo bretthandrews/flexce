@@ -1,7 +1,7 @@
 # @Author: Brett Andrews <andrews>
 # @Date:   2018-06-13 15:06:13
 # @Last modified by:   andrews
-# @Last modified time: 2018-06-14 13:06:78
+# @Last modified time: 2018-06-14 13:06:52
 
 """
 FILE
@@ -49,8 +49,17 @@ def gal(box0):
     )
 
 
+box0_ignore = [
+    'frac_ev_tot', 'warmgas_on', 'alpha1', 'inflow_func', 'tcool', 'num_int2',
+    'eta_outflow', 'mgas_init', 'snia_dtd_func', 'mass_frac2', 'mwarmgas_init',
+    'min_snia_time', 'inflow_ab_pattern', 'mass_bins2', 'alpha', 'fwarm', 'sim_id',
+    'N_kslaw', 'sf_param', 'snia_param', 'mass_breaks', 'alpha2', 'nu_kslaw',
+    'warmgasres_param', 'fdirect', 'inflow_param', 'snia_fraction', 'variable_eta',
+    'mass_int2', 'outflow_source', 'imf', 'outflow_param', 'inflow_metallicity',
+    'snia_timescale', 'mass_ave2',
+]
 keys_gal = []
-keys_box0 = []
+keys_box0 = box0_ignore
 
 
 class TestFiducialSim(object):
@@ -178,17 +187,6 @@ class TestFiducialSim(object):
             keys_box0.append(arr_box)
 
     def test_attribute_set(self, gal, box0):
-        ignore = [
-            'frac_ev_tot', 'warmgas_on', 'alpha1', 'inflow_func', 'tcool', 'num_int2',
-            'eta_outflow', 'mgas_init', 'snia_dtd_func', 'mass_frac2', 'mwarmgas_init',
-            'min_snia_time', 'inflow_ab_pattern', 'mass_bins2', 'alpha', 'fwarm', 'sim_id',
-            'N_kslaw', 'sf_param', 'snia_param', 'mass_breaks', 'alpha2', 'nu_kslaw',
-            'warmgasres_param', 'fdirect', 'inflow_param', 'snia_fraction', 'variable_eta',
-            'mass_int2', 'outflow_source', 'imf', 'outflow_param', 'inflow_metallicity',
-            'snia_timescale', 'mass_ave2',
-        ]
-        keys_box0 += ignore
-
         diff_gal = set(gal.__dict__.keys()) - set(keys_gal)
         diff_box0 = set(box0.__dict__.keys()) - set(keys_box0)
         assert not diff_gal, f'gal: {diff_gal}'
