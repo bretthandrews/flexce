@@ -1,7 +1,7 @@
 # @Author: Brett Andrews <andrews>
 # @Date:   2018-06-05 11:06:88
 # @Last modified by:   andrews
-# @Last modified time: 2018-06-14 14:06:50
+# @Last modified time: 2018-06-14 16:06:89
 
 """
 FILE
@@ -90,11 +90,7 @@ class ChemEvol:
 
         self.params['sf'] = flexce.star_formation.set_sflaw(**params['sf'])
 
-        self.evolve_box(
-            ylds=ylds,
-            two_infall=False,        # TODO set as params['inflows']['two_infall']
-            two_infall_kwargs=None,  # TODO set as params['inflows']['two_infall_kwargs']
-        )
+        self.evolve_box(ylds=ylds)
 
     def set_box(
         self,
@@ -241,12 +237,7 @@ class ChemEvol:
             self.snii_agb_net = np.zeros((n_steps, self.n_bins, n_sym))
             self.snii_agb_rec = np.zeros((n_steps, self.n_bins, n_sym))
 
-    def evolve_box(
-        self,
-        ylds,
-        two_infall=False,
-        two_infall_kwargs=None,
-    ):
+    def evolve_box(self, ylds):
         """Run the chemical evolution model.
 
         Start with a box of primordial gas. Calculate the metallicity
@@ -275,17 +266,9 @@ class ChemEvol:
         than exist, so it forces isotopes with negative quantities to
         be a very small, positive quantity.
 
-        two infall model: t_sf_off = time span ([0]=start, [1]=end) when no SF
-        occurs (to mimic the gas surface density dropping below a threshold
-        density for SF), sfe_thick = thick disk SFE / thin disk SFE
-
         Args:
             ylds: ``Yields`` instance.
-            two_infall (bool): If ``True``, use two inflows episodes.
-                Default is ``False``.
-            two_infall_kwargs (dict): Parameters for inflow rate in two
-                infall model. Only used if two_infall is ``True``.
-                Default is ``None``.
+
         """
         self.initialize_arrays(ylds.n_sym)
 
@@ -332,13 +315,14 @@ class ChemEvol:
 
                 # mimic gap in SF in the two infall model caused by a SF
                 # threshold gas surface density
-                if two_infall:
-                    if ((self.time[i] > two_infall_kwargs['t_sf_off'][0]) &
-                            (self.time[i] < two_infall_kwargs['t_sf_off'][1])):
+                if self.params['inflows']['func'] == 'two_infall':
+                    end_thick, start_thin = self.params['inflows']['coeff']['t_sf_off']
+
+                    if (self.time[i] > end_thick) and (self.time[i] < start_thin):
                         self.sfr[i] = 0.
 
-                    elif self.time[i] < 1000.:
-                        self.sfr[i] = (self.sfr[i] * two_infall_kwargs['sfe_thick'])
+                    elif self.time[i] <= end_thick:
+                        self.sfr[i] *= self.params['inflows']['coeff']['sfe_thick']
 
             else:
                 self.sfr[i] = self.params['sf']['sfh'][i]  # [=] Msun/yr

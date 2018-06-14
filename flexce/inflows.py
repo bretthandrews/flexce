@@ -1,7 +1,7 @@
 # @Author: Brett Andrews <andrews>
 # @Date:   2018-06-07 20:06:05
 # @Last modified by:   andrews
-# @Last modified time: 2018-06-13 09:06:87
+# @Last modified time: 2018-06-14 16:06:18
 
 """
 FILE
@@ -37,6 +37,7 @@ def set_inflows(
         te-t: M1, b1 with b1 in Myr.
         constant_mgas: ``inflow_rate`` will be dynamically defined in
             ``evolve_box``.
+        two_infall:
         custom: User-defined inflow rate.
 
 
@@ -59,20 +60,15 @@ def set_inflows(
             'bbns'.
         inflow_metallicity (float): Scaling of inflow metallicity
             (i.e., solar = 1). Default is 1.
+
+    Returns:
+        dict, array: Inflow parameters; inflow rate.
     """
     assert time is not None, 'Must pass in ``time``.'
 
-    if coeff is None:
-        coeff = {'M1': 4e11, 'b1': 6000.}
+    coeff = _set_default_coeff(func, coeff)
 
-    params = {
-        'mgas_init': mgas_init,
-        'func': func,
-        'coeff': coeff,
-        'ab_pattern': inflow_ab_pattern,
-        'metallicity': inflow_metallicity,
-    }
-
+    # Set inflow rate
     if func == 'double_exp':
         inflow_rate = ((coeff['M1'] / coeff['b1']) * np.exp(-time / coeff['b1']) +
                        (coeff['M2'] / coeff['b2']) * np.exp(-time / coeff['b2']))
@@ -87,16 +83,64 @@ def set_inflows(
     elif func == 'constant_mgas':
         inflow_rate = np.zeros(len(time))
 
+    elif func == 'two_infall':
+        inflow_rate_thick = coeff['sfe'] * np.exp(-time / coeff['tau_thick'])
+        inflow_rate_thin = coeff['sfe'] * np.exp(-(time - coeff['t_max']) / coeff['tau_thin'])
+        inflow_rate = inflow_rate_thick + inflow_rate_thin
+
     elif func == 'custom':
         assert inflow_rate is not None, 'If inflow rate functional form is "custom",' \
             ' then ``inflow_rate`` must be provided.'
 
     else:
         raise ValueError('Valid inflow functions: "double_exp", "exp", "te-t",'
-                         ' "constant_mgas", and "custom".')
+                         ' "constant_mgas", "two_infall", and "custom".')
+
+    params = {
+        'mgas_init': mgas_init,
+        'func': func,
+        'coeff': coeff,
+        'ab_pattern': inflow_ab_pattern,
+        'metallicity': inflow_metallicity,
+    }
 
     return params, inflow_rate
 
+
+def _set_default_coeff(func, coeff):
+    """Set the default inflow rate coefficients.
+
+    Args:
+        func (str): Functional form of inflow rate.
+        coeff (dict): Coefficients defining inflow rate functions.
+
+    """
+    coeff = coeff if coeff is not None else {}
+
+    if func == 'exp':
+        default = {'M1': 4e11, 'b1': 6000.}
+
+    elif func == 'double_exp':
+        default = {'M1': 1e10, 'b1': 300., 'M2': 6e11, 'b2': 14000.}
+
+    elif func == 'te-t':
+        default = {'M1': 4e11, 'b1': 3500.}
+
+    elif func == 'two_infall':
+        default = {
+            'tau_thick': 1000.,
+            'tau_thin': 6000.,
+            't_max': 1000.,
+            'sfe_thick': 2.,
+            't_sf_off': [1000., 1200.],
+            'sfe': 3e7,
+        }
+
+    for kk, vv in default.items():
+        if kk not in coeff.keys():
+            coeff[kk] = vv
+
+    return coeff
 
 def inflow_composition(params, yields, mgas_iso_last):
     """Compute the mass fraction of each element in the inflowing gas.
