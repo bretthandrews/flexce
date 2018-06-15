@@ -1,7 +1,7 @@
 # @Author: Brett Andrews <andrews>
 # @Date:   2018-04-16 20:04:48
 # @Last modified by:   andrews
-# @Last modified time: 2018-06-14 14:06:18
+# @Last modified time: 2018-06-15 13:06:05
 
 """
 FILE
@@ -43,19 +43,13 @@ def set_mass_bins(low=0.1, high=100, dm_low=0.1, dm_high=1., break_mass=8):
     return mbins
 
 
-def load_yields(path, mass_bins, kwargs=None):
-    """Load yield grids.
+def set_yields(params=None):
+    """Set yield parameters.
 
     Args:
-        path (str): Data directory.
-        mass_bins (array): Stellar mass bins.
-        kwargs (dict): Keyword arguments to pass to ``Yields``. Default
-            is ``None``.
-
-    Returns:
-        Yields instance.
+        params (dict): Yield parameters. Default is ``None``.
     """
-    kwargs_default = {
+    default = {
         'snii_dir': join('limongi06', 'iso_yields'),
         'agb_dir': join('karakas10', 'iso_yields'),
         'snia_dir': 'iwamoto99',
@@ -64,15 +58,30 @@ def load_yields(path, mass_bins, kwargs=None):
         'snia_model': 'w70',
         'r_elements': ['Ba', 'Eu'],
         's_elements': ['Ba'],
+        'solar_metallicity': False,
     }
 
-    if kwargs is None:
-        kwargs = {}
+    if params is None:
+        params = {}
 
-    for key, val in kwargs_default.items():
-        if key not in kwargs.keys():
-            kwargs[key] = val
+    for key, val in default.items():
+        if key not in params.keys():
+            params[key] = val
 
+    return params
+
+
+def load_yields(path, mass_bins, kwargs):
+    """Load yield grids.
+
+    Args:
+        path (str): Data directory.
+        mass_bins (array): Stellar mass bins.
+        kwargs (dict): Keyword arguments to pass to ``Yields``.
+
+    Returns:
+        Yields instance.
+    """
     try:
         ylds = Yields(path, mbins=mass_bins, **kwargs)
 

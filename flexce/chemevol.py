@@ -1,7 +1,7 @@
 # @Author: Brett Andrews <andrews>
 # @Date:   2018-06-05 11:06:88
 # @Last modified by:   andrews
-# @Last modified time: 2018-06-15 12:06:07
+# @Last modified time: 2018-06-15 13:06:92
 
 """
 FILE
@@ -62,6 +62,7 @@ class ChemEvol:
         if ylds is None:
             path_data = join(os.path.dirname(__file__), 'data')
             # TODO try to load existing yields. If they don't exist, then calculate them.
+            params['yields'] = flexce.utils.set_yields(params['yields'])
             ylds = flexce.utils.load_yields(path_data, self.mass_bins, params['yields'])
 
         self.params['snia_dtd'] = flexce.snia.set_snia_dtd(
@@ -353,8 +354,8 @@ class ChemEvol:
             else:
                 ind_yld[ii] = np.where(self.metallicity[ii] < ylds.snii_agb_z)[0][0]
 
-            # TODO add solar metallicity yields as a config option
-            # ind_yld[i] = -1 # uncomment for solar metallicity yields only
+            if self.params['yields']['solar_metallicity']:
+                ind_yld[ii] = -1
 
             # Evolve stars from previous timesteps
             snii_agb_tmp = np.zeros((self.n_bins, ylds.n_sym))

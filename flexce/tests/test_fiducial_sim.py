@@ -1,7 +1,7 @@
 # @Author: Brett Andrews <andrews>
 # @Date:   2018-06-13 15:06:13
 # @Last modified by:   andrews
-# @Last modified time: 2018-06-14 14:06:46
+# @Last modified time: 2018-06-15 13:06:34
 
 """
 FILE
@@ -128,7 +128,7 @@ class TestFiducialSim(object):
             if k in ['snii_dir', 'agb_dir', 'snia_dir', 'rprocess_dir', 'sprocess_dir']:
                 k = k.split('_dir')[0]
 
-            if k in ['snia_model', 'r_elements', 's_elements']:
+            if k in ['snia_model', 'r_elements', 's_elements', 'solar_metallicity']:
                 continue
 
             assert box0.param['yields'][k] == v.split('/')[0], k

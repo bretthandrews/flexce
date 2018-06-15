@@ -39,7 +39,8 @@ class Yields:
         sprocess_supersolar=False,
         r_elements=None,
         s_elements=None,
-        mbins=None
+        mbins=None,
+        **kwargs
     ):
         """Initialize Yields instance.
 
