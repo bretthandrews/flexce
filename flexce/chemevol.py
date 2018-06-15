@@ -1,7 +1,7 @@
 # @Author: Brett Andrews <andrews>
 # @Date:   2018-06-05 11:06:88
 # @Last modified by:   andrews
-# @Last modified time: 2018-06-15 12:06:36
+# @Last modified time: 2018-06-15 12:06:07
 
 """
 FILE
@@ -43,7 +43,7 @@ class ChemEvol:
 
         params = params if params is not None else {}
         props = ['mass_bins', 'box', 'yields', 'snia_dtd', 'inflows', 'outflows',
-                 'warmgasres', 'sf']
+                 'warmgas', 'sf']
         for prop in props:
             if prop not in params.keys():
                 params[prop] = {}
@@ -471,7 +471,7 @@ class ChemEvol:
                                           self.params['warmgas']['mwarmgas_init'] / 4.)
 
         self.Nstar_left = self.Nstar_left.astype(int)
-        self.mstar_left[np.where(np.abs(self.mstar_left) < -1e-8)] = 0.
+        self.mstar_left[np.abs(self.mstar_left) < -1e-8] = 0.
 
         if self.params['box']['long_output']:
             self.snii_agb_rec = self.snii_agb - self.snii_agb_net
@@ -483,8 +483,7 @@ class ChemEvol:
         self.snii_snia_rate()
 
         # Set all negative masses equal to a small positive number.
-        ind_neg = np.where(self.mgas_iso < 0.)
-        self.mgas_iso[ind_neg] = 1e-30
+        self.mgas_iso[self.mgas_iso < 0.] = 1e-30
 
         self.survivors = np.sum(self.Nstar_left[:, 1:], axis=1)
         self.survivors = self.survivors.round().astype(int)
