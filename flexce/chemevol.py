@@ -434,20 +434,19 @@ class ChemEvol:
                                        self.params['warmgas']['tcool'])
 
             if self.params['inflows']['func'] == 'constant_mgas':
-                self.inflow_rate[ii] = (
-                    np.sum(
-                        self.sf[ii] + self.outflow[ii] - self.gas_cooling[ii] -
-                        (self.params['warmgas']['fdirect'] * (self.snii[ii] + self.agb[ii] + self.snia[ii]))
-                    ) / self.dtime
-                )
+                direct_yields = self.params['warmgas']['fdirect'] * yields_all_sources
+                gas_loss = np.sum(self.sf[ii] +
+                                  self.outflow[ii] -
+                                  self.gas_cooling[ii] -
+                                  direct_yields)
+                self.inflow_rate[ii] = gas_loss / self.dtime
 
-            self.inflow[ii] = (
-                flexce.inflows.inflow_composition(
-                    params=self.params['inflows'],
-                    yields=ylds,
-                    mgas_iso_last=self.mgas_iso[ii - 1],
-                ) * self.inflow_rate[ii] * self.dtime
+            inflow_composition = flexce.inflows.inflow_composition(
+                params=self.params['inflows'],
+                yields=ylds,
+                mgas_iso_last=self.mgas_iso[ii - 1],
             )
+            self.inflow[ii] = inflow_composition * self.inflow_rate[ii] * self.dtime
 
             # If outflow source is stellar_ejecta (hence feject is non-zero),
             # then we need to add the stellar ejecta lost in the outflow
