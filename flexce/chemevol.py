@@ -431,7 +431,7 @@ class ChemEvol:
 
             if self.params['warmgas']['tcool'] > 0.:
                 self.gas_cooling[ii] = (self.mwarmgas_iso[ii - 1] * self.dtime /
-                                       self.params['warmgas']['tcool'])
+                                        self.params['warmgas']['tcool'])
 
             if self.params['inflows']['func'] == 'constant_mgas':
                 direct_yields = self.params['warmgas']['fdirect'] * yields_all_sources
