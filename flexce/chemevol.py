@@ -1,7 +1,7 @@
 # @Author: Brett Andrews <andrews>
 # @Date:   2018-06-05 11:06:88
 # @Last modified by:   andrews
-# @Last modified time: 2018-06-15 11:06:01
+# @Last modified time: 2018-06-15 12:06:83
 
 """
 FILE
@@ -85,7 +85,7 @@ class ChemEvol:
         self.params['warmgas'], self.warmgas_ab_pattern = warmgas.set_warm_gas_reservoir(
             feject=self.params['outflows']['feject'],
             outflow_source=self.params['outflows']['source'],
-            **params['warmgasres'],
+            **params['warmgas'],
         )
 
         self.params['sf'] = flexce.star_formation.set_sflaw(**params['sf'])
