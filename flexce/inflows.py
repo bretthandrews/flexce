@@ -1,7 +1,7 @@
 # @Author: Brett Andrews <andrews>
 # @Date:   2018-06-07 20:06:05
 # @Last modified by:   andrews
-# @Last modified time: 2018-06-14 16:06:18
+# @Last modified time: 2018-06-14 22:06:87
 
 """
 FILE
@@ -38,8 +38,15 @@ def set_inflows(
         constant_mgas: ``inflow_rate`` will be dynamically defined in
             ``evolve_box``.
         two_infall:
+            tau_thick: exponential timescale of thick disk in Myr,
+            tau_thin: exponential timescale of thin disk in Myr,
+            t_max: time of maximum inflow in Myr,
+            sfe_thick: multiplicative enhancement factor for SFE in
+                thick disk in Myr,
+            t_sf_off (list): time when star formation in thick disk
+                ends and when star formation in the thin disk resumes,
+            sfe: star formation efficiency.
         custom: User-defined inflow rate.
-
 
     Available inflow abundance pattern options:
         bbns: Big Bang Nucleosynthesis abundance pattern
