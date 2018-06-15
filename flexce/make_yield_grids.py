@@ -1,17 +1,17 @@
 # @Author: Brett Andrews <andrews>
 # @Date:   2018-04-16 20:04:47
 # @Last modified by:   andrews
-# @Last modified time: 2018-06-15 15:06:04
+# @Last modified time: 2018-06-15 16:06:86
 
 """
 FILE
     make_yield_grids.py
 
+USAGE
+    make_yield_grids [--ww95]
+
 DESCRIPTION
     Generate yield grids.
-
-USAGE
-    python make_yield_grids.py [ww95]
 """
 
 from __future__ import print_function, division, absolute_import
