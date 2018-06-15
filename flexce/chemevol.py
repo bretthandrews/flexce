@@ -1,7 +1,7 @@
 # @Author: Brett Andrews <andrews>
 # @Date:   2018-06-05 11:06:88
 # @Last modified by:   andrews
-# @Last modified time: 2018-06-15 11:06:69
+# @Last modified time: 2018-06-15 11:06:01
 
 """
 FILE
@@ -359,32 +359,32 @@ class ChemEvol:
             snii_agb_tmp = np.zeros((self.n_bins, ylds.n_sym))
             # mass_returned_tot = 0.
             mass_remnant_tot = 0.
-            for j in range(1, ii + 1):
+            for jj in range(1, ii + 1):
                 # ind_ev is a list of indices of mass bins from a given birth
                 # time-step that will evolve in the current time-step.
-                ind = self.ind_ev[ii - j]
+                ind = self.ind_ev[ii - jj]
 
                 # abs_yld = net yield + (isotopic mass fraction at birth) * (mass returned to ISM)
-                mass_return_to_ism = self.mass_ave[ind] - ylds.snii_agb_rem[ind_yld[j], ind]
-                iso_return_to_ism = self.mfrac[j] * np.tile(mass_return_to_ism, (ylds.n_sym, 1)).T
-                abs_yld = snii_agb_yields[ind_yld[j], ind] + iso_return_to_ism
+                mass_return_to_ism = self.mass_ave[ind] - ylds.snii_agb_rem[ind_yld[jj], ind]
+                iso_return_to_ism = self.mfrac[jj] * np.tile(mass_return_to_ism, (ylds.n_sym, 1)).T
+                abs_yld = snii_agb_yields[ind_yld[jj], ind] + iso_return_to_ism
 
                 # number of stars to evolve
-                N_ev = self.Nstar[j, ind] * self.frac_ev[ii - j]
+                N_ev = self.Nstar[jj, ind] * self.frac_ev[ii - jj]
 
                 snii_agb_tmp[ind] += (N_ev * abs_yld.T).T
 
                 if self.params['box']['long_output']:
                     self.snii_agb_net[ii, ind] += (
-                        N_ev * snii_agb_yields[ind_yld[j], ind].T).T
+                        N_ev * snii_agb_yields[ind_yld[jj], ind].T).T
 
                 # mass_returned (300); mass_returned_tot (300)
                 # mass_returned = np.sum(N_ev * abs_yld[ind].T, axis=1)
                 # mass_returned_tot += mass_returned
 
-                mass_remnant_tot += np.sum(ylds.snii_agb_rem[ind_yld[j], ind] * N_ev)
-                self.Nstar_left[j, ind] -= N_ev
-                self.mstar_left[j, ind] -= (self.mstar[j, ind] * self.frac_ev[ii - j])
+                mass_remnant_tot += np.sum(ylds.snii_agb_rem[ind_yld[jj], ind] * N_ev)
+                self.Nstar_left[jj, ind] -= N_ev
+                self.mstar_left[jj, ind] -= (self.mstar[jj, ind] * self.frac_ev[ii - jj])
 
             self.snii[ii] = np.sum(snii_agb_tmp[ind8:], axis=0)
             self.agb[ii] = np.sum(snii_agb_tmp[:ind8], axis=0)
@@ -429,7 +429,7 @@ class ChemEvol:
             )
 
             if self.params['warmgas']['tcool'] > 0.:
-                self.gas_cooling[i] = (self.mwarmgas_iso[ii - 1] * self.dtime /
+                self.gas_cooling[ii] = (self.mwarmgas_iso[ii - 1] * self.dtime /
                                        self.params['warmgas']['tcool'])
 
             if self.params['inflows']['func'] == 'constant_mgas':
