@@ -24,7 +24,7 @@ def read_sim_cfg(file_in):
     snia_dtd_args = {}
     inflows_args = {}
     outflows_args = {}
-    warmgasres_args = {}
+    warmgas_args = {}
     sf_args = {}
 
     f = open(file_in, 'r')
@@ -78,8 +78,9 @@ def read_sim_cfg(file_in):
                     inflows_args[k.split('inflows_')[1]] = v
             elif 'outflows' in k:
                 outflows_args[k.split('outflows_')[1]] = v
-            elif 'warmgasres' in k:
-                warmgasres_args[k.split('warmgasres_')[1]] = v
+            elif 'warmgas' in k:
+                # TODO change config prefix from "warmgasres" to "warmgas"
+                warmgas_args[k.split('warmgasres_')[1]] = v
             elif 'sf' in k:
                 sf_args[k.split('sf_')[1]] = v
 
@@ -93,7 +94,7 @@ def read_sim_cfg(file_in):
         'snia_dtd_args': snia_dtd_args,
         'inflows_args': inflows_args,
         'outflows_args': outflows_args,
-        'warmgasres_args': warmgasres_args,
+        'warmgas_args': warmgas_args,
         'sf_args': sf_args,
     }
 
