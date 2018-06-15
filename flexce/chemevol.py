@@ -1,7 +1,7 @@
 # @Author: Brett Andrews <andrews>
 # @Date:   2018-06-05 11:06:88
 # @Last modified by:   andrews
-# @Last modified time: 2018-06-15 10:06:91
+# @Last modified time: 2018-06-15 11:06:69
 
 """
 FILE
@@ -283,33 +283,34 @@ class ChemEvol:
 
         # initial conditions
         self.mgas_iso[0] = ylds.bbmf * self.params['inflows']['mgas_init']
+
         if self.params['warmgas']['warmgas_on']:
             self.mwarmgas_iso[0] = (self.warmgas_ab_pattern * self.params['mwarmgas_init'] / 4.)
 
-        ind_metal = np.where(ylds.sym_mass > 4.)
-        self.metallicity[0] = (np.sum(self.mgas_iso[0, ind_metal]) / self.mgas_iso[0, 0])
+        ind_metal = (ylds.sym_mass > 4.)
+        self.metallicity[0] = np.sum(self.mgas_iso[0, ind_metal]) / self.mgas_iso[0, 0]
         self.mfrac[0] = self.mgas_iso[0] / np.sum(self.mgas_iso[0])
 
         if np.sum(self.mwarmgas_iso[0]) > 0.:
-            self.mwarmfrac[0] = (self.mwarmgas_iso[0] / np.sum(self.mwarmgas_iso[0]))
+            self.mwarmfrac[0] = self.mwarmgas_iso[0] / np.sum(self.mwarmgas_iso[0])
 
         snii_agb_yields = np.append(ylds.agb_yields, ylds.snii_yields, axis=1)
 
-        for i in range(1, self.n_steps):
-            if self.time[i] % 1000 < self.dtime:
-                print('time: {} Myr'.format(int(self.time[i])))
+        for ii in range(1, self.n_steps):
+            if self.time[ii] % 1000 < self.dtime:
+                print('time: {} Myr'.format(int(self.time[ii])))
 
-            self.metallicity[i] = (np.sum(self.mgas_iso[i - 1, ind_metal]) /
-                                   self.mgas_iso[i - 1, 0])
+            self.metallicity[ii] = (np.sum(self.mgas_iso[ii - 1, ind_metal]) /
+                                    self.mgas_iso[ii - 1, 0])
 
-            self.mfrac[i] = self.mgas_iso[i - 1] / np.sum(self.mgas_iso[i - 1])
+            self.mfrac[ii] = self.mgas_iso[ii - 1] / np.sum(self.mgas_iso[ii - 1])
 
-            if np.sum(self.mwarmgas_iso[i - 1]) > 0.:
-                self.mwarmfrac[i] = self.mwarmgas_iso[i - 1] / np.sum(self.mwarmgas_iso[i - 1])
+            if np.sum(self.mwarmgas_iso[ii - 1]) > 0.:
+                self.mwarmfrac[ii] = self.mwarmgas_iso[ii - 1] / np.sum(self.mwarmgas_iso[ii - 1])
 
             if self.params['sf']['sfh'] is None:
-                self.sfr[i] = flexce.star_formation.sf_law(
-                    mgas=np.sum(self.mgas_iso[i - 1]),
+                self.sfr[ii] = flexce.star_formation.sf_law(
+                    mgas=np.sum(self.mgas_iso[ii - 1]),
                     params=self.params
                 )
 
@@ -318,38 +319,38 @@ class ChemEvol:
                 if self.params['inflows']['func'] == 'two_infall':
                     end_thick, start_thin = self.params['inflows']['coeff']['t_sf_off']
 
-                    if (self.time[i] > end_thick) and (self.time[i] < start_thin):
-                        self.sfr[i] = 0.
+                    if (self.time[ii] > end_thick) and (self.time[ii] < start_thin):
+                        self.sfr[ii] = 0.
 
-                    elif self.time[i] <= end_thick:
-                        self.sfr[i] *= self.params['inflows']['coeff']['sfe_thick']
+                    elif self.time[ii] <= end_thick:
+                        self.sfr[ii] *= self.params['inflows']['coeff']['sfe_thick']
 
             else:
-                self.sfr[i] = self.params['sf']['sfh'][i]  # [=] Msun/yr
+                self.sfr[ii] = self.params['sf']['sfh'][ii]  # [=] Msun/yr
 
-            self.dm_sfr[i] = self.sfr[i] * (self.dtime * 1e6)
+            self.dm_sfr[ii] = self.sfr[ii] * (self.dtime * 1e6)
 
             # draw from IMF
-            self.mstar_stat[i] = self.dm_sfr[i] * self.mass_frac
-            self.Nstar_stat[i] = self.dm_sfr[i] * self.mass_frac / self.mass_ave
+            self.mstar_stat[ii] = self.dm_sfr[ii] * self.mass_frac
+            self.Nstar_stat[ii] = self.dm_sfr[ii] * self.mass_frac / self.mass_ave
 
             if preset_state_Nstar:
-                np.random.set_state(self.state['Nstar'][i - 1])
+                np.random.set_state(self.state['Nstar'][ii - 1])
             else:
                 self.state['Nstar'].append(np.random.get_state())
 
-            self.Nstar[i] = flexce.utils.robust_random_poisson(self.Nstar_stat[i])
-            self.mstar[i] = self.Nstar[i] * self.mass_ave
-            self.Nstar_left[i] = self.Nstar[i]
-            self.mstar_left[i] = self.mstar[i]
+            self.Nstar[ii] = flexce.utils.robust_random_poisson(self.Nstar_stat[ii])
+            self.mstar[ii] = self.Nstar[ii] * self.mass_ave
+            self.Nstar_left[ii] = self.Nstar[ii]
+            self.mstar_left[ii] = self.mstar[ii]
 
             # SNII and AGB yields
-            if self.metallicity[i] < ylds.snii_agb_z[0]:
-                ind_yld[i] = 0
-            elif self.metallicity[i] > ylds.snii_agb_z[-1]:
-                ind_yld[i] = -1
+            if self.metallicity[ii] < ylds.snii_agb_z[0]:
+                ind_yld[ii] = 0
+            elif self.metallicity[ii] > ylds.snii_agb_z[-1]:
+                ind_yld[ii] = -1
             else:
-                ind_yld[i] = np.where(self.metallicity[i] < ylds.snii_agb_z)[0][0]
+                ind_yld[ii] = np.where(self.metallicity[ii] < ylds.snii_agb_z)[0][0]
 
             # TODO add solar metallicity yields as a config option
             # ind_yld[i] = -1 # uncomment for solar metallicity yields only
@@ -358,129 +359,109 @@ class ChemEvol:
             snii_agb_tmp = np.zeros((self.n_bins, ylds.n_sym))
             # mass_returned_tot = 0.
             mass_remnant_tot = 0.
-            for j in range(1, i + 1):
+            for j in range(1, ii + 1):
                 # ind_ev is a list of indices of mass bins from a given birth
                 # time-step that will evolve in the current time-step.
-                ind = self.ind_ev[i - j]
-                # abs_yld (171, 300) = net yield + (isotopic mass fraction at
-                # birth) * (mass returned to ISM)
+                ind = self.ind_ev[ii - j]
 
-                # LIMITED MASS BINS abs_yld
+                # abs_yld = net yield + (isotopic mass fraction at birth) * (mass returned to ISM)
                 mass_return_to_ism = self.mass_ave[ind] - ylds.snii_agb_rem[ind_yld[j], ind]
                 iso_return_to_ism = self.mfrac[j] * np.tile(mass_return_to_ism, (ylds.n_sym, 1)).T
                 abs_yld = snii_agb_yields[ind_yld[j], ind] + iso_return_to_ism
 
-                # TILE 23.53 s
-                # abs_yld = (
-                #     snii_agb_yields[ind_yld[j]] +
-                #     (self.mfrac[j] * (
-                #         np.tile(self.mass_ave - ylds.snii_agb_rem[ind_yld[j]], (ylds.n_sym, 1))).T
-                #      )
-                # )
-
-
-                # ORIGINAL 26.23 s
-                # abs_yld = (
-                #     snii_agb_yields[ind_yld[j]] +
-                #     (self.mfrac[j] * ((self.mass_ave - ylds.snii_agb_rem[ind_yld[j]]) *
-                #              np.ones((ylds.n_sym, self.n_bins))).T))
-
                 # number of stars to evolve
-                N_ev = self.Nstar[j, ind] * self.frac_ev[i - j]
+                N_ev = self.Nstar[j, ind] * self.frac_ev[ii - j]
 
-                # LIMITED MASS BINS abs_yld
                 snii_agb_tmp[ind] += (N_ev * abs_yld.T).T
 
-                # ORIGINAL
-                # snii_agb_tmp[ind] += (N_ev * abs_yld[ind].T).T
-
-
                 if self.params['box']['long_output']:
-                    self.snii_agb_net[i, ind] += (
+                    self.snii_agb_net[ii, ind] += (
                         N_ev * snii_agb_yields[ind_yld[j], ind].T).T
+
                 # mass_returned (300); mass_returned_tot (300)
                 # mass_returned = np.sum(N_ev * abs_yld[ind].T, axis=1)
                 # mass_returned_tot += mass_returned
+
                 mass_remnant_tot += np.sum(ylds.snii_agb_rem[ind_yld[j], ind] * N_ev)
                 self.Nstar_left[j, ind] -= N_ev
-                self.mstar_left[j, ind] -= (self.mstar[j, ind] *
-                                            self.frac_ev[i - j])
-            self.snii[i] = np.sum(snii_agb_tmp[ind8:], axis=0)
-            self.agb[i] = np.sum(snii_agb_tmp[:ind8], axis=0)
+                self.mstar_left[j, ind] -= (self.mstar[j, ind] * self.frac_ev[ii - j])
+
+            self.snii[ii] = np.sum(snii_agb_tmp[ind8:], axis=0)
+            self.agb[ii] = np.sum(snii_agb_tmp[:ind8], axis=0)
             if self.params['box']['long_output']:
-                self.snii_agb[i] = snii_agb_tmp
+                self.snii_agb[ii] = snii_agb_tmp
 
             # SNIa
             if self.params['snia_dtd']['func'] == 'exponential':
                 # mass of WDs that will be formed from the stellar population
                 # that is born in the current timestep
-                self.Mwd[i] = np.sum(self.Nstar[i, ind_ia] *
-                                     ylds.agb_rem[ind_yld[i], ind_ia])
-                self.Mwd_Ia[i] = self.Mwd[i] * self.params['snia_dtd']['fraction']
-                self.Mwd_Ia_init[i] = self.Mwd[i] * self.params['snia_dtd']['fraction']
+                self.Mwd[ii] = np.sum(self.Nstar[ii, ind_ia] *
+                                      ylds.agb_rem[ind_yld[ii], ind_ia])
+                self.Mwd_Ia[ii] = self.Mwd[ii] * self.params['snia_dtd']['fraction']
+                self.Mwd_Ia_init[ii] = self.Mwd[ii] * self.params['snia_dtd']['fraction']
 
             if preset_state_snia:
-                np.random.set_state(self.state['snia'][i - 1])
+                np.random.set_state(self.state['snia'][ii - 1])
             else:
                 self.state['snia'].append(np.random.get_state())
 
             NIa_stat, self.Mwd_Ia = flexce.snia.snia_ev(
                 params=self.params['snia_dtd'],
-                tstep=i,
+                tstep=ii,
                 dtime=self.dtime,
                 mstar=self.mstar,
                 mstar_tot=self.mstar_left.sum(),
                 sfr=self.sfr,
                 Mwd_Ia=self.Mwd_Ia,
             )
-            self.NIa[i] = np.random.poisson(NIa_stat)
+            self.NIa[ii] = np.random.poisson(NIa_stat)
 
-            self.snia[i] = ylds.snia_yields * self.NIa[i]
-            self.mremnant[i] = (mass_remnant_tot - self.NIa[i] * ylds.snia_yields.sum())
+            self.snia[ii] = ylds.snia_yields * self.NIa[ii]
+            self.mremnant[ii] = (mass_remnant_tot - self.NIa[ii] * ylds.snia_yields.sum())
 
             # gas flows
-            self.sf[i] = np.sum(self.mstar[i]) * self.mfrac[i]
-            self.outflow[i] = flexce.outflows.outflow_calc(
+            self.sf[ii] = np.sum(self.mstar[ii]) * self.mfrac[ii]
+            self.outflow[ii] = flexce.outflows.outflow_calc(
                 params=self.params['outflows'],
-                timestep=i,
-                sfr=self.sf[i],
-                stellar_ejecta=self.snii[i] + self.agb[i] + self.snia[i],
+                timestep=ii,
+                sfr=self.sf[ii],
+                stellar_ejecta=self.snii[ii] + self.agb[ii] + self.snia[ii],
             )
 
             if self.params['warmgas']['tcool'] > 0.:
-                self.gas_cooling[i] = (self.mwarmgas_iso[i - 1] * self.dtime /
+                self.gas_cooling[i] = (self.mwarmgas_iso[ii - 1] * self.dtime /
                                        self.params['warmgas']['tcool'])
 
             if self.params['inflows']['func'] == 'constant_mgas':
-                self.inflow_rate[i] = (
+                self.inflow_rate[ii] = (
                     np.sum(
-                        self.sf[i] + self.outflow[i] - self.gas_cooling[i] -
-                        (self.params['warmgas']['fdirect'] * (self.snii[i] + self.agb[i] + self.snia[i]))
+                        self.sf[ii] + self.outflow[ii] - self.gas_cooling[ii] -
+                        (self.params['warmgas']['fdirect'] * (self.snii[ii] + self.agb[ii] + self.snia[ii]))
                     ) / self.dtime
                 )
 
-            self.inflow[i] = (
+            self.inflow[ii] = (
                 flexce.inflows.inflow_composition(
                     params=self.params['inflows'],
                     yields=ylds,
-                    mgas_iso_last=self.mgas_iso[i - 1],
-                ) * self.inflow_rate[i] * self.dtime
+                    mgas_iso_last=self.mgas_iso[ii - 1],
+                ) * self.inflow_rate[ii] * self.dtime
             )
 
-            self.mgas_iso[i] = (
-                self.mgas_iso[i - 1] +
+            self.mgas_iso[ii] = (
+                self.mgas_iso[ii - 1] +
                 ((self.params['warmgas']['fdirect'] + self.params['outflows']['feject']) *
-                 (self.snii[i] + self.agb[i] + self.snia[i])) +
-                self.gas_cooling[i] - self.sf[i] + self.inflow[i] - self.outflow[i]
+                 (self.snii[ii] + self.agb[ii] + self.snia[ii])) +
+                self.gas_cooling[ii] - self.sf[ii] + self.inflow[ii] - self.outflow[ii]
             )
 
-            self.mwarmgas_iso[i] = (
-                self.mwarmgas_iso[i - 1] - self.gas_cooling[i] +
-                self.params['warmgas']['fwarm'] * (self.snii[i] + self.agb[i] + self.snia[i])
+            self.mwarmgas_iso[ii] = (
+                self.mwarmgas_iso[ii - 1] - self.gas_cooling[ii] +
+                self.params['warmgas']['fwarm'] * (self.snii[ii] + self.agb[ii] + self.snia[ii])
             )
 
-            if (i < 4) and self.params['warmgas']['warmgas_on']:
-                self.mwarmgas_iso[i] += (self.warmgas_ab_pattern * self.mwarmgas_init / 4.)
+            if (ii < 4) and self.params['warmgas']['warmgas_on']:
+                self.mwarmgas_iso[ii] += (self.warmgas_ab_pattern * self.mwarmgas_init / 4.)
 
         self.Nstar_left = self.Nstar_left.astype(int)
         self.mstar_left[np.where(np.abs(self.mstar_left) < -1e-8)] = 0.
