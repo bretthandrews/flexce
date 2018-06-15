@@ -460,8 +460,9 @@ class ChemEvol:
             )
 
             self.mwarmgas_iso[ii] = (
-                self.mwarmgas_iso[ii - 1] - self.gas_cooling[ii] +
-                self.params['warmgas']['fwarm'] * (self.snii[ii] + self.agb[ii] + self.snia[ii])
+                self.mwarmgas_iso[ii - 1] -
+                self.gas_cooling[ii] +
+                self.params['warmgas']['fwarm'] * yields_all_sources
             )
 
             if (ii < 4) and self.params['warmgas']['warmgas_on']:
