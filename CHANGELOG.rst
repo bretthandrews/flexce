@@ -8,6 +8,11 @@ Added
 ^^^^^
 - Requirements file.
 - Ability to import ``flexce``.
+- Ability to evolve box without passing in arguments (defaults to fiducial simulation from Andrews et al. 2017).
+- Two infall scenario can be specified in config.
+- Solar metallicity only can be specified in config.
+- Test to check that simulation output is the same as fiducial simulation from Andrews et al. (2017).
+- Significant amount to docstrings.
 
 Removed
 ^^^^^^^
@@ -15,12 +20,28 @@ Removed
 
 Changed
 ^^^^^^^
-- package name to flexce (all lowercase).
-- run_flexce to be an entry_point script.
-- refactors IMF functions into ``imf.py``.
+- Package name to flexce (all lowercase).
+- ``run_flexce`` to be an entry_point script.
+
+- ``ChemEvol.params`` carries all config options.
+
+- Refactored IMF functions into ``imf.py``.
+- Refactored inflow functions into ``inflows.py``.
+- Refactored stellar lifetimes functions into ``lifetimes.py``.
+- Refactored outflow functions into ``outflows.py``.
+- Refactored SNIa DTD functions into ``snia.py``.
+- Refactored star formation functions into ``star_formation.py``.
+- Refactored warm gas reservoir functions into ``warm_gas_reservoir.py``.
+
+- Converted existing tests to ``pytest``.
+
+- Decreased run time by a factor of 6 by reducing the size of arrays created when calculating absolute yields from previous time steps.
+
+- Increased readbility of code (PEP-8 compliance).
 
 Fixed
 ^^^^^
+- Reading in random state for SNIa draws.
 
 
 [1.0.1] - 2018/06/04
