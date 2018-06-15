@@ -1,7 +1,7 @@
 # @Author: Brett Andrews <andrews>
 # @Date:   2018-06-05 11:06:88
 # @Last modified by:   andrews
-# @Last modified time: 2018-06-15 13:06:92
+# @Last modified time: 2018-06-15 14:06:20
 
 """
 FILE
@@ -209,8 +209,8 @@ class ChemEvol:
         """
         n_steps = len(self.time)
         self.agb = np.zeros((n_steps, n_sym))
-        self.gas_cooling = np.zeros((n_steps, n_sym))
         self.dm_sfr = np.zeros(n_steps)
+        self.gas_cooling = np.zeros((n_steps, n_sym))
         self.inflow = np.zeros((n_steps, n_sym))
         self.metallicity = np.zeros(n_steps)
         self.mfrac = np.zeros((n_steps, n_sym))
@@ -219,8 +219,6 @@ class ChemEvol:
         self.mstar = np.zeros((n_steps, self.n_bins))
         self.mstar_left = np.zeros((n_steps, self.n_bins))
         self.mstar_stat = np.zeros((n_steps, self.n_bins))
-        self.mwarmfrac = np.zeros((n_steps, n_sym))
-        self.mwarmgas_iso = np.zeros((n_steps, n_sym))
         self.Mwd = np.zeros(n_steps)
         self.Mwd_Ia = np.zeros(n_steps)
         self.Mwd_Ia_init = np.zeros(n_steps)
@@ -233,6 +231,14 @@ class ChemEvol:
         self.sfr = np.zeros(n_steps)
         self.snia = np.zeros((n_steps, n_sym))
         self.snii = np.zeros((n_steps, n_sym))
+
+        if self.params['warmgas']['warmgas_on']:
+            self.mwarmfrac = np.zeros((n_steps, n_sym))
+            self.mwarmgas_iso = np.zeros((n_steps, n_sym))
+        else:
+            self.mwarmfrac = None
+            self.mwarmgas_iso = None
+
         if self.params['box']['long_output']:
             self.snii_agb = np.zeros((n_steps, self.n_bins, n_sym))
             self.snii_agb_net = np.zeros((n_steps, self.n_bins, n_sym))
@@ -289,12 +295,12 @@ class ChemEvol:
             self.mwarmgas_iso[0] = (self.warmgas_ab_pattern *
                                     self.params['warmgas']['mwarmgas_init'] / 4.)
 
+            if np.sum(self.mwarmgas_iso[0]) > 0.:
+                self.mwarmfrac[0] = self.mwarmgas_iso[0] / np.sum(self.mwarmgas_iso[0])
+
         ind_metal = (ylds.sym_mass > 4.)
         self.metallicity[0] = np.sum(self.mgas_iso[0, ind_metal]) / self.mgas_iso[0, 0]
         self.mfrac[0] = self.mgas_iso[0] / np.sum(self.mgas_iso[0])
-
-        if np.sum(self.mwarmgas_iso[0]) > 0.:
-            self.mwarmfrac[0] = self.mwarmgas_iso[0] / np.sum(self.mwarmgas_iso[0])
 
         snii_agb_yields = np.append(ylds.agb_yields, ylds.snii_yields, axis=1)
 
