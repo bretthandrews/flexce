@@ -285,7 +285,8 @@ class ChemEvol:
         self.mgas_iso[0] = ylds.bbmf * self.params['inflows']['mgas_init']
 
         if self.params['warmgas']['warmgas_on']:
-            self.mwarmgas_iso[0] = (self.warmgas_ab_pattern * self.params['mwarmgas_init'] / 4.)
+            self.mwarmgas_iso[0] = (self.warmgas_ab_pattern *
+                                    self.params['warmgas']['mwarmgas_init'] / 4.)
 
         ind_metal = (ylds.sym_mass > 4.)
         self.metallicity[0] = np.sum(self.mgas_iso[0, ind_metal]) / self.mgas_iso[0, 0]
@@ -461,7 +462,8 @@ class ChemEvol:
             )
 
             if (ii < 4) and self.params['warmgas']['warmgas_on']:
-                self.mwarmgas_iso[ii] += (self.warmgas_ab_pattern * self.mwarmgas_init / 4.)
+                self.mwarmgas_iso[ii] += (self.warmgas_ab_pattern *
+                                          self.params['warmgas']['mwarmgas_init'] / 4.)
 
         self.Nstar_left = self.Nstar_left.astype(int)
         self.mstar_left[np.where(np.abs(self.mstar_left) < -1e-8)] = 0.
