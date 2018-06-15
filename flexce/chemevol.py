@@ -1,7 +1,7 @@
 # @Author: Brett Andrews <andrews>
 # @Date:   2018-06-05 11:06:88
 # @Last modified by:   andrews
-# @Last modified time: 2018-06-15 12:06:83
+# @Last modified time: 2018-06-15 12:06:36
 
 """
 FILE
@@ -358,7 +358,6 @@ class ChemEvol:
 
             # Evolve stars from previous timesteps
             snii_agb_tmp = np.zeros((self.n_bins, ylds.n_sym))
-            # mass_returned_tot = 0.
             mass_remnant_tot = 0.
             for jj in range(1, ii + 1):
                 # ind_ev is a list of indices of mass bins from a given birth
@@ -376,12 +375,7 @@ class ChemEvol:
                 snii_agb_tmp[ind] += (N_ev * abs_yld.T).T
 
                 if self.params['box']['long_output']:
-                    self.snii_agb_net[ii, ind] += (
-                        N_ev * snii_agb_yields[ind_yld[jj], ind].T).T
-
-                # mass_returned (300); mass_returned_tot (300)
-                # mass_returned = np.sum(N_ev * abs_yld[ind].T, axis=1)
-                # mass_returned_tot += mass_returned
+                    self.snii_agb_net[ii, ind] += (N_ev * snii_agb_yields[ind_yld[jj], ind].T).T
 
                 mass_remnant_tot += np.sum(ylds.snii_agb_rem[ind_yld[jj], ind] * N_ev)
                 self.Nstar_left[jj, ind] -= N_ev
@@ -389,6 +383,7 @@ class ChemEvol:
 
             self.snii[ii] = np.sum(snii_agb_tmp[ind8:], axis=0)
             self.agb[ii] = np.sum(snii_agb_tmp[:ind8], axis=0)
+
             if self.params['box']['long_output']:
                 self.snii_agb[ii] = snii_agb_tmp
 
@@ -396,8 +391,7 @@ class ChemEvol:
             if self.params['snia_dtd']['func'] == 'exponential':
                 # mass of WDs that will be formed from the stellar population
                 # that is born in the current timestep
-                self.Mwd[ii] = np.sum(self.Nstar[ii, ind_ia] *
-                                      ylds.agb_rem[ind_yld[ii], ind_ia])
+                self.Mwd[ii] = np.sum(self.Nstar[ii, ind_ia] * ylds.agb_rem[ind_yld[ii], ind_ia])
                 self.Mwd_Ia[ii] = self.Mwd[ii] * self.params['snia_dtd']['fraction']
                 self.Mwd_Ia_init[ii] = self.Mwd[ii] * self.params['snia_dtd']['fraction']
 
