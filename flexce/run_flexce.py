@@ -1,7 +1,7 @@
 # @Author: Brett Andrews <andrews>
 # @Date:   2018-05-30 17:05:89
 # @Last modified by:   andrews
-# @Last modified time: 2018-06-11 15:06:38
+# @Last modified time: 2018-06-14 21:06:55
 
 """
 FILE
@@ -69,7 +69,7 @@ def main(config_file, path_in, path_out):
 
     mass_bins = flexce.utils.define_mass_bins(**params['mass_bins_args'])
 
-    ylds = flexce.utils.load_yields(path_data, params['yld_args'], mass_bins)
+    ylds = flexce.utils.load_yields(path_data, mass_bins, params['yld_args'])
 
     box = flexce.chemevol.evolve(
         ylds,
