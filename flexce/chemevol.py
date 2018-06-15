@@ -451,9 +451,12 @@ class ChemEvol:
 
             self.mgas_iso[ii] = (
                 self.mgas_iso[ii - 1] +
-                ((self.params['warmgas']['fdirect'] + self.params['outflows']['feject']) *
-                 (self.snii[ii] + self.agb[ii] + self.snia[ii])) +
-                self.gas_cooling[ii] - self.sf[ii] + self.inflow[ii] - self.outflow[ii]
+                (self.params['warmgas']['fdirect'] * yields_all_sources) +
+                (self.params['outflows']['feject'] * yields_all_sources) +
+                self.gas_cooling[ii] -
+                self.sf[ii] +
+                self.inflow[ii] -
+                self.outflow[ii]
             )
 
             self.mwarmgas_iso[ii] = (
