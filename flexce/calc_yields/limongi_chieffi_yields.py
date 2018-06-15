@@ -119,7 +119,7 @@ solar_ab = np.array(solar_isotopes['ab'])
 
 # (Similar naming structure for lc06 and lc12 arrays)
 
-mass_ni56 = 0.1 # mass of ni56 produced
+mass_ni56 = 0.1  # mass of ni56 produced
 
 # isotope names
 species = np.array([])
@@ -415,12 +415,12 @@ logz_grid = np.log10(z_grid)
 
 # evenly sample metallicity (in log Z) between grid points
 logz_final = np.zeros(n_metal_bin)
-dind = (n_metal_bin - 1) / (len(z_grid) - 1)
-for i in range(len(z_grid) - 1):
-    dlogz = (logz_grid[i+1] - logz_grid[i]) / \
-            ((n_metal_bin - 1) / (len(z_grid) - 1))
-    logz_final[i*dind:i*dind+dind+1] = np.arange(logz_grid[i],
-                                                 logz_grid[i+1]+1e-9, dlogz)
+dind = int((n_metal_bin - 1) / (len(z_grid) - 1))
+for ii in range(len(z_grid) - 1):
+    dlogz = (logz_grid[ii + 1] - logz_grid[ii]) / ((n_metal_bin - 1) / (len(z_grid) - 1))
+    ind0 = ii * dind
+    ind1 = ii * dind + dind + 1
+    logz_final[ind0:ind1] = np.arange(logz_grid[ii], logz_grid[ii + 1] + 1e-9, dlogz)
 
 # metallicity of final grid
 z_final = 10.**logz_final
