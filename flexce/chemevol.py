@@ -1,7 +1,7 @@
 # @Author: Brett Andrews <andrews>
 # @Date:   2018-06-05 11:06:88
 # @Last modified by:   andrews
-# @Last modified time: 2018-06-15 14:06:20
+# @Last modified time: 2018-06-15 17:06:21
 
 """
 FILE
@@ -219,6 +219,8 @@ class ChemEvol:
         self.mstar = np.zeros((n_steps, self.n_bins))
         self.mstar_left = np.zeros((n_steps, self.n_bins))
         self.mstar_stat = np.zeros((n_steps, self.n_bins))
+        self.mwarmfrac = np.zeros((n_steps, n_sym))
+        self.mwarmgas_iso = np.zeros((n_steps, n_sym))
         self.Mwd = np.zeros(n_steps)
         self.Mwd_Ia = np.zeros(n_steps)
         self.Mwd_Ia_init = np.zeros(n_steps)
@@ -231,13 +233,6 @@ class ChemEvol:
         self.sfr = np.zeros(n_steps)
         self.snia = np.zeros((n_steps, n_sym))
         self.snii = np.zeros((n_steps, n_sym))
-
-        if self.params['warmgas']['warmgas_on']:
-            self.mwarmfrac = np.zeros((n_steps, n_sym))
-            self.mwarmgas_iso = np.zeros((n_steps, n_sym))
-        else:
-            self.mwarmfrac = None
-            self.mwarmgas_iso = None
 
         if self.params['box']['long_output']:
             self.snii_agb = np.zeros((n_steps, self.n_bins, n_sym))
