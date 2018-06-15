@@ -422,11 +422,14 @@ class ChemEvol:
 
             # gas flows
             self.sf[ii] = np.sum(self.mstar[ii]) * self.mfrac[ii]
+
+            yields_all_sources = self.snii[ii] + self.agb[ii] + self.snia[ii]
+
             self.outflow[ii] = flexce.outflows.outflow_calc(
                 params=self.params['outflows'],
                 timestep=ii,
                 sfr=self.sf[ii],
-                stellar_ejecta=self.snii[ii] + self.agb[ii] + self.snia[ii],
+                stellar_ejecta=yields_all_sources,
             )
 
             if self.params['warmgas']['tcool'] > 0.:
