@@ -1,7 +1,7 @@
 # @Author: Brett Andrews <andrews>
 # @Date:   2018-04-16 20:04:48
 # @Last modified by:   andrews
-# @Last modified time: 2018-06-15 13:06:05
+# @Last modified time: 2018-06-15 15:06:81
 
 """
 FILE
@@ -88,7 +88,6 @@ def load_yields(path, mass_bins, kwargs):
     except IOError as e:
         print()
         print(e)
-        # TODO automatically run make_yield_grids.py
         print('\nPlease create yield grids with')
         print('python make_yield_grids.py\n')
         sys.exit(1)
