@@ -1,7 +1,7 @@
 # @Author: Brett Andrews <andrews>
 # @Date:   2018-06-05 11:06:88
 # @Last modified by:   andrews
-# @Last modified time: 2018-06-14 16:06:89
+# @Last modified time: 2018-06-15 10:06:91
 
 """
 FILE
@@ -364,14 +364,37 @@ class ChemEvol:
                 ind = self.ind_ev[i - j]
                 # abs_yld (171, 300) = net yield + (isotopic mass fraction at
                 # birth) * (mass returned to ISM)
-                abs_yld = (snii_agb_yields[ind_yld[j]] +
-                           (self.mfrac[j] *
-                            ((self.mass_ave -
-                              ylds.snii_agb_rem[ind_yld[j]]) *
-                             np.ones((ylds.n_sym, self.n_bins))).T))
+
+                # LIMITED MASS BINS abs_yld
+                mass_return_to_ism = self.mass_ave[ind] - ylds.snii_agb_rem[ind_yld[j], ind]
+                iso_return_to_ism = self.mfrac[j] * np.tile(mass_return_to_ism, (ylds.n_sym, 1)).T
+                abs_yld = snii_agb_yields[ind_yld[j], ind] + iso_return_to_ism
+
+                # TILE 23.53 s
+                # abs_yld = (
+                #     snii_agb_yields[ind_yld[j]] +
+                #     (self.mfrac[j] * (
+                #         np.tile(self.mass_ave - ylds.snii_agb_rem[ind_yld[j]], (ylds.n_sym, 1))).T
+                #      )
+                # )
+
+
+                # ORIGINAL 26.23 s
+                # abs_yld = (
+                #     snii_agb_yields[ind_yld[j]] +
+                #     (self.mfrac[j] * ((self.mass_ave - ylds.snii_agb_rem[ind_yld[j]]) *
+                #              np.ones((ylds.n_sym, self.n_bins))).T))
+
                 # number of stars to evolve
                 N_ev = self.Nstar[j, ind] * self.frac_ev[i - j]
-                snii_agb_tmp[ind] += (N_ev * abs_yld[ind].T).T
+
+                # LIMITED MASS BINS abs_yld
+                snii_agb_tmp[ind] += (N_ev * abs_yld.T).T
+
+                # ORIGINAL
+                # snii_agb_tmp[ind] += (N_ev * abs_yld[ind].T).T
+
+
                 if self.params['box']['long_output']:
                     self.snii_agb_net[i, ind] += (
                         N_ev * snii_agb_yields[ind_yld[j], ind].T).T
