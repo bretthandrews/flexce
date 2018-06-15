@@ -449,6 +449,11 @@ class ChemEvol:
                 ) * self.inflow_rate[ii] * self.dtime
             )
 
+            # If outflow source is stellar_ejecta (hence feject is non-zero),
+            # then we need to add the stellar ejecta lost in the outflow
+            # (feject * yields) to counteract the outflow term, which is
+            # non-zero for bookkeeping but in this line would correspond to
+            # ejecting cold ISM.
             self.mgas_iso[ii] = (
                 self.mgas_iso[ii - 1] +
                 (self.params['warmgas']['fdirect'] * yields_all_sources) +
