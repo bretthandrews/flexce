@@ -58,7 +58,7 @@ def txt_write(box, ab, filename):
     with open(filename, 'w') as f:
         f.write(_colnames(ab.elements_out))
 
-        for tt, sv, fe, xfe in zip(box.t[1:], box.survivors[1:], ab.feh, ab.xfe.T):
+        for tt, sv, fe, xfe in zip(box.time[1:], box.survivors[1:], ab.feh, ab.xfe.T):
             time = ['{:<7}'.format(tt)]
             survivors = ['{:10}'.format(sv)]
             feh = ['{:8.5f}'.format(fe)]
