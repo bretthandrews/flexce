@@ -27,8 +27,8 @@ path_c06 = join(path_yields, 'cescutti06')
 sys.path.append(path_io)
 # -------------------
 
-from pickle_io import pck_read
-from pickle_io import pck_write
+from flexce.io.pck import pck_read
+from flexce.io.pck import pck_write
 
 
 # ---- Load Data ----

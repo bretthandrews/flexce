@@ -22,7 +22,7 @@ path_yldgen = join(path_yields, 'general')
 sys.path.append(path_io)
 # -------------------
 
-from pickle_io import pck_write
+from flexce.io.pck import pck_write
 
 # ----- Load Data -----
 s08 = {}

@@ -26,8 +26,8 @@ path_b01 = join(path_yields, 'busso01')
 sys.path.append(path_io)
 # -------------------
 
-from pickle_io import pck_read
-from pickle_io import pck_write
+from flexce.io.pck import pck_read
+from flexce.io.pck import pck_write
 
 # ---- Load Data ----
 data_in = pd.read_csv(join(path_b01, 'busso01_sprocess.txt'),
