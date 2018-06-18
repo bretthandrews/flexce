@@ -15,7 +15,6 @@ yields:
         - Ba
     solar_metallicity: False
 
-
 box:
     radius: 10.
     time_tot: 12000.
