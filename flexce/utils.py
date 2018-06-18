@@ -1,7 +1,7 @@
 # @Author: Brett Andrews <andrews>
 # @Date:   2018-04-16 20:04:48
 # @Last modified by:   andrews
-# @Last modified time: 2018-06-18 15:06:60
+# @Last modified time: 2018-06-18 15:06:36
 
 """
 FILE
@@ -59,6 +59,7 @@ def set_yields(params=None):
         'r_elements': ['Ba', 'Eu'],
         's_elements': ['Ba'],
         'solar_metallicity': False,
+        'sprocess_supersolar': False,
     }
 
     if params is None:
