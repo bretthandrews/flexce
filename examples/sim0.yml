@@ -55,7 +55,6 @@ outflows:
 warmgas:
     warmgas: False
 
-# Star Formation Law
 sf:
     nu_kslaw: 1e-9
     N_kslaw: 1.
