@@ -6,11 +6,15 @@ flexCE's Change Log
 
 Added
 ^^^^^
-- Requirements file.
 - Ability to import ``flexce``.
+- Requirements file.
 - Ability to evolve box without passing in arguments (defaults to fiducial simulation from Andrews et al. 2017).
+
+- Ability to pass in config file name to ``ChemEvol`` instance.
 - Two infall scenario can be specified in config.
 - Solar metallicity only can be specified in config.
+- Save options "slim" (disk space efficient), "state" (random number state), and "yields" (full yields used).
+
 - Test to check that simulation output is the same as fiducial simulation from Andrews et al. (2017).
 - Significant amount to docstrings.
 
@@ -38,6 +42,8 @@ Changed
 - Converted existing tests to ``pytest``.
 
 - Decreased run time by a factor of 6 by reducing the size of arrays created when calculating absolute yields from previous time steps.
+
+- ``make_yield_grids.py`` to a console script.
 
 - Increased readbility of code (PEP-8 compliance).
 
