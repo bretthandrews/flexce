@@ -23,6 +23,8 @@ Changed
 - Package name to flexce (all lowercase).
 - ``run_flexce`` to be an entry_point script.
 
+- Config file type to YAML (.yml).
+
 - ``ChemEvol.params`` carries all config options.
 
 - Refactored IMF functions into ``imf.py``.
