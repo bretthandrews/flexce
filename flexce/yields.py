@@ -5,7 +5,9 @@ import copy
 import numpy as np
 import pandas as pd
 
+import flexce
 from flexce.io.pck import pck_read
+from flexce.utils import set_yields
 
 
 def create_yield_grids():
@@ -29,72 +31,63 @@ class Yields:
 
     def __init__(
         self,
-        path_parent,
-        snii_dir=None,
-        agb_dir=None,
-        snia_dir=None,
-        rprocess_dir=None,
-        sprocess_dir=None,
-        snia_model='w70',
-        sprocess_supersolar=False,
-        r_elements=None,
-        s_elements=None,
+        params=None,
         mbins=None,
+        path_parent=None,
         **kwargs
     ):
         """Initialize Yields instance.
 
         Args:
-            path_parent (str): Data directory.
-            snii_dir (str): SNII yield directory. Default is ``None``.
-            agb_dir (str): AGB yield directory. Default is ``None``.
-            snia_dir (str): SNIa yield directory. Default is ``None``.
-            rprocess_dir (str): r-process yield directory. Default is
-                ``None``.
-            sprocess_dir (str): s-process yield directory. Default is
-                ``None``.
-            snia_model (str): SNIa model. Default is 'w70'.
-            sprocess_supersolar (bool): If ``True``, use super-solar
-                metallicity s-process yields.
-            r_elements (list): r-process elements to track. Default is
-                ``None``.
-            s_elements (list): s-process elements to track. Default is
-                ``None``.
             mbins (array): stellar mass bins. Defaults to ``None``.
+            params (dict): Yields parameters. Default is ``None``.
+            path_parent (str): Data directory. Default is ``None``.
         """
+        params = set_yields(params)
+
+        if path_parent is None:
+            path_parent = join(os.path.dirname(flexce.__file__), 'data')
+
         self.path_parent = path_parent
         self.path_yields = join(self.path_parent, 'yields')
         self.path_yldgen = join(self.path_yields, 'general')
-        self.path_snii = join(self.path_yields, snii_dir)
-        self.path_agb = join(self.path_yields, agb_dir)
-        self.path_snia = join(self.path_yields, snia_dir)
-        self.sources = dict(snii=snii_dir.split('/')[0],
-                            snia=snia_dir.split('/')[0],
-                            agb=agb_dir.split('/')[0])
-        if rprocess_dir is not None:
-            self.path_rprocess = join(self.path_yields, rprocess_dir)
-            self.sources['rprocess'] = rprocess_dir.split('/')[0]
-        if sprocess_dir is not None:
-            self.path_sprocess = join(self.path_yields, sprocess_dir)
-            self.sources['sprocess'] = sprocess_dir.split('/')[0]
+        self.path_snii = join(self.path_yields, params['snii_dir'])
+        self.path_agb = join(self.path_yields, params['agb_dir'])
+        self.path_snia = join(self.path_yields, params['snia_dir'])
+
+        self.sources = {
+            'snii': params['snii_dir'].split('/')[0],
+            'snia': params['snia_dir'].split('/')[0],
+            'agb': params['agb_dir'].split('/')[0]
+        }
+
+        if params['rprocess_dir'] is not None:
+            self.path_rprocess = join(self.path_yields, params['rprocess_dir'])
+            self.sources['rprocess'] = params['rprocess_dir'].split('/')[0]
+
+        if params['sprocess_dir'] is not None:
+            self.path_sprocess = join(self.path_yields, params['sprocess_dir'])
+            self.sources['sprocess'] = params['sprocess_dir'].split('/')[0]
+
         if mbins is None:
-            mbins = np.concatenate((np.arange(0.1, 8., 0.1),
-                                    np.arange(8., 100.1, 1.)))
+            mbins = flexce.utils.set_mass_bins()
+
         self.mass_bins = mbins
         self.n_bins = len(mbins) - 1
         self.n_bins_high = len(np.where(self.mass_bins >= 8.)[0]) - 1
         self.n_bins_low = len(np.where(self.mass_bins < 8.)[0])
         self.ind8 = np.where(self.mass_bins == 8.)[0][0]
         self.mlow = mbins[0]
+
         self.load_sym()
         self.load_bbmf()
         self.load_rprocess_yields()
-        self.load_sprocess_yields(supersolar=sprocess_supersolar)
+        self.load_sprocess_yields(supersolar=params['sprocess_supersolar'])
         self.load_snii_yields()
         self.load_agb_yields()
-        self.load_snia_yields(model=snia_model)
-        self.concat_ncapture_yields(r_elements=r_elements,
-                                    s_elements=s_elements)
+        self.load_snia_yields(model=params['snia_model'])
+        self.concat_ncapture_yields(r_elements=params['r_elements'],
+                                    s_elements=params['s_elements'])
         self.load_solar_abund()
 
     def _check_yield_grids(self, path):
@@ -250,8 +243,7 @@ class Yields:
         Cescutti et al. (2006) r-process Ba & Eu yields for M = 12, 15, 30
         Msun that are metallicity independent.
         """
-        self.rprocess_yields = pck_read(join(self.path_rprocess,
-                                                'cescutti06_yields.pck'))
+        self.rprocess_yields = pck_read(join(self.path_rprocess, 'cescutti06_yields.pck'))
 
     def load_sprocess_yields(self, supersolar=False):
         """Load s-process element yields.
