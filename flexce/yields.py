@@ -252,17 +252,18 @@ class Yields:
         2e-4--4e-2 (twice solar and twice the maximum Limongi & Chieffi
         metallicity).
 
-        supersolar: if True, use the yields that extend from solar (Z = 2e-2)
-        to twice solar (Z = 4e-2), otherwise only use the yields up to solar.
+        Args:
+            supersolar (bool): If ``True``, use the yields that extend
+                from solar (Z = 2e-2) to twice solar (Z = 4e-2),
+                otherwise only use the yields up to solar. Default is
+                ``False``.
         """
         if supersolar:
-            self.sprocess_z = pck_read(join(self.path_sprocess,
-                                               'busso01ext_metallicity.pck'))
-            self.sprocess_yields = pck_read(join(self.path_sprocess,
-                                                    'busso01ext_yields.pck'))
+            self.sprocess_z = pck_read(join(self.path_sprocess, 'busso01ext_metallicity.pck'))
+            self.sprocess_yields = pck_read(join(self.path_sprocess, 'busso01ext_yields.pck'))
+
         else:
-            self.sprocess_yields = pck_read(join(self.path_sprocess,
-                                                    'busso01_yields.pck'))
+            self.sprocess_yields = pck_read(join(self.path_sprocess, 'busso01_yields.pck'))
 
     def load_snia_yields(self, model):
         """Load SNIa yields.
@@ -276,8 +277,7 @@ class Yields:
         wdd2\: WDD2
         wdd3\: WDD3
         """
-        self.snia_yields = pck_read(join(self.path_snia,
-                                            model + '_yields.pck'))
+        self.snia_yields = pck_read(join(self.path_snia, model + '_yields.pck'))
 
     def concat_ncapture_yields(self, r_elements, s_elements):
         """Create an array of r- and s-process isotopic yields."""
