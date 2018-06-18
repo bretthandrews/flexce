@@ -1,7 +1,7 @@
 # @Author: Brett Andrews <andrews>
 # @Date:   2018-06-13 15:06:13
 # @Last modified by:   andrews
-# @Last modified time: 2018-06-15 13:06:34
+# @Last modified time: 2018-06-18 10:06:84
 
 """
 FILE
@@ -50,7 +50,7 @@ def gal(box0):
 
 
 box0_ignore = [
-    'frac_ev_tot', 'warmgas_on', 'alpha1', 'inflow_func', 'tcool', 'num_int2',
+    'frac_ev_tot', 'warmgas', 'alpha1', 'inflow_func', 'tcool', 'num_int2',
     'eta_outflow', 'mgas_init', 'snia_dtd_func', 'mass_frac2', 'mwarmgas_init',
     'min_snia_time', 'inflow_ab_pattern', 'mass_bins2', 'alpha', 'fwarm', 'sim_id',
     'N_kslaw', 'sf_param', 'snia_param', 'mass_breaks', 'alpha2', 'nu_kslaw',

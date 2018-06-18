@@ -1,7 +1,7 @@
 # @Author: Brett Andrews <andrews>
 # @Date:   2018-06-07 21:06:85
 # @Last modified by:   andrews
-# @Last modified time: 2018-06-13 10:06:66
+# @Last modified time: 2018-06-18 10:06:95
 
 """
 FILE
@@ -88,7 +88,7 @@ def set_warm_gas_reservoir(
         fwarm = 0.
 
     params_warmgas = {
-        'warmgas_on': warmgas,
+        'warmgas': warmgas,
         'mwarmgas_init': mwarmgas_init,
         'fdirect': fdirect,
         'fwarm': fwarm,

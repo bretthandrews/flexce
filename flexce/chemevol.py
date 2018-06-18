@@ -303,7 +303,7 @@ class ChemEvol:
         # initial conditions
         self.mgas_iso[0] = ylds.bbmf * self.params['inflows']['mgas_init']
 
-        if self.params['warmgas']['warmgas_on']:
+        if self.params['warmgas']['warmgas']:
             self.mwarmgas_iso[0] = (self.warmgas_ab_pattern *
                                     self.params['warmgas']['mwarmgas_init'] / 4.)
 
@@ -485,7 +485,7 @@ class ChemEvol:
                 self.params['warmgas']['fwarm'] * yields_all_sources
             )
 
-            if (ii < 4) and self.params['warmgas']['warmgas_on']:
+            if (ii < 4) and self.params['warmgas']['warmgas']:
                 self.mwarmgas_iso[ii] += (self.warmgas_ab_pattern *
                                           self.params['warmgas']['mwarmgas_init'] / 4.)
 
