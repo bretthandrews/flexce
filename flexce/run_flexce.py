@@ -1,7 +1,7 @@
 # @Author: Brett Andrews <andrews>
 # @Date:   2018-05-30 17:05:89
 # @Last modified by:   andrews
-# @Last modified time: 2018-06-18 11:06:39
+# @Last modified time: 2018-06-18 16:06:12
 
 """
 FILE
@@ -32,6 +32,7 @@ import flexce.io.yml
 import flexce.io.pck
 import flexce.io.txt
 import flexce.utils
+from flexce.yields import Yields
 
 
 @click.command()
@@ -70,7 +71,7 @@ def main(config_file, path_in, path_out):
     mass_bins = flexce.utils.set_mass_bins(**params['mass_bins'])
 
     params['yld_args'] = flexce.utils.set_yields(params['yields'])
-    ylds = flexce.utils.load_yields(path_data, mass_bins, params['yields'])
+    ylds = Yields(params=params['yields'], mass_bins=mass_bins, path=path_data)
 
     # TODO enable loading state from file
     state = None

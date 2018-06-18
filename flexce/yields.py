@@ -33,7 +33,7 @@ class Yields:
         self,
         params=None,
         mass_bins=None,
-        path_parent=None,
+        path=None,
         **kwargs
     ):
         """Initialize Yields instance.
@@ -41,14 +41,14 @@ class Yields:
         Args:
             mass_bins (array): stellar mass bins. Defaults to ``None``.
             params (dict): Yields parameters. Default is ``None``.
-            path_parent (str): Data directory. Default is ``None``.
+            path (str): Data directory. Default is ``None``.
         """
         params = set_yields(params)
 
-        if path_parent is None:
-            path_parent = join(os.path.dirname(flexce.__file__), 'data')
+        if path is None:
+            path = join(os.path.dirname(flexce.__file__), 'data')
 
-        self.path_parent = path_parent
+        self.path_parent = path
         self.path_yields = join(self.path_parent, 'yields')
         self.path_yldgen = join(self.path_yields, 'general')
         self.path_snii = join(self.path_yields, params['snii_dir'])

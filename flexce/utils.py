@@ -1,7 +1,7 @@
 # @Author: Brett Andrews <andrews>
 # @Date:   2018-04-16 20:04:48
 # @Last modified by:   andrews
-# @Last modified time: 2018-06-18 15:06:36
+# @Last modified time: 2018-06-18 16:06:21
 
 """
 FILE
@@ -93,7 +93,7 @@ def load_yields(path=None, mass_bins=None, kwargs=None):
     kwargs = kwargs if kwargs is not None else {}
 
     try:
-        ylds = Yields(path, mbins=mass_bins, **kwargs)
+        ylds = Yields(params=params, mbins=mass_bins, path=path)
 
     except IOError as e:
         print()

@@ -2,16 +2,22 @@
 
 import os
 from os.path import join
-from flexce.io.cfg import read_sim_cfg
-from flexcel.utils import define_mass_bins, load_yields
 
-path_flexce = join(os.getenv('HOME'), 'flexce', 'flexce')
-path_config = join(path_flexce, 'config')
-path_data = join(path_flexce, 'data')
-file_in = join(path_config, 'sim0.cfg')
+from flexce.io.yml import read_yml
+from flexce.utils import set_mass_bins, load_yields
 
-(sim_id, yld_args, initialize_args, mass_bins_args, snia_dtd_args,
- inflows_args, outflows_args, warmgasres_args, sf_args) = read_sim_cfg(file_in)
+from flexce.yields import Yields
 
-mass_bins = define_mass_bins(**mass_bins_args)
-ylds = load_yields(path_data, yld_args, mass_bins)
+# Edit for docs
+path_flexce = join(os.path.expanduser('~'), 'projects', 'flexce')
+path_config = join(path_flexce, 'examples')
+path_data = join(path_flexce, 'flexce', 'data')
+file_in = join(path_config, 'sim0.yml')
+
+params = read_yml(file_in)
+
+mass_bins = set_mass_bins(**params['mass_bins'])
+ylds = load_yields(path_data, mass_bins, params['yields'])
+
+
+ylds = Yields(path_data, mass_bins, params['yields'])
