@@ -40,8 +40,17 @@ def box0():
 @pytest.fixture(scope='session')
 def gal(box0):
     """Sim with same parameters and random state as fiducial sim."""
+
     print('\nRunning flexCE...')
+
     return ChemEvol(
+        params={
+            'box': {
+                'save': {
+                    'slim': False,
+                },
+            },
+        },
         state={
             'Nstar': box0.random_num_state_Nstar,
             'snia': box0.random_num_state_snia
@@ -66,7 +75,7 @@ class TestFiducialSim(object):
 
     def test_params_box(self, gal, box0):
         for k, v in gal.params['box'].items():
-            if k in ['sim_id', 'long_output']:
+            if k in ['sim_id', 'save']:
                 continue
 
             assert box0.__dict__[k] == v, k

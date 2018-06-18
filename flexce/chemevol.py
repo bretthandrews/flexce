@@ -146,12 +146,14 @@ class ChemEvol:
         """
         self.params['box']['sim_id'] = sim_id
 
-        if save is None:
-            self.params['box']['save'] = {
-                'slim': True,
-                'state': False,
-                'yields': False,
-            }
+        save = save if save is not None else {}
+        default_save = {'slim': True, 'state': False, 'yields': False}
+
+        for kk in default_save.keys():
+            if (kk not in save) or (not isinstance(save[kk], bool)):
+                save[kk] = default_save[kk]
+
+        self.params['box']['save'] = save
 
         self.n_bins = len(self.mass_bins) - 1
         self.n_bins_high = len(np.where(self.mass_bins >= 8)[0]) - 1
