@@ -246,7 +246,7 @@ class Yields:
                                     self.snii_yields.shape[2]))
         ind_agb = np.array([], dtype=int)
 
-        for sym in agb_sym:
+        for sym in agb_sym['name']:
             tmp = np.where(sym == self.snii_sym)[0]
             ind_agb = np.append(ind_agb, tmp)
 
