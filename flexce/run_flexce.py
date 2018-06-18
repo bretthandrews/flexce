@@ -1,7 +1,7 @@
 # @Author: Brett Andrews <andrews>
 # @Date:   2018-05-30 17:05:89
 # @Last modified by:   andrews
-# @Last modified time: 2018-06-14 21:06:55
+# @Last modified time: 2018-06-18 10:06:64
 
 """
 FILE
@@ -27,7 +27,7 @@ from os.path import join
 import click
 
 import flexce.abundances
-import flexce.chemevol
+from flexce.chemevol import ChemEvol
 import flexce.io.cfg
 import flexce.io.pck
 import flexce.io.txt
@@ -67,8 +67,9 @@ def main(config_file, path_in, path_out):
 
     params = flexce.io.cfg.read_sim_cfg(file_in)
 
-    mass_bins = flexce.utils.define_mass_bins(**params['mass_bins_args'])
+    mass_bins = flexce.utils.set_mass_bins(**params['mass_bins_args'])
 
+    params['yld_args'] = flexce.utils.set_yields(params['yld_args'])
     ylds = flexce.utils.load_yields(path_data, mass_bins, params['yld_args'])
 
     box = flexce.chemevol.evolve(
@@ -86,9 +87,9 @@ def main(config_file, path_in, path_out):
         ylds.sym,
         box.mgas_iso,
         box.survivors,
-        box.t,
-        box.param,
-        box.sim_id)
+        box.time,
+        box.params,
+    )
 
     write_output(path_out, params['sim_id'], box, ab)
 
