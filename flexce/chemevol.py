@@ -1,7 +1,7 @@
 # @Author: Brett Andrews <andrews>
 # @Date:   2018-06-05 11:06:88
 # @Last modified by:   andrews
-# @Last modified time: 2018-06-18 11:06:20
+# @Last modified time: 2018-06-18 11:06:84
 
 """
 FILE
@@ -42,7 +42,9 @@ class ChemEvol:
     """
     def __init__(self, params=None, ylds=None, state=None):
 
-        if os.path.isfile(params):
+        if isinstance(params, dict):
+            pass
+        elif isinstance(params, str) and os.path.isfile(params):
             params = flexce.io.yml.read_yml(params)
         elif params is None:
             params = {}
