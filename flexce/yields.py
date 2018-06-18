@@ -100,6 +100,7 @@ class Yields:
         fnames = ['interp_{}.pck'.format(it) for it in suffixes]
         for fname in fnames:
             check_grid(join(path, fname))
+
         self._check_metallicity_grid()
 
     def _check_metallicity_grid(self):
@@ -109,27 +110,29 @@ class Yields:
     def load_sym(self):
         """Load isotopic and elemental symbols and masses."""
         el_sym = pd.read_csv(join(self.path_yldgen, 'sym_atomicnum.txt'),
-                             delim_whitespace=True, usecols=[0, 1],
-                             names=['num', 'el'])
+                             delim_whitespace=True, usecols=[0, 1], names=['num', 'el'])
+
         self.atomic_num = np.array(el_sym['num'])
         self.element_all = np.array(el_sym['el'])
+
         snii_sym = pd.read_csv(join(self.path_yldgen, 'species.txt'),
-                               delim_whitespace=True, skiprows=1,
-                               usecols=[1, 2], names=['name', 'mass'])
+                               delim_whitespace=True, skiprows=1, usecols=[1, 2],
+                               names=['name', 'mass'])
+
         self.snii_sym = np.array(snii_sym['name'])
         self.snii_sym_mass = np.array(snii_sym['mass'])
         self.n_snii_sym = len(self.snii_sym)
-        u, indices = np.unique([item.rstrip('0123456789')
-                                for item in self.snii_sym], return_index=True)
+
+        uu, indices = np.unique([item.rstrip('0123456789')
+                                 for item in self.snii_sym], return_index=True)
         indices_s = np.argsort(indices)
-        self.element = np.delete(u[indices_s], np.s_[13, 14])
+        self.element = np.delete(uu[indices_s], np.s_[13, 14])
         self.n_elements = len(self.element)
 
     def load_bbmf(self):
         """Big bang mass fraction of isotopes from WW95/Timmies data file."""
         bbmf = pd.read_csv(join(self.path_yldgen, 'bbmf.txt'),
-                           delim_whitespace=True, skiprows=1, usecols=[1],
-                           names=['mfrac'])
+                           delim_whitespace=True, skiprows=1, usecols=[1], names=['mfrac'])
         self.bbmf = np.array(bbmf['mfrac'])
 
     def load_solar_abund(self, source='lodders'):
@@ -142,17 +145,21 @@ class Yields:
             fin = join(self.path_yldgen, 'lodders03_solar_photosphere.txt')
             solar_ab = pd.read_csv(fin, delim_whitespace=True, skiprows=8,
                                    usecols=[0, 1], names=['el', 'ab'])
+
             self.solar_element = np.array(solar_ab['el'])
             self.solar_ab = np.array(solar_ab['ab'])
             self.solar_h = np.zeros(self.n_elements)
             self.solar_fe = np.zeros(self.n_elements)
-            for i in range(self.n_elements):
-                ind = np.where(self.solar_element == self.element[i])[0]
+
+            for ii in range(self.n_elements):
+                ind = np.where(self.solar_element == self.element[ii])[0]
                 ind_fe = np.where(self.element == 'Fe')
-                self.solar_h[i] = self.solar_ab[ind]
-                self.solar_fe[i] = np.log10(
+                self.solar_h[ii] = self.solar_ab[ind]
+                self.solar_fe[ii] = np.log10(
                     10.**(self.solar_ab[ind] - 12.) /
-                    10.**(self.solar_ab[ind_fe] - 12.))
+                    10.**(self.solar_ab[ind_fe] - 12.)
+                )
+
         self.calc_solar_mass_fraction()
         # elif source == 'asplund':
         # elif source == 'aspcap':
@@ -167,18 +174,21 @@ class Yields:
             'Ar36', 'K39', 'Ca40', 'Sc45', 'Ti48', 'V51', 'Cr52', 'Mn55',
             'Fe56', 'Co59', 'Ni58', 'Cu63', 'Zn64', 'Ga69', 'Ge74', 'As75',
             'Se80', 'Br81', 'Kr84', 'Rb85', 'Sr88', 'Y89', 'Zr90', 'Nb93',
-            'Mo98', 'Ba138', 'Eu153'])
+            'Mo98', 'Ba138', 'Eu153'
+        ])
+
         miso = np.array([item.lstrip(''.join(['ABCDEFGHIJKLMNOPQRSTUVWXYZ',
                                               'abcdefghijklmnopqrstuvwxyz']))
                          for item in dominant_isotope])
         miso = miso.astype(int)
+
         nh = 10.**(self.solar_h - 12.)
         mh = nh * miso
         mfrac = mh / mh.sum()
+
         self.solar_mfrac = np.zeros(self.n_sym)
-        for i in range(len(dominant_isotope)):
-            ind = np.where(self.sym == dominant_isotope[i])[0]
-            self.solar_mfrac[ind] = mfrac[i]
+        for ii, dom_iso in enumerate(dominant_isotope):
+            self.solar_mfrac[self.sym == dom_iso] = mfrac[ii]
 
     def load_snii_yields(self):
         """Load SNII yields.
@@ -192,8 +202,10 @@ class Yields:
         self.snii_yields = pck_read(join(self.path_snii, 'interp_yields.pck'))
         self.snii_mej = pck_read(join(self.path_snii, 'interp_meject.pck'))
         self.snii_rem = pck_read(join(self.path_snii, 'interp_mremnant.pck'))
+
         self.snii_agb_z = copy.deepcopy(self.snii_z)
         self.n_z = len(self.snii_agb_z)
+
         # adjust for a different upper mass limit to the IMF
         self.snii_yields = self.snii_yields[:, :self.n_bins_high, :]
         self.snii_mej = self.snii_mej[:, :self.n_bins_high]
@@ -212,26 +224,34 @@ class Yields:
         have removed those from agb_sym, agb_yields_in, and agb_yields.
         """
         self._check_yield_grids(self.path_agb)
+
         agb_sym = pd.read_csv(join(self.path_agb, 'species.txt'),
                               delim_whitespace=True, skiprows=1, usecols=[1],
                               names=['name'])
+
         self.agb_sym = np.array(agb_sym['name'])
         self.agb_z = pck_read(join(self.path_yldgen, 'interp_metallicity.pck'))
+
         agb_yields_in = pck_read(join(self.path_agb, 'interp_yields.pck'))
         # remove isotopes not in the LC06 yields
         agb_yields_in = np.delete(agb_yields_in, np.s_[6, 13, 23, 47], axis=2)
+
         self.agb_mej = pck_read(join(self.path_agb, 'interp_meject.pck'))
         self.agb_rem = pck_read(join(self.path_agb, 'interp_mremnant.pck'))
+
         # Create an array with the same elements as the Limongi & Chieffi
         # (2006) SNII yields.
         self.agb_yields = np.zeros((agb_yields_in.shape[0],
                                     agb_yields_in.shape[1],
                                     self.snii_yields.shape[2]))
         ind_agb = np.array([], dtype=int)
-        for i in range(len(self.agb_sym)):
-            tmp = np.where(self.agb_sym[i] == self.snii_sym)[0]
+
+        for sym in agb_sym:
+            tmp = np.where(sym == self.snii_sym)[0]
             ind_agb = np.append(ind_agb, tmp)
+
         self.agb_yields[:, :, ind_agb] = copy.deepcopy(agb_yields_in)
+
         if self.mlow == 0.2:
             self.agb_mej = self.agb_mej[:, 1:]
             self.agb_rem = self.agb_rem[:, 1:]
@@ -284,44 +304,51 @@ class Yields:
         nclib = pck_read(join(self.path_yldgen, 'sneden08.pck'))
         # unique elements arranged by atomic number
         elements = np.unique(r_elements + s_elements)
-        at_num = []
-        for item in elements:
-            at_num.append(nclib[item]['Z'])
-        at_num = np.array(at_num)
+        at_num = np.array([nclib[it]['Z'] for it in elements])
         elements = elements[np.argsort(at_num)]
+
         self.nc_sym = []
         self.nc_sym_mass = []
+
         for item in elements:
             n_tmp = len(nclib[item]['Isotope'])
-            for i in range(n_tmp):
-                self.nc_sym.append(item + str(nclib[item]['Isotope'][i]))
-                self.nc_sym_mass.append(nclib[item]['Isotope'][i])
+            for ii in range(n_tmp):
+                self.nc_sym.append(item + str(nclib[item]['Isotope'][ii]))
+                self.nc_sym_mass.append(nclib[item]['Isotope'][ii])
+
         self.nc_sym = np.array(self.nc_sym)
         self.nc_sym_mass = np.array(self.nc_sym_mass)
         self.n_nc_sym = len(self.nc_sym)
-        u, indices = np.unique([item.rstrip('0123456789')
-                                for item in self.nc_sym], return_index=True)
+
+        uu, indices = np.unique([item.rstrip('0123456789') for item in self.nc_sym], return_index=True)
         indices_s = np.argsort(indices)
-        self.nc_element = u[indices_s]
+        self.nc_element = uu[indices_s]
+
         # project elemental yields onto relative isotopic abundances
         self.nc_yields = np.zeros((self.n_z, self.n_bins, self.n_nc_sym))
         cnt = 0
         for i in range(len(elements)):
             el = elements[i]
             el_iso = len(nclib[el]['Isotope'])
+
             if el in r_elements:
                 j = np.where(np.array(r_elements) == el)[0]
-                self.nc_yields[:, -self.n_bins_high:, cnt:cnt+el_iso] = \
-                               (np.ones((self.n_z, self.n_bins_high, el_iso)) *
-                                self.rprocess_yields[:, -self.n_bins_high:, j] *
-                                nclib[el]['isotopic_fraction[r]'])
+                self.nc_yields[:, -self.n_bins_high:, cnt:cnt + el_iso] = (
+                    np.ones((self.n_z, self.n_bins_high, el_iso)) *
+                    self.rprocess_yields[:, -self.n_bins_high:, j] *
+                    nclib[el]['isotopic_fraction[r]']
+                )
+
             if el in s_elements:
                 j = np.where(np.array(s_elements) == el)[0]
-                self.nc_yields[:, :self.n_bins_low, cnt:cnt+el_iso] = \
-                                (np.ones((self.n_z, self.n_bins_low, el_iso)) *
-                                 self.sprocess_yields[:, :, j] *
-                                 nclib[el]['isotopic_fraction[s]'])
+                self.nc_yields[:, :self.n_bins_low, cnt:cnt + el_iso] = (
+                    np.ones((self.n_z, self.n_bins_low, el_iso)) *
+                    self.sprocess_yields[:, :, j] *
+                    nclib[el]['isotopic_fraction[s]']
+                )
+
             cnt += el_iso
+
         # update arrays
         self.sym = np.append(self.snii_sym, self.nc_sym)
         self.sym_mass = np.append(self.snii_sym_mass, self.nc_sym_mass)
@@ -329,19 +356,18 @@ class Yields:
         self.element = np.append(self.element, self.nc_element)
         self.n_elements = len(self.element)
         self.bbmf = np.append(self.bbmf, np.zeros(self.n_nc_sym))
+
         if len(self.snia_yields.shape) == 1:
             # metallicity-independent SNIa yields
-            self.snia_yields = np.append(self.snia_yields,
-                                         np.zeros(self.n_nc_sym))
+            self.snia_yields = np.append(self.snia_yields, np.zeros(self.n_nc_sym))
+
         elif len(self.snia_yields.shape) == 2:
             # metallicity-dependent SNIa yields
-            self.snia_yields = np.append(self.snia_yields,
-                                         np.zeros((self.nc_yields.shape[0],
-                                                   self.nc_yields.shape[2])),
-                                         axis=1)
-        self.snii_yields = np.append(self.snii_yields,
-                                     self.nc_yields[:, self.ind8:], axis=2)
-        self.agb_yields = np.append(self.agb_yields,
-                                    self.nc_yields[:, :self.ind8], axis=2)
-        self.snii_agb_rem = np.concatenate((self.agb_rem, self.snii_rem),
-                                           axis=1)
+            self.snia_yields = np.append(
+                self.snia_yields,
+                np.zeros((self.nc_yields.shape[0], self.nc_yields.shape[2])), axis=1
+            )
+
+        self.snii_yields = np.append(self.snii_yields, self.nc_yields[:, self.ind8:], axis=2)
+        self.agb_yields = np.append(self.agb_yields, self.nc_yields[:, :self.ind8], axis=2)
+        self.snii_agb_rem = np.concatenate((self.agb_rem, self.snii_rem), axis=1)
