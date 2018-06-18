@@ -21,7 +21,6 @@ from pathlib import PurePath
 import numpy as np
 
 import flexce
-from flexce.yields import Yields
 
 
 def set_mass_bins(low=0.1, high=100, dm_low=0.1, dm_high=1., break_mass=8):
@@ -84,6 +83,7 @@ def load_yields(path=None, mass_bins=None, kwargs=None):
     Returns:
         Yields instance.
     """
+    from flexce.yields import Yields
 
     if path is None:
         path = join(os.path.dirname(flexce.__file__), 'data')
