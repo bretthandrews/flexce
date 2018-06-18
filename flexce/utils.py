@@ -1,7 +1,7 @@
 # @Author: Brett Andrews <andrews>
 # @Date:   2018-04-16 20:04:48
 # @Last modified by:   andrews
-# @Last modified time: 2018-06-15 15:06:81
+# @Last modified time: 2018-06-18 15:06:60
 
 """
 FILE
@@ -20,6 +20,7 @@ from pathlib import PurePath
 
 import numpy as np
 
+import flexce
 from flexce.yields import Yields
 
 
@@ -71,17 +72,25 @@ def set_yields(params=None):
     return params
 
 
-def load_yields(path, mass_bins, kwargs):
+def load_yields(path=None, mass_bins=None, kwargs=None):
     """Load yield grids.
 
     Args:
-        path (str): Data directory.
-        mass_bins (array): Stellar mass bins.
-        kwargs (dict): Keyword arguments to pass to ``Yields``.
+        path (str): Data directory. Default is ``None``.
+        mass_bins (array): Stellar mass bins. Default is ``None``.
+        kwargs (dict): Keyword arguments to pass to ``Yields``. Default
+            is ``None``.
 
     Returns:
         Yields instance.
     """
+
+    if path is None:
+        path = join(os.path.dirname(flexce.__file__), 'data')
+
+    mass_bins = mass_bins if mass_bins is not None else {}
+    kwargs = kwargs if kwargs is not None else {}
+
     try:
         ylds = Yields(path, mbins=mass_bins, **kwargs)
 
