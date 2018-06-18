@@ -3,5 +3,6 @@ matplotlib>=2.0.0
 numpy>=1.14.0
 pandas>=0.22.0
 pytest>=3.2.2
+PyYAML>=3.12
 scipy>=1.0.1
 seaborn>=0.8.1

@@ -1,0 +1,61 @@
+# Simulation 0
+# Fiducial
+
+yields:
+    snii_dir: limongi06/iso_yields/
+    agb_dir: karakas10/iso_yields/
+    snia_dir: iwamoto99/
+    rprocess_dir: cescutti06/
+    sprocess_dir: busso01/
+    snia_model: w70
+    r_elements:
+        - Ba
+        - Eu
+    s_elements:
+        - Ba
+    solar_metallicity: False
+
+
+box:
+    radius: 10.
+    time_tot: 12000.
+    dtime: 30.
+    imf: kroupa
+    imf_alpha:
+    imf_mass_breaks:
+    sim_id:
+    save:
+
+mass_bins:
+    low: 0.1
+    high: 100.
+    dm_low: 0.1
+    dm_high: 1.
+    break_mass: 8
+
+snia_dtd:
+    func: exponential
+    min_snia_time: 150.
+    timescale: 1500.
+    snia_fraction: 0.135
+
+inflows:
+    func: exp
+    mgas_init: 2e10
+    coeff:
+        M1: 4.0e11
+        b1: 6000.
+    inflow_ab_pattern: bbns
+    inflow_metallicity: 1.0
+
+outflows:
+    source: ism
+    eta: 2.5
+
+warmgas:
+    warmgas: False
+
+# Star Formation Law
+sf:
+    nu_kslaw: 1e-9
+    N_kslaw: 1.

@@ -1,7 +1,7 @@
 # @Author: Brett Andrews <andrews>
 # @Date:   2018-06-05 11:06:88
 # @Last modified by:   andrews
-# @Last modified time: 2018-06-18 10:06:71
+# @Last modified time: 2018-06-18 11:06:20
 
 """
 FILE
@@ -22,6 +22,7 @@ import numpy as np
 import flexce.imf
 from flexce.imf import integrate_multi_power_law
 import flexce.inflows
+import flexce.io.yml
 import flexce.lifetimes
 import flexce.outflows
 import flexce.star_formation
@@ -41,7 +42,11 @@ class ChemEvol:
     """
     def __init__(self, params=None, ylds=None, state=None):
 
-        params = params if params is not None else {}
+        if os.path.isfile(params):
+            params = flexce.io.yml.read_yml(params)
+        elif params is None:
+            params = {}
+
         props = ['mass_bins', 'box', 'yields', 'snia_dtd', 'inflows', 'outflows',
                  'warmgas', 'sf']
         for prop in props:
