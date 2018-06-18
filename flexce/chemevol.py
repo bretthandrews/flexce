@@ -1,7 +1,7 @@
 # @Author: Brett Andrews <andrews>
 # @Date:   2018-06-05 11:06:88
 # @Last modified by:   andrews
-# @Last modified time: 2018-06-18 11:06:84
+# @Last modified time: 2018-06-18 16:06:71
 
 """
 FILE
@@ -29,6 +29,7 @@ import flexce.star_formation
 import flexce.snia
 import flexce.utils
 import flexce.warm_gas_reservoir as warmgas
+from flexce.yields import Yields
 
 
 class ChemEvol:
@@ -70,7 +71,7 @@ class ChemEvol:
             path_data = join(os.path.dirname(__file__), 'data')
             # TODO try to load existing yields. If they don't exist, then calculate them.
             params['yields'] = flexce.utils.set_yields(params['yields'])
-            ylds = flexce.utils.load_yields(path_data, self.mass_bins, params['yields'])
+            ylds = Yields(params=params['yields'], mass_bins=self.mass_bins, path=path_data)
 
         self.params['snia_dtd'] = flexce.snia.set_snia_dtd(
             time=self.time,
