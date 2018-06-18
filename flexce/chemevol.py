@@ -1,7 +1,7 @@
 # @Author: Brett Andrews <andrews>
 # @Date:   2018-06-05 11:06:88
 # @Last modified by:   andrews
-# @Last modified time: 2018-06-15 17:06:21
+# @Last modified time: 2018-06-18 10:06:71
 
 """
 FILE
@@ -102,7 +102,7 @@ class ChemEvol:
         imf_alpha=None,
         imf_mass_breaks=None,
         sim_id=None,
-        long_output=False,
+        save=None,
     ):
         """Initialize box.
 
@@ -122,12 +122,29 @@ class ChemEvol:
                 function. Must set ``imf`` to 'power_law'. Default is
                 ``None``.
             sim_id (str): Simulation ID number. Default is ``None``.
-            long_output (bool): If ``True``, record total, net, and
-                recycled SNII and AGB yields from each previous time
-                step. Default is ``False``.
+            save (dict): Save options.
+                slim: If ``True``, delete the following attributes (not
+                    used for abundance calculations):
+                        agb, gas_cooling, inflow, mfrac, mstar,
+                        mstar_left, mstar_stat, mwarmfrac,
+                        mwarmgas_iso, Nstar, Nstar_left,
+                        Nstar_stat, outflow, sf, snia, snii.
+                    Default is ``True``.
+                state: If ``True``, save the random number state of the
+                    simulation (used for exactly reproducing the IMF
+                    and SNIa draws). Default is ``False``.
+                yields: If ``True``, record total, net, and recycled
+                    SNII and AGB yields from each previous time step.
+                    Default is ``False``.
         """
         self.params['box']['sim_id'] = sim_id
-        self.params['box']['long_output'] = long_output
+
+        if save is None:
+            self.params['box']['save'] = {
+                'slim': True,
+                'state': False,
+                'yields': False,
+            }
 
         self.n_bins = len(self.mass_bins) - 1
         self.n_bins_high = len(np.where(self.mass_bins >= 8)[0]) - 1
@@ -234,7 +251,7 @@ class ChemEvol:
         self.snia = np.zeros((n_steps, n_sym))
         self.snii = np.zeros((n_steps, n_sym))
 
-        if self.params['box']['long_output']:
+        if self.params['box']['save']['yields']:
             self.snii_agb = np.zeros((n_steps, self.n_bins, n_sym))
             self.snii_agb_net = np.zeros((n_steps, self.n_bins, n_sym))
             self.snii_agb_rec = np.zeros((n_steps, self.n_bins, n_sym))
@@ -339,7 +356,7 @@ class ChemEvol:
 
             if preset_state_Nstar:
                 np.random.set_state(self.state['Nstar'][ii - 1])
-            else:
+            elif self.params['box']['save']['state']:
                 self.state['Nstar'].append(np.random.get_state())
 
             self.Nstar[ii] = flexce.utils.robust_random_poisson(self.Nstar_stat[ii])
@@ -376,7 +393,7 @@ class ChemEvol:
 
                 snii_agb_tmp[ind] += (N_ev * abs_yld.T).T
 
-                if self.params['box']['long_output']:
+                if self.params['box']['save']['yields']:
                     self.snii_agb_net[ii, ind] += (N_ev * snii_agb_yields[ind_yld[jj], ind].T).T
 
                 mass_remnant_tot += np.sum(ylds.snii_agb_rem[ind_yld[jj], ind] * N_ev)
@@ -386,7 +403,7 @@ class ChemEvol:
             self.snii[ii] = np.sum(snii_agb_tmp[ind8:], axis=0)
             self.agb[ii] = np.sum(snii_agb_tmp[:ind8], axis=0)
 
-            if self.params['box']['long_output']:
+            if self.params['box']['save']['yields']:
                 self.snii_agb[ii] = snii_agb_tmp
 
             # SNIa
@@ -399,7 +416,7 @@ class ChemEvol:
 
             if preset_state_snia:
                 np.random.set_state(self.state['snia'][ii - 1])
-            else:
+            elif self.params['box']['save']['state']:
                 self.state['snia'].append(np.random.get_state())
 
             NIa_stat, self.Mwd_Ia = flexce.snia.snia_ev(
@@ -475,7 +492,7 @@ class ChemEvol:
         self.Nstar_left = self.Nstar_left.astype(int)
         self.mstar_left[np.abs(self.mstar_left) < -1e-8] = 0.
 
-        if self.params['box']['long_output']:
+        if self.params['box']['save']['yields']:
             self.snii_agb_rec = self.snii_agb - self.snii_agb_net
 
         print('Time elapsed:', time.time() - start)
@@ -489,3 +506,11 @@ class ChemEvol:
 
         self.survivors = np.sum(self.Nstar_left[:, 1:], axis=1)
         self.survivors = self.survivors.round().astype(int)
+
+        attr_to_del = ['agb', 'gas_cooling', 'inflow', 'mfrac', 'mstar', 'mstar_left',
+                       'mstar_stat', 'mwarmfrac', 'mwarmgas_iso', 'Nstar', 'Nstar_left',
+                       'Nstar_stat', 'outflow', 'sf', 'snia', 'snii']
+
+        if self.params['box']['save']['slim']:
+            for attr in attr_to_del:
+                delattr(self, attr)
