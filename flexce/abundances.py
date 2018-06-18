@@ -6,7 +6,7 @@ import numpy as np
 import pandas as pd
 
 
-def calc_abundances(path, sym, mgas, survivors, time, parameters, sim_id):
+def calc_abundances(path, sym, mgas, survivors, time, parameters):
     """Calculate abundances of box.
 
     Wrapper for Abundances class.
@@ -19,12 +19,11 @@ def calc_abundances(path, sym, mgas, survivors, time, parameters, sim_id):
             the end of the simulation.
         time (array): time in Myr.
         parameters (dict): parameters of the simulation.
-        sim_id (str): simulation ID number.
 
     Returns:
         Abundances instance
     """
-    abund = Abundances(path, sym, mgas, survivors, time, parameters, sim_id)
+    abund = Abundances(path, sym, mgas, survivors, time, parameters)
     abund.load_solar_abund()
     abund.calc_abundances()
     apogee_el = np.array(['C', 'N', 'O', 'Na', 'Mg', 'Al', 'Si', 'S',
@@ -38,7 +37,7 @@ class Abundances:
     """
 
     def __init__(self, path_parent, sym_iso, mgas_iso, weight, timesteps=None,
-                 sim_params=None, sim_id=None):
+                 sim_params=None):
         """Initialize Abundances instance.
 
         Args:
@@ -49,7 +48,6 @@ class Abundances:
             timesteps (array): Timesteps from ChemEvol instance. Defaults to
                 None.
             sim_params (dict): Parameters of ChemEvol instance.
-            sim_id (str): Simulation ID number.
         """
         self.path_parent = path_parent
         self.path_yields = join(path_parent, 'yields')
@@ -62,7 +60,7 @@ class Abundances:
         self.survivors = weight
         self.t = timesteps
         self.param = sim_params
-        self.sim_id = 'ab' + sim_id.lstrip('box')
+        self.sim_id = sim_params['box']['sim_id']
 #        self.apogee_elements()
 
     def setup(self):
