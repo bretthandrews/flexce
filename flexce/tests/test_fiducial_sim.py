@@ -1,7 +1,7 @@
 # @Author: Brett Andrews <andrews>
 # @Date:   2018-06-13 15:06:13
 # @Last modified by:   andrews
-# @Last modified time: 2018-06-18 10:06:84
+# @Last modified time: 2018-06-18 16:06:93
 
 """
 FILE
@@ -65,7 +65,7 @@ box0_ignore = [
     'N_kslaw', 'sf_param', 'snia_param', 'mass_breaks', 'alpha2', 'nu_kslaw',
     'warmgasres_param', 'fdirect', 'inflow_param', 'snia_fraction', 'variable_eta',
     'mass_int2', 'outflow_source', 'imf', 'outflow_param', 'inflow_metallicity',
-    'snia_timescale', 'mass_ave2',
+    'snia_timescale', 'mass_ave2', 'warmgas_on'
 ]
 keys_gal = []
 keys_box0 = box0_ignore
@@ -104,6 +104,7 @@ class TestFiducialSim(object):
     def test_params_warmgas(self, gal, box0):
         for k, v in gal.params['warmgas'].items():
             if k not in ['fdirect', 'tcool']:
+                k = k if k != 'warmgas' else 'warmgas_on'
                 assert box0.param['warmgas'][k] == v, k
 
     def test_params_sf(self, gal, box0):
@@ -137,7 +138,8 @@ class TestFiducialSim(object):
             if k in ['snii_dir', 'agb_dir', 'snia_dir', 'rprocess_dir', 'sprocess_dir']:
                 k = k.split('_dir')[0]
 
-            if k in ['snia_model', 'r_elements', 's_elements', 'solar_metallicity']:
+            if k in ['snia_model', 'r_elements', 's_elements', 'solar_metallicity',
+                     'sprocess_supersolar']:
                 continue
 
             assert box0.param['yields'][k] == v.split('/')[0], k
