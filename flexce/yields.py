@@ -32,14 +32,14 @@ class Yields:
     def __init__(
         self,
         params=None,
-        mbins=None,
+        mass_bins=None,
         path_parent=None,
         **kwargs
     ):
         """Initialize Yields instance.
 
         Args:
-            mbins (array): stellar mass bins. Defaults to ``None``.
+            mass_bins (array): stellar mass bins. Defaults to ``None``.
             params (dict): Yields parameters. Default is ``None``.
             path_parent (str): Data directory. Default is ``None``.
         """
@@ -69,15 +69,15 @@ class Yields:
             self.path_sprocess = join(self.path_yields, params['sprocess_dir'])
             self.sources['sprocess'] = params['sprocess_dir'].split('/')[0]
 
-        if mbins is None:
-            mbins = flexce.utils.set_mass_bins()
+        if mass_bins is None:
+            mass_bins = flexce.utils.set_mass_bins()
 
-        self.mass_bins = mbins
-        self.n_bins = len(mbins) - 1
+        self.mass_bins = mass_bins
+        self.n_bins = len(mass_bins) - 1
         self.n_bins_high = len(np.where(self.mass_bins >= 8.)[0]) - 1
         self.n_bins_low = len(np.where(self.mass_bins < 8.)[0])
         self.ind8 = np.where(self.mass_bins == 8.)[0][0]
-        self.mlow = mbins[0]
+        self.mlow = mass_bins[0]
 
         self.load_sym()
         self.load_bbmf()
