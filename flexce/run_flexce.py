@@ -1,7 +1,7 @@
 # @Author: Brett Andrews <andrews>
 # @Date:   2018-05-30 17:05:89
 # @Last modified by:   andrews
-# @Last modified time: 2018-06-18 10:06:64
+# @Last modified time: 2018-06-18 11:06:39
 
 """
 FILE
@@ -28,7 +28,7 @@ import click
 
 import flexce.abundances
 from flexce.chemevol import ChemEvol
-import flexce.io.cfg
+import flexce.io.yml
 import flexce.io.pck
 import flexce.io.txt
 import flexce.utils
@@ -41,7 +41,7 @@ import flexce.utils
 def main(config_file, path_in, path_out):
     """
     Args:
-        config_file (str): Config file name.  Default is ``sim0.cfg``
+        config_file (str): Config file name.  Default is ``sim0.yml``.
             (fiducial parameters from Andrews et al. 2017).
         path_in (str): Path to `config_file`.  Default is current dir.
         path_out (str): Path to output dir.  Default is current dir.
@@ -52,7 +52,7 @@ def main(config_file, path_in, path_out):
 
     if config_file is None:
         print('No config file specified. Using default parameters.')
-        config_file = 'sim0.cfg'
+        config_file = 'sim0.yml'
         path_in = join(path_flexce_root, 'examples')
 
     if path_in is None:
@@ -65,22 +65,17 @@ def main(config_file, path_in, path_out):
 
     file_in = join(path_in, config_file)
 
-    params = flexce.io.cfg.read_sim_cfg(file_in)
+    params = flexce.io.yml.read_yml(file_in)
 
-    mass_bins = flexce.utils.set_mass_bins(**params['mass_bins_args'])
+    mass_bins = flexce.utils.set_mass_bins(**params['mass_bins'])
 
-    params['yld_args'] = flexce.utils.set_yields(params['yld_args'])
-    ylds = flexce.utils.load_yields(path_data, mass_bins, params['yld_args'])
+    params['yld_args'] = flexce.utils.set_yields(params['yields'])
+    ylds = flexce.utils.load_yields(path_data, mass_bins, params['yields'])
 
-    box = flexce.chemevol.evolve(
-        ylds,
-        params['initialize_args'],
-        params['snia_dtd_args'],
-        params['inflows_args'],
-        params['outflows_args'],
-        params['warmgasres_args'],
-        params['sf_args']
-    )
+    # TODO enable loading state from file
+    state = None
+
+    box = ChemEvol(params, ylds, state)
 
     ab = flexce.abundances.calc_abundances(
         path_data,
