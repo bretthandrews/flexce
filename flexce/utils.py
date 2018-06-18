@@ -1,7 +1,7 @@
 # @Author: Brett Andrews <andrews>
 # @Date:   2018-04-16 20:04:48
 # @Last modified by:   andrews
-# @Last modified time: 2018-06-18 16:06:21
+# @Last modified time: 2018-06-18 17:06:28
 
 """
 FILE
@@ -70,39 +70,6 @@ def set_yields(params=None):
             params[key] = val
 
     return params
-
-
-def load_yields(path=None, mass_bins=None, kwargs=None):
-    """Load yield grids.
-
-    Args:
-        path (str): Data directory. Default is ``None``.
-        mass_bins (array): Stellar mass bins. Default is ``None``.
-        kwargs (dict): Keyword arguments to pass to ``Yields``. Default
-            is ``None``.
-
-    Returns:
-        Yields instance.
-    """
-    from flexce.yields import Yields
-
-    if path is None:
-        path = join(os.path.dirname(flexce.__file__), 'data')
-
-    mass_bins = mass_bins if mass_bins is not None else {}
-    kwargs = kwargs if kwargs is not None else {}
-
-    try:
-        ylds = Yields(params=params, mbins=mass_bins, path=path)
-
-    except IOError as e:
-        print()
-        print(e)
-        print('\nPlease create yield grids with')
-        print('python make_yield_grids.py\n')
-        sys.exit(1)
-
-    return ylds
 
 
 def set_path(path_in, default_path):
