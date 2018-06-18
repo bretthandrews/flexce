@@ -1,7 +1,7 @@
 # @Author: Brett Andrews <andrews>
 # @Date:   2018-06-13 15:06:13
 # @Last modified by:   andrews
-# @Last modified time: 2018-06-18 16:06:93
+# @Last modified time: 2018-06-18 16:06:55
 
 """
 FILE
@@ -200,7 +200,12 @@ class TestFiducialSim(object):
             keys_gal.append(arr)
             keys_box0.append(arr_box)
 
+
+class TestAllAttributes(object):
+    """Checks that all attributes have been tested."""
+
     def test_attribute_set(self, gal, box0):
+        """Only works if running all the tests in this file."""
         diff_gal = set(gal.__dict__.keys()) - set(keys_gal)
         diff_box0 = set(box0.__dict__.keys()) - set(keys_box0)
         assert not diff_gal, f'gal: {diff_gal}'
