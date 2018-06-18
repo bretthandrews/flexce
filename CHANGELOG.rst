@@ -21,6 +21,8 @@ Added
 Removed
 ^^^^^^^
 - ``config``, ``plots``, and ``output`` directories.
+- ``flexce.utils.load_yields()`` because initializing a ``Yields`` instance directly is simple.
+- ``flexce.io.cfg.read_sim_cfg()`` because config file are now YAML files.
 
 Changed
 ^^^^^^^
