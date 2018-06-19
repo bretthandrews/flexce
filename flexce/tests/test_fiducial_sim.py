@@ -1,7 +1,7 @@
 # @Author: Brett Andrews <andrews>
 # @Date:   2018-06-13 15:06:13
 # @Last modified by:   andrews
-# @Last modified time: 2018-06-18 16:06:55
+# @Last modified time: 2018-06-19 13:06:52
 
 """
 FILE
@@ -26,7 +26,6 @@ sys.path.append('/Users/andrews/projects/pcaa_chemevol/')
 import chemevol_main
 
 
-# load fiducial simulation
 @pytest.fixture(scope='session')
 def box0():
     """Fiducial simulation from Andrews et al. (2017)."""
