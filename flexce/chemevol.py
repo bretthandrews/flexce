@@ -1,7 +1,7 @@
 # @Author: Brett Andrews <andrews>
 # @Date:   2018-06-05 11:06:88
 # @Last modified by:   andrews
-# @Last modified time: 2018-06-18 16:06:71
+# @Last modified time: 2018-06-19 13:06:14
 
 """
 FILE
@@ -38,10 +38,8 @@ class ChemEvol:
     Args:
         params (dict): Parameters of simulation. Default is ``None``.
         ylds: Yields instance. Default is ``None``.
-        state (dict): Random number state for drawing from the IMF and
-            exploding SNIa. Default is ``None``.
     """
-    def __init__(self, params=None, ylds=None, state=None):
+    def __init__(self, params=None, ylds=None):
 
         if isinstance(params, dict):
             pass
@@ -57,11 +55,6 @@ class ChemEvol:
                 params[prop] = {}
 
         self.params = params
-
-        if state is None:
-            state = {'Nstar': [], 'snia': []}
-
-        self.state = state
 
         self.mass_bins = flexce.utils.set_mass_bins(**params['mass_bins'])
 
@@ -130,31 +123,37 @@ class ChemEvol:
                 function. Must set ``imf`` to 'power_law'. Default is
                 ``None``.
             sim_id (str): Simulation ID number. Default is ``None``.
-            save (dict): Save options.
-                slim: If ``True``, delete the following attributes (not
-                    used for abundance calculations):
+            save (dict): Save options. Default is ``None``.
+                slim (bool): If ``True``, delete the following
+                    attributes (not used for abundance calculations):
                         agb, gas_cooling, inflow, mfrac, mstar,
                         mstar_left, mstar_stat, mwarmfrac,
                         mwarmgas_iso, Nstar, Nstar_left,
                         Nstar_stat, outflow, sf, snia, snii.
                     Default is ``True``.
-                state: If ``True``, save the random number state of the
-                    simulation (used for exactly reproducing the IMF
-                    and SNIa draws). Default is ``False``.
-                yields: If ``True``, record total, net, and recycled
-                    SNII and AGB yields from each previous time step.
-                    Default is ``False``.
+                state (dict): Random number state. Default is ``None``.
+                    Nstar (bool or str): If ``True``, save the random
+                        number state of the simulation used for exactly
+                        reproducing the IMF draws. To load the state of
+                        a previous simulation, give the path to the
+                        .pck file of that simulation. Default is
+                        ``False``.
+                    snia (bool or str): If ``True``, save the random
+                        number state of the simulation used for exactly
+                        reproducing the SNIa draws. To load the state
+                        of a previous simulation, give the path to the
+                        .pck file of that simulation. Default is
+                        ``False``.
+                yields (bool): If ``True``, record total, net, and
+                    recycled SNII and AGB yields from each previous
+                    time step. Default is ``False``.
         """
         self.params['box']['sim_id'] = sim_id
 
         save = save if save is not None else {}
-        default_save = {'slim': True, 'state': False, 'yields': False}
-
-        for kk in default_save.keys():
-            if (kk not in save) or (not isinstance(save[kk], bool)):
-                save[kk] = default_save[kk]
-
-        self.params['box']['save'] = save
+        default_save = {'slim': True, 'state': None, 'yields': False}
+        self.params['box']['save'] = {k: v for k, v in default_save.items() if k not in save}
+        self.state = self.set_state(self.params['box']['save']['state'])
 
         self.n_bins = len(self.mass_bins) - 1
         self.n_bins_high = len(np.where(self.mass_bins >= 8)[0]) - 1
@@ -191,6 +190,30 @@ class ChemEvol:
             self.params['imf']['alpha'],
             self.params['imf']['mass_breaks'],
         )
+
+    @staticmethod
+    def set_state(state):
+        state = state if state is not None else {}
+        default = {'Nstar': [], 'snia': []}
+        state = {k: v if k not in state else state[k] for k, v in default.items()}
+
+        if isinstance(state['Nstar'], str):
+            box_Nstar = flexce.io.pck.pck_read(state['Nstar'])
+            try:
+                state['Nstar'] = box_Nstar.state['Nstar']
+            except AttributeError as ee:
+                # flexCE v1.0 syntax
+                state['Nstar'] = box_Nstar.random_num_state_Nstar
+
+        if isinstance(state['snia'], str):
+            box_snia = flexce.io.pck.pck_read(state['snia'])
+            try:
+                state['snia'] = box_snia.state['snia']
+            except AttributeError as ee:
+                # flexCE v1.0 syntax
+                state['snia'] = box_snia.random_num_state_snia
+
+        return state
 
     def check_mass_conservation(self, yields):
         """Checks for mass conservation.
