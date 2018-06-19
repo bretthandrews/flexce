@@ -13,7 +13,9 @@ Added
 - Ability to pass in config file name to ``ChemEvol`` instance.
 - Two infall scenario can be specified in config.
 - Solar metallicity only can be specified in config.
+
 - Save options "slim" (disk space efficient), "state" (random number state), and "yields" (full yields used).
+- Ability to load and use the random number state from a previous simulation.
 
 - Test to check that simulation output is the same as fiducial simulation from Andrews et al. (2017).
 - Significant amount to docstrings.
