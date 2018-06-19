@@ -6,7 +6,7 @@
 # @Author: Brett Andrews <andrews>
 # @Date:   2018-05-29 10:05:01
 # @Last modified by:   andrews
-# @Last modified time: 2018-06-19 13:06:21
+# @Last modified time: 2018-06-19 16:06:29
 
 
 import pickle
@@ -16,9 +16,6 @@ import numpy as np
 import pytest
 
 from flexce.chemevol import ChemEvol
-
-sys.path.append('/Users/andrews/projects/pcaa_chemevol/')
-import chemevol_main
 
 
 @pytest.fixture(scope='session')
@@ -32,6 +29,9 @@ def box_AWSJ(path_box_AWSJ):
 
     flexCE version is v1.0.
     """
+    sys.path.append('/Users/andrews/projects/pcaa_chemevol/')
+    import chemevol_main
+
     with open(path_box_AWSJ, 'rb') as fin:
         sim = pickle.load(fin)
 
