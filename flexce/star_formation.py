@@ -1,7 +1,7 @@
 # @Author: Brett Andrews <andrews>
 # @Date:   2018-06-11 13:06:00
 # @Last modified by:   andrews
-# @Last modified time: 2018-06-14 14:06:35
+# @Last modified time: 2018-06-19 17:06:00
 
 """
 FILE
@@ -39,16 +39,35 @@ def set_sflaw(nu_kslaw=1e-9, N_kslaw=1., sfh=None):
     return params
 
 
-def sf_law(mgas, params):
+def sf_law(mgas, params, timestep):
     """Calculate star formation rate.
 
     Calculate the SFR [Msun/yr] given the gas mass and the two free
     parameters that determine the SF law: ``nu_kslaw`` [Gyr^-1] and
     ``N_kslaw`` (~1.0--2.0).
 
+    Check that amount of gas consumed via star formation and outflows
+    (if source is 'ism') does not exceed available gas mass.
+
     Args:
         mgas (float): Gas mass.
+        params (dict): Simulation parameters.
+        timestep (int): Time step.
 
     """
-    return (params['sf']['nu'] * params['box']['area'] *
-            (mgas / params['box']['area'])**params['sf']['N'])
+    sfr = (params['sf']['nu'] *
+           params['box']['area'] *
+           (mgas / params['box']['area'])**params['sf']['N'])
+
+    # Prevent over-consumption of gas
+    if params['outflows']['source'] == 'ism':
+        try:
+            eta = params['outflows']['eta'][timestep]
+        except TypeError as ee:
+            eta = params['outflows']['eta']
+
+        gas_consumption = sfr * (1. + eta)
+        if gas_consumption > mgas:
+            sfr = mgas / (1. + eta)
+
+    return sfr

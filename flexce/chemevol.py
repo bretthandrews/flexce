@@ -1,7 +1,7 @@
 # @Author: Brett Andrews <andrews>
 # @Date:   2018-06-05 11:06:88
 # @Last modified by:   andrews
-# @Last modified time: 2018-06-19 13:06:14
+# @Last modified time: 2018-06-19 17:06:82
 
 """
 FILE
@@ -361,7 +361,8 @@ class ChemEvol:
             if self.params['sf']['sfh'] is None:
                 self.sfr[ii] = flexce.star_formation.sf_law(
                     mgas=np.sum(self.mgas_iso[ii - 1]),
-                    params=self.params
+                    params=self.params,
+                    timestep=ii,
                 )
 
                 # mimic gap in SF in the two infall model caused by a SF
