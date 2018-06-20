@@ -1,7 +1,7 @@
 # @Author: Brett Andrews <andrews>
 # @Date:   2018-05-30 17:05:89
 # @Last modified by:   andrews
-# @Last modified time: 2018-06-18 16:06:12
+# @Last modified time: 2018-06-20 11:06:98
 
 """
 FILE
@@ -73,10 +73,7 @@ def main(config_file, path_in, path_out):
     params['yld_args'] = flexce.utils.set_yields(params['yields'])
     ylds = Yields(params=params['yields'], mass_bins=mass_bins, path=path_data)
 
-    # TODO enable loading state from file
-    state = None
-
-    box = ChemEvol(params, ylds, state)
+    box = ChemEvol(params, ylds)
 
     ab = flexce.abundances.calc_abundances(
         path_data,
