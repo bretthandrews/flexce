@@ -50,10 +50,7 @@ class ChemEvol:
 
         props = ['mass_bins', 'box', 'yields', 'snia_dtd', 'inflows', 'outflows',
                  'warmgas', 'sf']
-        for prop in props:
-            if prop not in params.keys():
-                params[prop] = {}
-
+        params = {p: {} if p not in params.keys() else params[p] for p in props}
         self.params = params
 
         self.mass_bins = flexce.utils.set_mass_bins(**params['mass_bins'])
@@ -151,8 +148,8 @@ class ChemEvol:
         self.params['box']['sim_id'] = sim_id
 
         save = save if save is not None else {}
-        default_save = {'slim': True, 'state': None, 'yields': False}
-        self.params['box']['save'] = {k: v for k, v in default_save.items() if k not in save}
+        save_ = {'slim': True, 'state': None, 'yields': False}
+        self.params['box']['save'] = {k: v if k not in save else save[k] for k, v in save_.items()}
         self.state = self.set_state(self.params['box']['save']['state'])
 
         self.n_bins = len(self.mass_bins) - 1
