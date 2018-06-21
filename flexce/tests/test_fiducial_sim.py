@@ -1,7 +1,7 @@
 # @Author: Brett Andrews <andrews>
 # @Date:   2018-06-13 15:06:13
 # @Last modified by:   andrews
-# @Last modified time: 2018-06-21 15:06:12
+# @Last modified time: 2018-06-21 16:06:27
 
 """
 FILE
@@ -19,7 +19,7 @@ import sys
 import numpy as np
 import pytest
 
-from flexce.abundances import calc_abundances
+from flexce.abundances import Abundances
 from flexce.chemevol import ChemEvol
 from flexce.yields import Yields
 
@@ -69,13 +69,7 @@ def ab(gal):
     """Abundances of simulation run with current flexCE version."""
     ylds = Yields(params=gal.params['yields'], mass_bins=gal.mass_bins)
 
-    return calc_abundances(
-        ylds.sym,
-        gal.mgas_iso,
-        gal.survivors,
-        gal.time,
-        gal.params,
-    )
+    return Abundances(gal, ylds)
 
 
 box0_ignore = [
