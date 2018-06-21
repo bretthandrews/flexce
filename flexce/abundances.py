@@ -1,7 +1,7 @@
 # @Author: Brett Andrews <andrews>
 # @Date:   2018-04-16 20:04:30
 # @Last modified by:   andrews
-# @Last modified time: 2018-06-21 15:06:70
+# @Last modified time: 2018-06-21 16:06:52
 
 """
 FILE
@@ -96,6 +96,8 @@ class Abundances:
             usecols=[0, 1],
             names=['num', 'el']
         )
+        self.elements2 = el_sym
+
         self.all_atomic_num = np.array(el_sym['num'])
         self.all_elements = np.array(el_sym['el'])
 
@@ -108,7 +110,7 @@ class Abundances:
         element in the isotope array."""
         self.n_isotope = len(self.isotope)
 
-        self.sym = np.array(['' for i in range(self.n_isotope)], dtype='<U2')
+        self.sym = np.array(['' for _ in range(self.n_isotope)], dtype='<U2')
 
         self.isotope_mass = np.zeros(self.n_isotope, dtype=int)
         self.elements = []
@@ -208,5 +210,8 @@ class Abundances:
         self.elements_out = self.elements[ind]
         ind2 = []
         for item in el:
-            ind2.append(np.where(self.all_elements == item)[0][0])
-        self.atomic_num_out = self.all_atomic_num[ind2]
+            ind2.append(np.where(self.elements2['el'] == item)[0][0])
+            # ind2.append(np.where(self.all_elements == item)[0][0])
+
+        self.atomic_num_out = self.elements2['num'][ind2]
+        # self.atomic_num_out = self.all_atomic_num[ind2]
