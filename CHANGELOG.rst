@@ -54,6 +54,7 @@ Changed
 Fixed
 ^^^^^
 - Reading in random state for SNIa draws.
+- Issue #4 (over-consumption of gas) by limiting the SFR + outflow rate to be less than the gas mass / time step length. If the Poisson draw from the IMF over-consumes gas, then deterministically populate the IMF by rounding the expectation value of the number of stars in each mass bin down to the nearest integer. This should not make much of a difference in the vast majority of simulations because the numbers will be much larger than 1.
 
 
 [1.0.1] - 2018/06/04

@@ -1,7 +1,7 @@
 # @Author: Brett Andrews <andrews>
 # @Date:   2018-06-11 13:06:00
 # @Last modified by:   andrews
-# @Last modified time: 2018-06-19 17:06:00
+# @Last modified time: 2018-06-21 09:06:54
 
 """
 FILE
@@ -10,6 +10,8 @@ FILE
 DESCRIPTION
     Functions for setting the star formation rate.
 """
+
+import flexce.outflows
 
 
 def set_sflaw(nu_kslaw=1e-9, N_kslaw=1., sfh=None):
@@ -39,7 +41,7 @@ def set_sflaw(nu_kslaw=1e-9, N_kslaw=1., sfh=None):
     return params
 
 
-def sf_law(mgas, params, timestep):
+def sf_law(mgas, params, timestep, dtime):
     """Calculate star formation rate.
 
     Calculate the SFR [Msun/yr] given the gas mass and the two free
@@ -53,6 +55,7 @@ def sf_law(mgas, params, timestep):
         mgas (float): Gas mass.
         params (dict): Simulation parameters.
         timestep (int): Time step.
+        dtime (float): Length of time step in Myr.
 
     """
     sfr = (params['sf']['nu'] *
@@ -61,13 +64,11 @@ def sf_law(mgas, params, timestep):
 
     # Prevent over-consumption of gas
     if params['outflows']['source'] == 'ism':
-        try:
-            eta = params['outflows']['eta'][timestep]
-        except TypeError as ee:
-            eta = params['outflows']['eta']
+        eta = flexce.outflows.get_eta(params['outflows'], timestep)
 
-        gas_consumption = sfr * (1. + eta)
+        gas_consumption = sfr * (dtime * 1e6) * (1. + eta)
+
         if gas_consumption > mgas:
-            sfr = mgas / (1. + eta)
+            sfr = mgas / ((1. + eta) * (dtime * 1e6))
 
     return sfr

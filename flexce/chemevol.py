@@ -1,7 +1,7 @@
 # @Author: Brett Andrews <andrews>
 # @Date:   2018-06-05 11:06:88
 # @Last modified by:   andrews
-# @Last modified time: 2018-06-19 17:06:82
+# @Last modified time: 2018-06-21 09:06:78
 
 """
 FILE
@@ -363,6 +363,7 @@ class ChemEvol:
                     mgas=np.sum(self.mgas_iso[ii - 1]),
                     params=self.params,
                     timestep=ii,
+                    dtime=self.dtime,
                 )
 
                 # mimic gap in SF in the two infall model caused by a SF
@@ -390,7 +391,21 @@ class ChemEvol:
             elif self.params['box']['save']['state']:
                 self.state['Nstar'].append(np.random.get_state())
 
-            self.Nstar[ii] = flexce.utils.robust_random_poisson(self.Nstar_stat[ii])
+            Nstar_tmp = flexce.utils.robust_random_poisson(self.Nstar_stat[ii])
+
+            # If SFR (+ outflow rate) from Poisson draw consumes more
+            # gas than is available, then round Nstar down to the
+            # nearest integer (i.e., deterministically populate IMF).
+            if self.params['outflows']['source'] == 'ism':
+                sf_tmp = Nstar_tmp * self.mass_ave
+
+                eta = flexce.outflows.get_eta(self.params['outflows'], ii)
+                gas_consumed = np.sum((sf_tmp * self.dtime * 1e6) * (1 + eta))
+
+                if gas_consumed > np.sum(self.mgas_iso[ii - 1]):
+                    Nstar_tmp = np.floor(self.Nstar_stat[ii]).astype(int)
+
+            self.Nstar[ii] = Nstar_tmp
             self.mstar[ii] = self.Nstar[ii] * self.mass_ave
             self.Nstar_left[ii] = self.Nstar[ii]
             self.mstar_left[ii] = self.mstar[ii]

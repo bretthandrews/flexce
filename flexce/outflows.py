@@ -1,7 +1,7 @@
 # @Author: Brett Andrews <andrews>
 # @Date:   2018-06-07 21:06:39
 # @Last modified by:   andrews
-# @Last modified time: 2018-06-13 15:06:20
+# @Last modified time: 2018-06-21 09:06:56
 
 """
 FILE
@@ -63,7 +63,21 @@ def set_outflows(
     return params
 
 
-def outflow_calc(params, timestep, sfr, stellar_ejecta):
+def get_eta(params, timestep):
+    """Get eta.
+
+    Args:
+        params (dict): Outflow parameters.
+        timestep (int): Time step.
+    """
+    if params['variable_eta'] is not None:
+        return params['eta'][timestep]
+
+    else:
+        return params['eta']
+
+
+def outflow_calc(params, timestep, sfr, stellar_ejecta=None):
     """Calculate outflowing mass.
 
     Args:
@@ -71,18 +85,14 @@ def outflow_calc(params, timestep, sfr, stellar_ejecta):
         timestep (int): Time step.
         sfr (float): Star formation rate.
         stellar_ejecta (float): Mass ejected by CCSN, SNIa, and AGB
-            stars.
+            stars. Default is ``None``.
 
     Returns:
         float: outflowing mass.
     """
 
     if params['source'] == 'ism':
-        if params['variable_eta'] is not None:
-            return params['eta'][timestep] * sfr
-
-        else:
-            return params['eta'] * sfr
+        return get_eta(params, timestep) * sfr
 
     elif params['source'] == 'stellar_ejecta':
         return params['feject'] * (stellar_ejecta)
