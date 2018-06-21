@@ -1,18 +1,17 @@
 # @Author: Brett Andrews <andrews>
 # @Date:   2018-06-13 15:06:13
 # @Last modified by:   andrews
-# @Last modified time: 2018-06-19 13:06:52
+# @Last modified time: 2018-06-21 15:06:12
 
 """
 FILE
-    compare_to_fiducial_sim.py
+    test_fiducial_box.py
 
 DESCRIPTION
-    Check that the outputs of a simulation run on the refactored code
-    matches the outputs of the fiducial simulation from
-    Andrews et al. (2017).
+    Test that the outputs and abundances of a simulation run on the
+    refactored code match the outputs and abundances of the fiducial
+    simulation from Andrews et al. (2017).
 """
-
 
 import pickle
 import sys
