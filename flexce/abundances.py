@@ -50,7 +50,7 @@ class Abundances:
     """Compute abundances of model.
     """
 
-    def __init__(self, box, ylds=None):
+    def __init__(self, box, ylds=None, params=None):
         """Initialize Abundances instance.
 
         Args:
@@ -60,6 +60,15 @@ class Abundances:
 
         if ylds is None:
             ylds = Yields(params=box.params['yields'], mass_bins=box.mass_bins)
+
+        default = {
+            'solar': {
+                'source': 'lodders',
+            }
+        }
+
+        params = params if params is not None else {}
+        params = {k: v if k not in params.keys() else params[k] for k, v in default.items()}
 
         self.isotope = ylds.sym
         self.setup()
