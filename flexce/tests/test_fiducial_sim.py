@@ -90,6 +90,8 @@ box0_ignore = [
 keys_gal = []
 keys_box0 = box0_ignore
 
+keys_ab = ['param', 'sim_id']
+keys_ab0 = ['param', 'sim_id', 'stem_data', 'stem_parent']
 
 
 class TestFiducialBox(object):
@@ -222,12 +224,66 @@ class TestFiducialBox(object):
             keys_box0.append(arr_box)
 
 
-class TestAllAttributes(object):
+class TestFiducialAbunds(object):
+
+    def test_arrays(self, ab, ab0):
+        arrays = ['all_atomic_num', 'atomic_num_out', 'feh', 'isotope_mass', 'mgas_iso', 'niso_fe', 'niso_h', 'ngas_iso', 'solar_ab', 'solar_fe', 'solar_h', 'survivors', 't', 'xfe', 'xfe_abs', 'xfe_all', 'xh_abs', 'xh_all']
+
+        for arr in arrays:
+            arr_old = arr
+            if arr == 'solar_ab':
+                arr_old = 'solar_abund'
+
+            assert np.isclose(ab.__dict__[arr], ab0.__dict__[arr_old]).all(), arr
+
+            keys_ab.append(arr)
+            keys_ab0.append(arr_old)
+
+    def test_str_arrays(self, ab, ab0):
+        arrays = ['all_elements', 'elements', 'elements_out', 'isotope', 'solar_element', 'sym']
+
+        for arr in arrays:
+            arr_old = arr
+            assert (ab.__dict__[arr] == ab0.__dict__[arr_old]).all(), arr
+
+            keys_ab.append(arr)
+            keys_ab0.append(arr_old)
+
+    def test_constants(self, ab, ab0):
+        constants = ['n_elements', 'n_isotope', 'n_steps']
+        for constant in constants:
+            constant_old = constant
+            assert ab.__dict__[constant] == ab0.__dict__[constant_old], constant
+
+            keys_ab.append(constant)
+            keys_ab0.append(constant_old)
+
+    def test_ind_element(self, ab, ab0):
+        for kk, vv in ab.ind_element.items():
+            assert (vv == ab.ind_element[kk]).all(), f'{kk} {vv}'
+
+        keys_ab.append('ind_element')
+        keys_ab0.append('ind_element')
+
+
+class TestAllBoxAttributes(object):
     """Checks that all attributes have been tested."""
 
     def test_attribute_set(self, gal, box0):
-        """Only works if running all the tests in this file."""
+
+        # WARNING:only works if running all the tests in this file.
         diff_gal = set(gal.__dict__.keys()) - set(keys_gal)
         diff_box0 = set(box0.__dict__.keys()) - set(keys_box0)
         assert not diff_gal, f'gal: {diff_gal}'
         assert not diff_box0, f'box0: {diff_box0}'
+
+
+class TestAllAbundAttributes(object):
+    """Checks that all attributes have been tested."""
+
+    def test_attribute_set(self, ab, ab0):
+        # WARNING:only works if running all the tests in this file.
+        diff_ab = set(ab.__dict__.keys()) - set(keys_ab)
+        diff_ab0 = set(ab0.__dict__.keys()) - set(keys_ab0)
+        assert not diff_ab, f'ab: {diff_ab}'
+        assert not diff_ab0, f'ab0: {diff_ab0}'
