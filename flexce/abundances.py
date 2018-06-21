@@ -1,7 +1,20 @@
-"""Compute abundances."""
+# @Author: Brett Andrews <andrews>
+# @Date:   2018-04-16 20:04:30
+# @Last modified by:   andrews
+# @Last modified time: 2018-06-21 11:06:07
+
+"""
+FILE
+    abundances.py
+
+DESCRIPTION
+    Compute abundances.
+"""
+
 from os.path import join
-import sys
 import re
+import sys
+
 import numpy as np
 import pandas as pd
 
@@ -36,17 +49,23 @@ class Abundances:
     """Compute abundances of model.
     """
 
-    def __init__(self, path_parent, sym_iso, mgas_iso, weight, timesteps=None,
+    def __init__(self,
+                 path_parent,
+                 sym_iso,
+                 mgas_iso,
+                 weight,
+                 timesteps=None,
                  sim_params=None):
         """Initialize Abundances instance.
 
         Args:
-            path_parent (str): data directory.
-            sym_iso (array): isotope abbreviations.
-            mgas_iso (array): Gas mass of each isotope from ChemEvol instance.
-            weight (array): Number of surviving stars from each generation.
-            timesteps (array): Timesteps from ChemEvol instance. Defaults to
-                None.
+            path_parent (str): Data directory.
+            sym_iso (array): Isotope abbreviations.
+            mgas_iso (array): Isotopic gas mass from ChemEvol instance.
+            weight (array): Number of surviving stars from each
+                generation.
+            timesteps (array): Timesteps from ChemEvol instance.
+                Default is ``None``.
             sim_params (dict): Parameters of ChemEvol instance.
         """
         self.path_parent = path_parent
@@ -79,21 +98,24 @@ class Abundances:
         the isotope array. Also creates a dictionary with the indices of each
         element in the isotope array."""
         self.n_isotope = len(self.isotope)
-        if sys.version_info[0] < 3:
-            self.sym = np.array(['' for i in range(self.n_isotope)], dtype='|S2')
-        else:
-            self.sym = np.array(['' for i in range(self.n_isotope)], dtype='<U2')
+
+        self.sym = np.array(['' for i in range(self.n_isotope)], dtype='<U2')
 
         self.isotope_mass = np.zeros(self.n_isotope, dtype=int)
         self.elements = []
-        for i in range(self.n_isotope):
-            match = re.match(r"([a-z]+)([0-9]+)", self.isotope[i], re.I)
+
+        for ii in range(self.n_isotope):
+            match = re.match(r"([a-z]+)([0-9]+)", self.isotope[ii], re.I)
+
             if match:
-                self.sym[i], self.isotope_mass[i] = match.groups()
-            if self.sym[i] not in self.elements:
-                self.elements.append(self.sym[i])
+                self.sym[ii], self.isotope_mass[ii] = match.groups()
+
+            if self.sym[ii] not in self.elements:
+                self.elements.append(self.sym[ii])
+
         self.elements = np.array(self.elements)
         self.n_elements = len(self.elements)
+
         self.ind_element = {}
         for item in self.elements:
             self.ind_element[item] = np.where(self.sym == item)[0]
@@ -102,24 +124,35 @@ class Abundances:
         """Read in solar abundances.
 
         Args:
-            source (str): Reference for solar abundances.  Defaults to
+            source (str): Reference for solar abundances.  Default is
                 'lodders'.
         """
         if source == 'lodders':
             fin = join(self.path_yldgen, 'lodders03_solar_photosphere.txt')
-            solar_ab = pd.read_csv(fin, delim_whitespace=True, skiprows=8,
-                                   usecols=[0, 1], names=['el', 'ab'])
+
+            solar_ab = pd.read_csv(
+                fin,
+                delim_whitespace=True,
+                skiprows=8,
+                usecols=[0, 1],
+                names=['el', 'ab']
+            )
+
             self.solar_element = np.array(solar_ab['el'])
             self.solar_ab = np.array(solar_ab['ab'])
             self.solar_h = np.zeros(self.n_elements)
             self.solar_fe = np.zeros(self.n_elements)
-            for i in range(self.n_elements):
-                ind = np.where(self.solar_element == self.elements[i])[0]
-                ind_fe = np.where(self.elements == 'Fe')
-                self.solar_h[i] = self.solar_ab[ind]
-                self.solar_fe[i] = np.log10(
+
+            for ii in range(self.n_elements):
+                ind = (self.solar_element == self.elements[ii])
+                ind_fe = (self.elements == 'Fe')
+
+                self.solar_h[ii] = self.solar_ab[ind]
+                self.solar_fe[ii] = np.log10(
                     10.**(self.solar_ab[ind] - 12.) /
-                    10.**(self.solar_ab[ind_fe] - 12.))
+                    10.**(self.solar_ab[ind_fe] - 12.)
+                )
+
         # elif source == 'asplund':
         # elif source == 'aspcap':
         #  see deprecated apogee_solar_abundances function
@@ -129,20 +162,27 @@ class Abundances:
     def calc_abundances(self):
         """Calculate abundances relative to hydrogen and iron."""
         self.ngas_iso = np.divide(self.mgas_iso, self.isotope_mass)
+
         self.niso_h = np.array([
             self.ngas_iso[j] / self.ngas_iso[j, self.ind_element['H']].sum()
             for j in range(1, self.n_steps)])
+
         self.niso_fe = np.array([
             self.ngas_iso[j] / self.ngas_iso[j, self.ind_element['Fe']].sum()
             for j in range(1, self.n_steps)])
+
         self.xh_abs = np.log10([
             np.sum(self.niso_h[:, self.ind_element[item]], axis=1)
             for item in self.elements]) + 12.
+
         self.xfe_abs = np.log10([
             np.sum(self.niso_fe[:, self.ind_element[item]], axis=1)
             for item in self.elements])
+
         self.xh_all = np.subtract(self.xh_abs.T, self.solar_h).T
+
         self.feh = self.xh_all[np.where(self.elements == 'Fe')][0]
+
         self.xfe_all = np.subtract(self.xfe_abs.T, self.solar_fe).T
 
     def select_elements(self, el=np.array(['C', 'N', 'O', 'Na', 'Mg', 'Al',
