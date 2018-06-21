@@ -91,7 +91,8 @@ keys_gal = []
 keys_box0 = box0_ignore
 
 
-class TestFiducialSim(object):
+
+class TestFiducialBox(object):
 
     def test_params_box(self, gal, box0):
         for k, v in gal.params['box'].items():
