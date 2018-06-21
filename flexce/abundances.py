@@ -142,14 +142,11 @@ class Abundances:
             self.solar_h = np.zeros(self.n_elements)
             self.solar_fe = np.zeros(self.n_elements)
 
-            for ii in range(self.n_elements):
-                ind = (self.solar_element == self.elements[ii])
-                ind_fe = (self.elements == 'Fe')
-
-                self.solar_h[ii] = self.solar_ab[ind]
+            for ii, el in enumerate(self.elements):
+                self.solar_h[ii] = self.solar_ab[self.solar_element == el]
                 self.solar_fe[ii] = np.log10(
-                    10.**(self.solar_ab[ind] - 12.) /
-                    10.**(self.solar_ab[ind_fe] - 12.)
+                    10.**(self.solar_ab[self.solar_element == el] - 12.) /
+                    10.**(self.solar_ab[self.solar_element == 'Fe'] - 12.)
                 )
 
         # elif source == 'asplund':
