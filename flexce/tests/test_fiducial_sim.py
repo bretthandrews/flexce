@@ -21,6 +21,7 @@ import pytest
 
 from flexce.abundances import calc_abundances
 from flexce.chemevol import ChemEvol
+from flexce.yields import Yields
 
 sys.path.append('/Users/andrews/projects/pcaa_chemevol/')
 import chemevol_main
