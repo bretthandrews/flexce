@@ -19,6 +19,7 @@ import sys
 import numpy as np
 import pytest
 
+from flexce.abundances import calc_abundances
 from flexce.chemevol import ChemEvol
 
 sys.path.append('/Users/andrews/projects/pcaa_chemevol/')
@@ -33,6 +34,12 @@ def box0():
         sim = pickle.load(fin)
 
     return sim
+@pytest.fixture(scope='session')
+def ab0():
+    """Abundances of fiducial simulation from Andrews et al. (2017)."""
+    path = '/Users/andrews/projects/pcaa_chemevol/sims/paper_masscut01/runs/ab0.pck'
+    with open(path, 'rb') as fin:
+        return pickle.load(fin)
 
 
 @pytest.fixture(scope='session')
@@ -53,6 +60,17 @@ def gal(box0):
             'Nstar': box0.random_num_state_Nstar,
             'snia': box0.random_num_state_snia
         }
+@pytest.fixture(scope='session')
+def ab(gal):
+    """Abundances of simulation run with current flexCE version."""
+    ylds = Yields(params=gal.params['yields'], mass_bins=gal.mass_bins)
+
+    return calc_abundances(
+        ylds.sym,
+        gal.mgas_iso,
+        gal.survivors,
+        gal.time,
+        gal.params,
     )
 
 
