@@ -83,6 +83,7 @@ class Abundances:
             self.sym = np.array(['' for i in range(self.n_isotope)], dtype='|S2')
         else:
             self.sym = np.array(['' for i in range(self.n_isotope)], dtype='<U2')
+
         self.isotope_mass = np.zeros(self.n_isotope, dtype=int)
         self.elements = []
         for i in range(self.n_isotope):
