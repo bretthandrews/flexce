@@ -1,7 +1,7 @@
 # @Author: Brett Andrews <andrews>
 # @Date:   2018-04-16 20:04:30
 # @Last modified by:   andrews
-# @Last modified time: 2018-06-21 11:06:07
+# @Last modified time: 2018-06-21 12:06:86
 
 """
 FILE
@@ -11,21 +11,20 @@ DESCRIPTION
     Compute abundances.
 """
 
+import os
 from os.path import join
 import re
-import sys
 
 import numpy as np
 import pandas as pd
 
 
-def calc_abundances(path, sym, mgas, survivors, time, parameters):
+def calc_abundances(sym, mgas, survivors, time, parameters):
     """Calculate abundances of box.
 
     Wrapper for Abundances class.
 
     Args:
-        path (str): data directory.
         sym (array): Isotope abbreviations.
         mgas (array): Mass of each isotope in gas-phase at each timestep.
         survivors (array): Number of stars from each timestep that survive to
@@ -36,7 +35,7 @@ def calc_abundances(path, sym, mgas, survivors, time, parameters):
     Returns:
         Abundances instance
     """
-    abund = Abundances(path, sym, mgas, survivors, time, parameters)
+    abund = Abundances(sym, mgas, survivors, time, parameters)
     abund.load_solar_abund()
     abund.calc_abundances()
     apogee_el = np.array(['C', 'N', 'O', 'Na', 'Mg', 'Al', 'Si', 'S',
@@ -50,7 +49,6 @@ class Abundances:
     """
 
     def __init__(self,
-                 path_parent,
                  sym_iso,
                  mgas_iso,
                  weight,
@@ -68,9 +66,6 @@ class Abundances:
                 Default is ``None``.
             sim_params (dict): Parameters of ChemEvol instance.
         """
-        self.path_parent = path_parent
-        self.path_yields = join(path_parent, 'yields')
-        self.path_yldgen = join(self.path_yields, 'general')
         self.isotope = sym_iso
         self.setup()
         self.split_element_mass()
@@ -84,9 +79,13 @@ class Abundances:
 
     def setup(self):
         """Read in atomic numbers and element abbreviations."""
-        el_sym = pd.read_csv(join(self.path_yldgen, 'sym_atomicnum.txt'),
-                             delim_whitespace=True, usecols=[0, 1],
-                             names=['num', 'el'])
+        path_yldgen = join(os.path.dirname(__file__), 'data', 'yields', 'general')
+        el_sym = pd.read_csv(
+            join(path_yldgen, 'sym_atomicnum.txt'),
+            delim_whitespace=True,
+            usecols=[0, 1],
+            names=['num', 'el']
+        )
         self.all_atomic_num = np.array(el_sym['num'])
         self.all_elements = np.array(el_sym['el'])
 
@@ -128,10 +127,10 @@ class Abundances:
                 'lodders'.
         """
         if source == 'lodders':
-            fin = join(self.path_yldgen, 'lodders03_solar_photosphere.txt')
+            path_yldgen = join(os.path.dirname(__file__), 'data', 'yields', 'general')
 
             solar_ab = pd.read_csv(
-                fin,
+                join(path_yldgen, 'lodders03_solar_photosphere.txt'),
                 delim_whitespace=True,
                 skiprows=8,
                 usecols=[0, 1],
