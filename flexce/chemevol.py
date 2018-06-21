@@ -1,7 +1,7 @@
 # @Author: Brett Andrews <andrews>
 # @Date:   2018-06-05 11:06:88
 # @Last modified by:   andrews
-# @Last modified time: 2018-06-21 11:06:72
+# @Last modified time: 2018-06-21 14:06:02
 
 """
 FILE
@@ -58,10 +58,9 @@ class ChemEvol:
         self.set_box(**params['box'])
 
         if ylds is None:
-            path_data = join(os.path.dirname(__file__), 'data')
             # TODO try to load existing yields. If they don't exist, then calculate them.
             params['yields'] = flexce.utils.set_yields(params['yields'])
-            ylds = Yields(params=params['yields'], mass_bins=self.mass_bins, path=path_data)
+            ylds = Yields(params=params['yields'], mass_bins=self.mass_bins)
 
         self.params['snia_dtd'] = flexce.snia.set_snia_dtd(
             time=self.time,
@@ -400,7 +399,7 @@ class ChemEvol:
                 sf_tmp = Nstar_tmp * self.mass_ave
 
                 eta = flexce.outflows.get_eta(self.params['outflows'], ii)
-                gas_consumed = np.sum((sf_tmp * self.dtime * 1e6) * (1 + eta))
+                gas_consumed = np.sum(sf_tmp * (1 + eta))
 
                 if gas_consumed > np.sum(self.mgas_iso[ii - 1]):
                     Nstar_tmp = np.floor(self.Nstar_stat[ii]).astype(int)
