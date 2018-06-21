@@ -17,7 +17,7 @@ Added
 - Save options "slim" (disk space efficient), "state" (random number state), and "yields" (full yields used).
 - Ability to load and use the random number state from a previous simulation.
 
-- Test to check that simulation output is the same as fiducial simulation from Andrews et al. (2017).
+- Test to check that simulation output and abundances are the same as fiducial simulation from Andrews et al. (2017).
 - Significant amount to docstrings.
 
 Removed
