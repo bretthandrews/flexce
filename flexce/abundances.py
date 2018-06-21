@@ -1,7 +1,7 @@
 # @Author: Brett Andrews <andrews>
 # @Date:   2018-04-16 20:04:30
 # @Last modified by:   andrews
-# @Last modified time: 2018-06-21 12:06:86
+# @Last modified time: 2018-06-21 15:06:70
 
 """
 FILE
@@ -17,6 +17,8 @@ import re
 
 import numpy as np
 import pandas as pd
+
+from flexce.yields import Yields
 
 
 def calc_abundances(sym, mgas, survivors, time, parameters):
@@ -48,33 +50,26 @@ class Abundances:
     """Compute abundances of model.
     """
 
-    def __init__(self,
-                 sym_iso,
-                 mgas_iso,
-                 weight,
-                 timesteps=None,
-                 sim_params=None):
+    def __init__(self, box, ylds=None):
         """Initialize Abundances instance.
 
         Args:
-            path_parent (str): Data directory.
-            sym_iso (array): Isotope abbreviations.
-            mgas_iso (array): Isotopic gas mass from ChemEvol instance.
-            weight (array): Number of surviving stars from each
-                generation.
-            timesteps (array): Timesteps from ChemEvol instance.
-                Default is ``None``.
-            sim_params (dict): Parameters of ChemEvol instance.
+            box: ChemEvol instance.
+            ylds: Yields instance. Default is ``None``.
         """
-        self.isotope = sym_iso
+
+        if ylds is None:
+            ylds = Yields(params=box.params['yields'], mass_bins=box.mass_bins)
+
+        self.isotope = ylds.sym
         self.setup()
         self.split_element_mass()
-        self.mgas_iso = mgas_iso
+        self.mgas_iso = box.mgas_iso
         self.n_steps = len(self.mgas_iso)
-        self.survivors = weight
-        self.t = timesteps
-        self.param = sim_params
-        self.sim_id = sim_params['box']['sim_id']
+        self.survivors = box.survivors
+        self.t = box.time
+        self.param = box.params
+        self.sim_id = box.params['box']['sim_id']
 #        self.apogee_elements()
 
     def setup(self):
