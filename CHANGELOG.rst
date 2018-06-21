@@ -48,6 +48,8 @@ Changed
 
 - Decreased run time by a factor of 6 by reducing the size of arrays created when calculating absolute yields from previous time steps.
 
+- Simplifies call of Abundances.
+
 - ``make_yield_grids.py`` to a console script.
 
 - Increased readbility of code (PEP-8 compliance).
