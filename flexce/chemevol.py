@@ -1,7 +1,7 @@
 # @Author: Brett Andrews <andrews>
 # @Date:   2018-06-05 11:06:88
 # @Last modified by:   andrews
-# @Last modified time: 2018-06-21 09:06:78
+# @Last modified time: 2018-06-21 11:06:72
 
 """
 FILE
@@ -228,7 +228,7 @@ class ChemEvol:
         m_star = (self.mstar.sum() - self.snii.sum() - self.agb.sum() -
                   self.NIa.sum() * yields.snia_yields.sum())
         dm = m_in - m_out - m_gas - m_star
-        assert dm < 1e-4, f'Mass not conserved!\nmass_in - mass_out: {dm}'
+        assert dm < 1e-3, f'Mass not conserved!\nmass_in - mass_out: {dm}'
 
     def snii_snia_rate(self):
         """Prints ratio of SNII to SNIa rates in last 100 time steps.
