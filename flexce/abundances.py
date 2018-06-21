@@ -79,6 +79,12 @@ class Abundances:
         self.t = box.time
         self.param = box.params
         self.sim_id = box.params['box']['sim_id']
+        self.load_solar_abund(params['solar']['source'])
+        self.calc_abundances()
+        apogee_el = np.array(['C', 'N', 'O', 'Na', 'Mg', 'Al', 'Si', 'S',
+                              'K', 'Ca', 'Ti', 'V', 'Cr', 'Mn', 'Co', 'Ni'])
+        self.select_elements(apogee_el)
+
 #        self.apogee_elements()
 
     def setup(self):
