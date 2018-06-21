@@ -32,9 +32,9 @@ def box0():
     """Fiducial simulation from Andrews et al. (2017)."""
     path = '/Users/andrews/projects/pcaa_chemevol/sims/paper_masscut01/runs/box0.pck'
     with open(path, 'rb') as fin:
-        sim = pickle.load(fin)
+        return pickle.load(fin)
 
-    return sim
+
 @pytest.fixture(scope='session')
 def ab0():
     """Abundances of fiducial simulation from Andrews et al. (2017)."""
@@ -54,13 +54,16 @@ def gal(box0):
             'box': {
                 'save': {
                     'slim': False,
+                    'state': {
+                        'Nstar': box0.random_num_state_Nstar,
+                        'snia': box0.random_num_state_snia
+                    },
                 },
             },
         },
-        state={
-            'Nstar': box0.random_num_state_Nstar,
-            'snia': box0.random_num_state_snia
-        }
+    )
+
+
 @pytest.fixture(scope='session')
 def ab(gal):
     """Abundances of simulation run with current flexCE version."""
