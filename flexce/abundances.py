@@ -46,7 +46,34 @@ def calc_abundances(sym, mgas, survivors, time, parameters):
     return abund
 
 
-class Abundances:
+def split_element_mass(isotopes):
+    """Convert isotope abbreviation to element and mass.
+
+    Takes an array of isotopes (element & mass) and creates a separate
+    arrays of element symbols and isotope masses with the same length as
+    the isotope array. Also creates a dictionary with the indices of each
+    element in the isotope array."""
+
+    sym = np.array(['' for _ in isotopes], dtype='<U2')
+    iso_mass = np.zeros(len(isotopes), dtype=int)
+
+    elements = []
+
+    for ii, iso in enumerate(isotopes):
+        match = re.match(r"([a-z]+)([0-9]+)", iso, re.I)
+
+        if match:
+            sym[ii], iso_mass[ii] = match.groups()
+
+        if sym[ii] not in elements:
+            elements.append(sym[ii])
+
+    ind_element = pd.DataFrame(np.array([sym == it for it in elements]).T, columns=elements)
+
+    return iso_mass, ind_element
+
+
+class Abundances(object):
     """Compute abundances of model.
     """
 
