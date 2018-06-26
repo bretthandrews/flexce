@@ -1,7 +1,7 @@
 # @Author: Brett Andrews <andrews>
 # @Date:   2018-04-16 20:04:30
 # @Last modified by:   andrews
-# @Last modified time: 2018-06-21 16:06:52
+# @Last modified time: 2018-06-26 12:06:28
 
 """
 FILE
@@ -83,6 +83,7 @@ class Abundances(object):
         Args:
             box: ChemEvol instance.
             ylds: Yields instance. Default is ``None``.
+            params (dict): Abundances parameters. Default is ``None``.
         """
 
         if ylds is None:
@@ -112,73 +113,48 @@ class Abundances(object):
 
 #        self.apogee_elements()
 
-    def setup(self):
-        """Read in atomic numbers and element abbreviations."""
-        path_yldgen = join(os.path.dirname(__file__), 'data', 'yields', 'general')
-        el_sym = pd.read_csv(
-            join(path_yldgen, 'sym_atomicnum.txt'),
-            delim_whitespace=True,
-            usecols=[0, 1],
-            names=['num', 'el']
-        )
-        self.elements2 = el_sym
+    # def setup(self):
+    #     """Read in atomic numbers and element abbreviations."""
+    #     path_yldgen = join(os.path.dirname(__file__), 'data', 'yields', 'general')
+    #     el_sym = pd.read_csv(
+    #         join(path_yldgen, 'sym_atomicnum.txt'),
+    #         delim_whitespace=True,
+    #         usecols=[0, 1],
+    #         names=['num', 'el']
+    #     )
+    #     self.elements2 = el_sym
+    #
+    #     self.all_atomic_num = np.array(el_sym['num'])
+    #     self.all_elements = np.array(el_sym['el'])
 
-        self.all_atomic_num = np.array(el_sym['num'])
-        self.all_elements = np.array(el_sym['el'])
-
-    def split_element_mass(self):
-        """Convert isotope abbreviation to element and mass.
-
-        Takes an array of isotopes (element & mass) and creates a separate
-        arrays of element symbols and isotope masses with the same length as
-        the isotope array. Also creates a dictionary with the indices of each
-        element in the isotope array."""
-        self.n_isotope = len(self.isotope)
-
-        self.sym = np.array(['' for _ in range(self.n_isotope)], dtype='<U2')
-
-        self.isotope_mass = np.zeros(self.n_isotope, dtype=int)
-        self.elements = []
-
-        for ii in range(self.n_isotope):
-            match = re.match(r"([a-z]+)([0-9]+)", self.isotope[ii], re.I)
-
-            if match:
-                self.sym[ii], self.isotope_mass[ii] = match.groups()
-
-            if self.sym[ii] not in self.elements:
-                self.elements.append(self.sym[ii])
-
-        self.elements = np.array(self.elements)
-        self.n_elements = len(self.elements)
-
-        self.ind_element = {}
-        for item in self.elements:
-            self.ind_element[item] = np.where(self.sym == item)[0]
-
-    def load_solar_abund(self, source='lodders'):
+    def load_solar_abund(self, elements, source='lodders'):
         """Read in solar abundances.
 
         Args:
+            elements (list): Elements.
             source (str): Reference for solar abundances.  Default is
                 'lodders'.
         """
         if source == 'lodders':
             path_yldgen = join(os.path.dirname(__file__), 'data', 'yields', 'general')
 
-            solar_ab = pd.read_csv(
+            solar_cat = pd.read_csv(
                 join(path_yldgen, 'lodders03_solar_photosphere.txt'),
                 delim_whitespace=True,
                 skiprows=8,
                 usecols=[0, 1],
-                names=['el', 'ab']
+                names=['el', 'ab'],
             )
 
-            self.solar_element = np.array(solar_ab['el'])
-            self.solar_ab = np.array(solar_ab['ab'])
-            self.solar_h = np.zeros(self.n_elements)
-            self.solar_fe = np.zeros(self.n_elements)
-
+            # self.solar_element = np.array(solar_ab['el'])
+            # self.solar_ab = np.array(solar_ab['ab'])
+            # solar_h = np.zeros(self.n_elements)
+            # self.solar_fe = np.zeros(self.n_elements)
+            xh = solar_cat['ab'][solar_cat['el'] == el]
+            xfe = np.log10(
+                10.**(solar_cat['ab'][solar_cat['el'] == el] - 12) /
+                10.**(solar_cat['ab'][solar_cat['el'] == 'Fe'] - 12)
+            )
             for ii, el in enumerate(self.elements):
                 self.solar_h[ii] = self.solar_ab[self.solar_element == el]
                 self.solar_fe[ii] = np.log10(
