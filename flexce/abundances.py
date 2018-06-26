@@ -91,22 +91,20 @@ class Abundances(object):
         default = {
             'solar': {
                 'source': 'lodders',
-            }
+            },
+            'sim_id': box.params['box']['sim_id'],
         }
 
         params = params if params is not None else {}
         params = {k: v if k not in params.keys() else params[k] for k, v in default.items()}
 
-        self.isotope = ylds.sym
-        self.setup()
-        self.split_element_mass()
+        # self.setup()
+        iso_mass, ind_element = split_element_mass(ylds.sym)
         self.mgas_iso = box.mgas_iso
         self.n_steps = len(self.mgas_iso)
-        self.survivors = box.survivors
-        self.t = box.time
+        self.weights = box.survivors
         self.param = box.params
-        self.sim_id = box.params['box']['sim_id']
-        self.load_solar_abund(params['solar']['source'])
+        self.solar = self.load_solar_abund(params['solar']['source'])
         self.calc_abundances()
         apogee_el = np.array(['C', 'N', 'O', 'Na', 'Mg', 'Al', 'Si', 'S',
                               'K', 'Ca', 'Ti', 'V', 'Cr', 'Mn', 'Co', 'Ni'])
