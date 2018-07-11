@@ -1,7 +1,7 @@
 # @Author: Brett Andrews <andrews>
 # @Date:   2018-06-05 11:06:88
 # @Last modified by:   andrews
-# @Last modified time: 2018-07-11 16:07:90
+# @Last modified time: 2018-07-11 17:07:79
 
 """
 FILE
@@ -97,7 +97,6 @@ class ChemEvol:
             ylds,
             self.params['abundances']['solar']['source'],
         )
-
 
     def set_box(
         self,
