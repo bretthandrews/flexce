@@ -1,7 +1,7 @@
 # @Author: Brett Andrews <andrews>
 # @Date:   2018-06-05 11:06:88
 # @Last modified by:   andrews
-# @Last modified time: 2018-06-21 14:06:02
+# @Last modified time: 2018-07-11 16:07:90
 
 """
 FILE
@@ -14,11 +14,11 @@ DESCRIPTION
     Main module for running the chemical evolution model.
 """
 import os
-from os.path import join
 import time
 
 import numpy as np
 
+import flexce.abundances
 import flexce.imf
 from flexce.imf import integrate_multi_power_law
 import flexce.inflows
@@ -48,8 +48,8 @@ class ChemEvol:
         elif params is None:
             params = {}
 
-        props = ['mass_bins', 'box', 'yields', 'snia_dtd', 'inflows', 'outflows',
-                 'warmgas', 'sf']
+        props = ['abundances', 'mass_bins', 'box', 'yields', 'snia_dtd', 'inflows',
+                 'outflows', 'warmgas', 'sf']
         params = {p: {} if p not in params.keys() else params[p] for p in props}
         self.params = params
 
@@ -88,7 +88,16 @@ class ChemEvol:
 
         self.params['sf'] = flexce.star_formation.set_sflaw(**params['sf'])
 
+        self.params['abundances'] = flexce.abundances.set_default_params(params['abundances'])
+
         self.evolve_box(ylds=ylds)
+
+        self.ab = flexce.abundances.compute(
+            self.mgas_iso,
+            ylds,
+            self.params['abundances']['solar']['source'],
+        )
+
 
     def set_box(
         self,
