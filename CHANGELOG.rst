@@ -17,6 +17,8 @@ Added
 - Save options "slim" (disk space efficient), "state" (random number state), and "yields" (full yields used).
 - Ability to load and use the random number state from a previous simulation.
 
+- Abundances computation to simulation run, so that the simulation instance now includes a Pandas DataFrame of [Fe/H] and [X/Fe].
+
 - Test to check that simulation output and abundances are the same as fiducial simulation from Andrews et al. (2017).
 - Significant amount to docstrings.
 
@@ -26,6 +28,7 @@ Removed
 - ``config``, ``plots``, and ``output`` directories.
 - ``flexce.utils.load_yields()`` because initializing a ``Yields`` instance directly is simple.
 - ``flexce.io.cfg.read_sim_cfg()`` because config file are now YAML files.
+- Abundances class.
 
 Changed
 ^^^^^^^
@@ -47,8 +50,6 @@ Changed
 - Converted existing tests to ``pytest``.
 
 - Decreased run time by a factor of 6 by reducing the size of arrays created when calculating absolute yields from previous time steps.
-
-- Simplifies call of Abundances.
 
 - ``make_yield_grids.py`` to a console script.
 
