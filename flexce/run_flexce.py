@@ -28,9 +28,9 @@ import click
 
 import flexce.abundances
 from flexce.chemevol import ChemEvol
-import flexce.io.yml
-import flexce.io.pck
-import flexce.io.txt
+import flexce.fileio.yml
+import flexce.fileio.pck
+import flexce.fileio.txt
 import flexce.utils
 from flexce.yields import Yields
 
@@ -66,7 +66,7 @@ def main(config_file, path_in, path_out):
 
     file_in = join(path_in, config_file)
 
-    params = flexce.io.yml.read_yml(file_in)
+    params = flexce.fileio.yml.read_yml(file_in)
 
     mass_bins = flexce.utils.set_mass_bins(**params['mass_bins'])
 

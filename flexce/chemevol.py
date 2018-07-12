@@ -22,7 +22,7 @@ import flexce.abundances
 import flexce.imf
 from flexce.imf import integrate_multi_power_law
 import flexce.inflows
-import flexce.io.yml
+import flexce.fileio.yml
 import flexce.lifetimes
 import flexce.outflows
 import flexce.star_formation
@@ -44,7 +44,7 @@ class ChemEvol:
         if isinstance(params, dict):
             pass
         elif isinstance(params, str) and os.path.isfile(params):
-            params = flexce.io.yml.read_yml(params)
+            params = flexce.fileio.yml.read_yml(params)
         elif params is None:
             params = {}
 
@@ -202,7 +202,7 @@ class ChemEvol:
         state = {k: v if k not in state else state[k] for k, v in default.items()}
 
         if isinstance(state['Nstar'], str):
-            box_Nstar = flexce.io.pck.pck_read(state['Nstar'])
+            box_Nstar = flexce.fileio.pck.pck_read(state['Nstar'])
             try:
                 state['Nstar'] = box_Nstar.state['Nstar']
             except AttributeError as ee:
@@ -210,7 +210,7 @@ class ChemEvol:
                 state['Nstar'] = box_Nstar.random_num_state_Nstar
 
         if isinstance(state['snia'], str):
-            box_snia = flexce.io.pck.pck_read(state['snia'])
+            box_snia = flexce.fileio.pck.pck_read(state['snia'])
             try:
                 state['snia'] = box_snia.state['snia']
             except AttributeError as ee:
