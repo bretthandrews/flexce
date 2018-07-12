@@ -13,7 +13,9 @@ USAGE
 DESCRIPTION
     Main module for running the chemical evolution model.
 """
+import datetime
 import os
+from os.path import join
 import time
 
 import numpy as np
@@ -40,6 +42,7 @@ class ChemEvol:
         ylds: Yields instance. Default is ``None``.
     """
     def __init__(self, params=None, ylds=None):
+        now = datetime.datetime.now()
 
         if isinstance(params, dict):
             pass
@@ -55,7 +58,7 @@ class ChemEvol:
 
         self.mass_bins = flexce.utils.set_mass_bins(**params['mass_bins'])
 
-        self.setup_box(**params['box'])
+        self.setup_box(now, **params['box'])
 
         if ylds is None:
             # TODO try to load existing yields. If they don't exist, then calculate them.
@@ -100,6 +103,7 @@ class ChemEvol:
 
     def setup_box(
         self,
+        now=None,
         radius=10.,
         time_tot=12000.,
         dtime=30.,
@@ -112,6 +116,7 @@ class ChemEvol:
         """Initialize box.
 
         Args:
+            now (datetime): Datetime at initialization.
             radius (float): Radius of zone [kpc]. Only invoked if
                 N_kslaw is not equal to 1. Default is 10.
             time_tot (float): length of simulation [Myr]. Default is
@@ -152,6 +157,7 @@ class ChemEvol:
                     recycled SNII and AGB yields from each previous
                     time step. Default is ``False``.
         """
+        self.params['box']['datetime'] = now.strftime('%Y-%m-%d-%H%M%S')
         self.params['box']['sim_id'] = sim_id
 
         save = save if save is not None else {}
