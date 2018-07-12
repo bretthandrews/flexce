@@ -1,7 +1,7 @@
 # @Author: Brett Andrews <andrews>
 # @Date:   2018-06-21 11:06:12
 # @Last modified by:   andrews
-# @Last modified time: 2018-07-12 11:07:49
+# @Last modified time: 2018-07-12 16:07:38
 
 """
 FILE
@@ -39,7 +39,12 @@ def check_grid(fname):
 
 
 class Yields:
-    """Yield grids.
+    """Yield grids for running chemical evolution model.
+
+    Args:
+        params (dict): Yields parameters. Default is ``None``.
+        mass_bins (array): stellar mass bins. Default is ``None``.
+        path (str): Data directory. Default is ``None``.
     """
 
     def __init__(
@@ -49,13 +54,6 @@ class Yields:
         path=None,
         **kwargs
     ):
-        """Initialize Yields instance.
-
-        Args:
-            mass_bins (array): stellar mass bins. Defaults to ``None``.
-            params (dict): Yields parameters. Default is ``None``.
-            path (str): Data directory. Default is ``None``.
-        """
         params = set_yields(params)
 
         if path is None:
@@ -273,8 +271,8 @@ class Yields:
     def load_rprocess_yields(self):
         """Load r-process element yields.
 
-        Cescutti et al. (2006) r-process Ba & Eu yields for M = 12, 15, 30
-        Msun that are metallicity independent.
+        Cescutti et al. (2006) r-process Ba & Eu yields for
+        M = 12, 15, 30 Msun that are metallicity independent.
         """
         self.rprocess_yields = pck.read(join(self.path_rprocess, 'cescutti06_yields.pck'))
 
@@ -302,13 +300,13 @@ class Yields:
         """Load SNIa yields.
 
         Iwamoto et al. (1999) models\:
-        cdd1\: CDD1
-        cdd2\: CDD2
-        w7\: single-degenerate model from Nomoto et al. (1984)
-        w70\: zero-metallicity version of W7
-        wdd1\: WDD1
-        wdd2\: WDD2
-        wdd3\: WDD3
+            cdd1\: CDD1
+            cdd2\: CDD2
+            w7\: single-degenerate model from Nomoto et al. (1984)
+            w70\: zero-metallicity version of W7
+            wdd1\: WDD1
+            wdd2\: WDD2
+            wdd3\: WDD3
         """
         self.snia_yields = pck.read(join(self.path_snia, model + '_yields.pck'))
 
