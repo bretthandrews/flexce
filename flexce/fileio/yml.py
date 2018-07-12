@@ -1,14 +1,21 @@
 # @Author: Brett Andrews <andrews>
 # @Date:   2018-06-18 10:06:09
 # @Last modified by:   andrews
-# @Last modified time: 2018-06-18 11:06:56
+# @Last modified time: 2018-07-12 16:07:47
 
+"""
+FILE
+    yml.py
+
+DESCRIPTION
+    Read yaml files.
+"""
 import re
 
 import yaml
 
 
-def read_yml(filename):
+def read(filename):
     """Read in YAML file.
 
     Args:

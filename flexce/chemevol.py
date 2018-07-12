@@ -1,7 +1,7 @@
 # @Author: Brett Andrews <andrews>
 # @Date:   2018-06-05 11:06:88
 # @Last modified by:   andrews
-# @Last modified time: 2018-07-12 11:07:25
+# @Last modified time: 2018-07-12 16:07:19
 
 """
 FILE
@@ -47,7 +47,7 @@ class ChemEvol:
         if isinstance(params, dict):
             pass
         elif isinstance(params, str) and os.path.isfile(params):
-            params = yml.read_yml(params)
+            params = yml.read(params)
         elif params is None:
             params = {}
 

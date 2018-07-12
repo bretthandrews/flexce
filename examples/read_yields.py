@@ -3,7 +3,7 @@
 import os
 from os.path import join
 
-from flexce.fileio.yml import read_yml
+from flexce.fileio import yml
 from flexce.utils import set_mass_bins, load_yields
 
 from flexce.yields import Yields
@@ -14,7 +14,7 @@ path_config = join(path_flexce, 'examples')
 path_data = join(path_flexce, 'flexce', 'data')
 file_in = join(path_config, 'sim0.yml')
 
-params = read_yml(file_in)
+params = yml.read(file_in)
 
 mass_bins = set_mass_bins(**params['mass_bins'])
 ylds = load_yields(path_data, mass_bins, params['yields'])

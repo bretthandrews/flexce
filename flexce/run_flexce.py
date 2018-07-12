@@ -1,7 +1,7 @@
 # @Author: Brett Andrews <andrews>
 # @Date:   2018-05-30 17:05:89
 # @Last modified by:   andrews
-# @Last modified time: 2018-07-12 11:07:92
+# @Last modified time: 2018-07-12 16:07:50
 
 """
 FILE
@@ -64,7 +64,7 @@ def main(config_file, path_in, path_out):
 
     file_in = join(path_in, config_file)
 
-    params = flexce.fileio.yml.read_yml(file_in)
+    params = yml.read(file_in)
 
     mass_bins = flexce.utils.set_mass_bins(**params['mass_bins'])
 
