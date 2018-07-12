@@ -21,3 +21,7 @@ ylds = load_yields(path_data, mass_bins, params['yields'])
 
 
 ylds = Yields(path_data, mass_bins, params['yields'])
+
+
+# If default parameters were used:
+ylds = Yields()
