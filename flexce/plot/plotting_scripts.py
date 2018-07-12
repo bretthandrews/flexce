@@ -9,7 +9,7 @@ import numpy as np
 from scipy.interpolate import interp1d
 from scipy.stats import gaussian_kde
 
-from flexce.fileio.pck import pck_read
+from flexce.fileio import pck
 
 class PlotSim:
     def __init__(self, suite_in):
@@ -29,10 +29,10 @@ class PlotSim:
         stem_reddy = stem_data + 'reddy/'
         stem_ramirez = stem_data + 'ramirez13/'
         stem_apogee_redclump = stem_data + 'apogee_redclump/'
-        self.reddy = pck_read(stem_reddy + 'reddy.pck')
-        self.reddy03 = pck_read(stem_reddy + 'reddy03.pck')
-        self.ramirez13 = pck_read(stem_ramirez + 'ramirez13.pck')
-        self.apogee_redclump = pck_read(stem_apogee_redclump +
+        self.reddy = pck.read(stem_reddy + 'reddy.pck')
+        self.reddy03 = pck.read(stem_reddy + 'reddy03.pck')
+        self.ramirez13 = pck.read(stem_ramirez + 'ramirez13.pck')
+        self.apogee_redclump = pck.read(stem_apogee_redclump +
                                            'apogee_redclump_v402.pck')
 
     def plot_xfe(self,

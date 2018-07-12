@@ -1,28 +1,36 @@
-"""Create pickled dictionary of neutron-capture isotopic abundances.
+# @Author: Brett Andrews <andrews>
+# @Date:   2018-06-21 11:06:55
+# @Last modified by:   andrews
+# @Last modified time: 2018-07-12 11:07:18
 
-Read in the isotopic abundances of neutron-capture isotopes from
-Sneden et al. (2008) and create a pickled dictionary.
+"""
+FILE
+    sneden08.py
+
+DESCRIPTION
+    Create pickled dictionary of neutron-capture isotopic abundances.
+
+    Read in the isotopic abundances of neutron-capture isotopes from
+    Sneden et al. (2008) and create a pickled dictionary.
 """
 
 from __future__ import print_function, division, absolute_import
 
 import os
 from os.path import join
-import sys
 
 import numpy as np
+
+from flexce.fileio import pck
 
 #---- Set Paths -----
 path_calc_yields = join(os.path.abspath(os.path.dirname(__file__)), '')
 path_flexce = join('/'.join(path_calc_yields.split('/')[:-2]), '')
-path_io = join(path_flexce, 'io')
 path_data = join(path_flexce, 'data')
 path_yields = join(path_data, 'yields')
 path_yldgen = join(path_yields, 'general')
-sys.path.append(path_io)
 # -------------------
 
-from flexce.fileio.pck import pck_write
 
 # ----- Load Data -----
 s08 = {}
@@ -71,4 +79,4 @@ for e in s08.keys():
         s08[e]['isotopic_fraction[s]'] = np.zeros(len(s08[e]['N[s]']))
 
 
-pck_write(s08, join(path_yldgen, 'sneden08.pck'))
+pck.write(s08, join(path_yldgen, 'sneden08.pck'))

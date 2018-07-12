@@ -1,14 +1,23 @@
-"""Generate finely spaced grid of Ba yields from AGB stars.
+# @Author: Brett Andrews <andrews>
+# @Date:   2018-06-21 11:06:54
+# @Last modified by:   andrews
+# @Last modified time: 2018-07-12 11:07:01
 
-Busso et al. (2001): M = 1.5--3.0 Msun; Z = 2e-4--0.04 extrapolate the
-yields down to 1.0 Msun.
+"""
+FILE
+    busso01_yields.py
+
+DESCRIPTION
+    Generate finely spaced grid of Ba yields from AGB stars.
+
+    Busso et al. (2001): M = 1.5--3.0 Msun; Z = 2e-4--0.04 extrapolate
+    the yields down to 1.0 Msun.
 """
 
 from __future__ import print_function, division, absolute_import
 
 import os
 from os.path import join
-import sys
 
 import numpy as np
 from scipy import interpolate
@@ -18,16 +27,13 @@ import pandas as pd
 # ---- Set Paths -----
 path_calc_yields = join(os.path.abspath(os.path.dirname(__file__)), '')
 path_flexce = join('/'.join(path_calc_yields.split('/')[:-2]), '')
-path_io = join(path_flexce, 'io')
 path_data = join(path_flexce, 'data')
 path_yields = join(path_data, 'yields')
 path_yldgen = join(path_yields, 'general')
 path_b01 = join(path_yields, 'busso01')
-sys.path.append(path_io)
 # -------------------
 
-from flexce.fileio.pck import pck_read
-from flexce.fileio.pck import pck_write
+from flexce.fileio import pck
 
 # ---- Load Data ----
 data_in = pd.read_csv(join(path_b01, 'busso01_sprocess.txt'),
@@ -95,7 +101,7 @@ for i in range(n_b01):
 # metallicity grid, which is evenly sampled in log(metallicity) between each
 # metallicity grid point ( 1e-6, 1e-4, 1e-3, 6e-3, 2e-2) for a total of 1001
 # values
-z_final = pck_read(join(path_yldgen, 'interp_metallicity.pck'))
+z_final = pck.read(join(path_yldgen, 'interp_metallicity.pck'))
 n_metal_bin = len(z_final)
 
 # Extend the metallicity grid up to Z = 0.04 (twice solar), since Busso et
@@ -144,6 +150,6 @@ b01_final_ext = np.array([b01_final_ext]).transpose(1, 2, 0)
 #-----------------------------
 
 # pickle the interpolated yields array and the metallicity grid used
-pck_write(b01_final, join(path_b01, 'busso01_yields.pck'))
-pck_write(b01_final_ext, join(path_b01, 'busso01ext_yields.pck'))
-pck_write(z_final3, join(path_b01, 'busso01ext_metallicity.pck'))
+pck.write(b01_final, join(path_b01, 'busso01_yields.pck'))
+pck.write(b01_final_ext, join(path_b01, 'busso01ext_yields.pck'))
+pck.write(z_final3, join(path_b01, 'busso01ext_metallicity.pck'))

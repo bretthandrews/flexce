@@ -1,7 +1,7 @@
 # @Author: Brett Andrews <andrews>
 # @Date:   2018-06-05 11:06:88
 # @Last modified by:   andrews
-# @Last modified time: 2018-07-11 21:07:27
+# @Last modified time: 2018-07-12 11:07:25
 
 """
 FILE
@@ -24,7 +24,7 @@ import flexce.abundances
 import flexce.imf
 from flexce.imf import integrate_multi_power_law
 import flexce.inflows
-import flexce.fileio.yml
+from flexce.fileio import pck, txt, yml
 import flexce.lifetimes
 import flexce.outflows
 import flexce.star_formation
@@ -47,7 +47,7 @@ class ChemEvol:
         if isinstance(params, dict):
             pass
         elif isinstance(params, str) and os.path.isfile(params):
-            params = flexce.fileio.yml.read_yml(params)
+            params = yml.read_yml(params)
         elif params is None:
             params = {}
 
@@ -208,7 +208,7 @@ class ChemEvol:
         state = {k: v if k not in state else state[k] for k, v in default.items()}
 
         if isinstance(state['Nstar'], str):
-            box_Nstar = flexce.fileio.pck.pck_read(state['Nstar'])
+            box_Nstar = pck.read(state['Nstar'])
             try:
                 state['Nstar'] = box_Nstar.state['Nstar']
             except AttributeError as ee:
@@ -216,7 +216,7 @@ class ChemEvol:
                 state['Nstar'] = box_Nstar.random_num_state_Nstar
 
         if isinstance(state['snia'], str):
-            box_snia = flexce.fileio.pck.pck_read(state['snia'])
+            box_snia = pck.read(state['snia'])
             try:
                 state['snia'] = box_snia.state['snia']
             except AttributeError as ee:
@@ -259,6 +259,36 @@ class ChemEvol:
 
         print('Rate of SNII to SNIa in last 100 timesteps:',
               1. / np.mean(rate_snia_snii[-100:]))
+
+    def save(self, path=None, as_pck=True, as_txt=True):
+        """Save simulation results to pickle and txt files.
+
+        Args:
+            path (str): Output path. Default is ``None``, which gets
+                converted to the user's home directory.
+            as_pck (bool): Save simulation as a *.pck file. Default is
+                ``True``.
+            as_txt (bool): Save abundances as a *.txt file. Default is
+                ``True``.
+        """
+        if path is None:
+            path = os.path.expanduser('~')
+
+        if as_pck:
+            os.makedirs(path, exist_ok=True)
+            sim_id = self.params['box']['sim_id'] or self.params['box']['datetime']
+            pck.write(join(path, f'sim{sim_id}.pck'), self)
+
+        if as_txt:
+            txt.write_abundances(path, self)
+
+    @property
+    def feh(self):
+        return self.ab.feh
+
+    @property
+    def xfe(self):
+        return self.ab.iloc[:, 1:]
 
     def _initialize_arrays(self, n_sym):
         """Initialize arrays for simulation.

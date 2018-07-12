@@ -1,7 +1,7 @@
 # @Author: Brett Andrews <andrews>
 # @Date:   2018-05-30 17:05:89
 # @Last modified by:   andrews
-# @Last modified time: 2018-06-20 11:06:98
+# @Last modified time: 2018-07-12 11:07:92
 
 """
 FILE
@@ -28,9 +28,7 @@ import click
 
 import flexce.abundances
 from flexce.chemevol import ChemEvol
-import flexce.fileio.yml
-import flexce.fileio.pck
-import flexce.fileio.txt
+from flexce.fileio import pck, txt, yml
 import flexce.utils
 from flexce.yields import Yields
 
@@ -75,33 +73,23 @@ def main(config_file, path_in, path_out):
 
     box = ChemEvol(params, ylds)
 
-    ab = flexce.abundances.calc_abundances(
-        path_data,
-        ylds.sym,
-        box.mgas_iso,
-        box.survivors,
-        box.time,
-        box.params,
-    )
-
-    write_output(path_out, params['sim_id'], box, ab)
+    write_output(path_out, params['sim_id'], box)
 
 
-def write_output(path, sim_id, gal, abund):
+# TODO Remove in favor of ChemEvol.save()
+def write_output(path, sim_id, sim):
     """Write simulation results to pickle and txt files.
 
     Args:
         path (str): Output path.
         sim_id (str): Simulation ID number.
-        gal: ChemEvol instance.
-        abund: Abundances instance.
+        sim: ``flexce.chemevol.ChemEvol`` instance.
     """
     path_sim = join(path, ''.join(['sim', sim_id]))
     os.makedirs(path_sim, exist_ok=True)
 
-    flexce.io.pck.pck_write(gal, join(path_sim, f'box{sim_id}.pck'))
-    flexce.io.pck.pck_write(abund, join(path_sim, f'ab{sim_id}.pck'))
-    flexce.io.txt.txt_write(gal, abund, join(path_sim, f'ab{sim_id}.txt'))
+    pck.write(join(path_sim, f'sim{sim_id}.pck'), sim)
+    txt.write_abundances(join(path_sim, f'ab{sim_id}.txt'), sim)
 
 
 if __name__ == '__main__':

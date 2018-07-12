@@ -1,33 +1,44 @@
-"""Generates finely spaced grid of SNII, AGB, and SNIa yields.
+# @Author: Brett Andrews <andrews>
+# @Date:   2018-06-21 11:06:55
+# @Last modified by:   andrews
+# @Last modified time: 2018-07-12 11:07:17
 
-Generates a finely spaced grid of SN II isotopic yields from Woosley & Weaver
-(1995), AGB isotopic yields from Renzini & Voli (1981), and SNIa yields from
-Thielemann, Nomoto, & Yokoi (1986).
+"""
+FILE
+    ww95_yields.py
 
-Woosley & Weaver (1995): M = 11--40 Msun; Z = 0--solar
-Renzini & Voli (1981): M = 1--8 Msun; Z = 0--solar
-Thielemann et al. (1986): W7 model from Nomoto et al. (1984)
+DESCRIPTION
+    Generates finely spaced grid of SNII, AGB, and SNIa yields.
 
-Timmes already converted Ni56 to Fe56 in the maltov1.orig file (WW95 doesn't
-account for its decay).
+    Generates a finely spaced grid of SN II isotopic yields from
+    Woosley & Weaver (1995), AGB isotopic yields from
+    Renzini & Voli (1981), and SNIa yields from
+    Thielemann, Nomoto, & Yokoi (1986).
+
+    Woosley & Weaver (1995): M = 11--40 Msun; Z = 0--solar
+    Renzini & Voli (1981): M = 1--8 Msun; Z = 0--solar
+    Thielemann et al. (1986): W7 model from Nomoto et al. (1984)
+
+    Timmes already converted Ni56 to Fe56 in the maltov1.orig file
+    (WW95 doesn't account for its decay).
 """
 
 from __future__ import print_function, division, absolute_import
 
 import os
 from os.path import join
-import sys
 import copy
 
 import numpy as np
 from scipy import interpolate
 import pandas as pd
 
+from flexce.fileio import pck
+
 
 # ---- Set Paths -----
 path_calc_yields = join(os.path.abspath(os.path.dirname(__file__)), '')
 path_flexce = join('/'.join(path_calc_yields.split('/')[:-2]), '')
-path_io = join(path_flexce, 'io')
 path_data = join(path_flexce, 'data')
 path_yields = join(path_data, 'yields')
 path_yldgen = join(path_yields, 'general')
@@ -37,11 +48,7 @@ path_ww95_half_fe = join(path_ww95, 'half_fe')
 # path_ww95_half_fe_only = join(path_ww95, 'half_fe_only')
 # path_rv81 = join(path_yields, 'renzini81'
 # path_tny86 = join(path_yields, 'thielemann86'
-sys.path.append(path_io)
 # -------------------
-
-from flexce.fileio.pck import pck_read
-from flexce.fileio.pck import pck_write
 
 
 if not os.path.isdir(path_ww95_orig):
@@ -334,7 +341,7 @@ for i in range(4):
 # Interpolate WW95 yields onto Limongi & Chieffi (2006) metallicity grid, which
 # is evenly sampled in log(metallicity) between each metallicity grid point (
 # 1e-6, 1e-4, 1e-3, 6e-3, 2e-2) for a total of 1001 values
-z_final = pck_read(join(path_yldgen, 'interp_metallicity.pck'))
+z_final = pck.read(join(path_yldgen, 'interp_metallicity.pck'))
 n_metal_bin = len(z_final)
 
 
@@ -414,27 +421,22 @@ tny86_final[ind_sp] = tnyIa
 
 
 # pickle the interpolated yields array and the metallicity grid used
-pck_write(ww95_final, join(path_ww95_orig, 'interp_yields.pck'))
-pck_write(ww95_final_mej, join(path_ww95_orig, 'interp_meject.pck'))
-pck_write(ww95_final_rem, join(path_ww95_orig, 'interp_mremnant.pck'))
-# pck_write(rv81_final, join(path_rv81, 'interp_yields.pck'))
-# pck_write(rv81_final_mej, join(path_rv81, 'interp_meject.pck'))
-# pck_write(rv81_final_rem, join(path_rv81, 'interp_mremnant.pck'))
-# pck_write(tny86_final, join(path_tny86, 'w7_yields.pck'))
+pck.write(ww95_final, join(path_ww95_orig, 'interp_yields.pck'))
+pck.write(ww95_final_mej, join(path_ww95_orig, 'interp_meject.pck'))
+pck.write(ww95_final_rem, join(path_ww95_orig, 'interp_mremnant.pck'))
+# pck.write(rv81_final, join(path_rv81, 'interp_yields.pck'))
+# pck.write(rv81_final_mej, join(path_rv81, 'interp_meject.pck'))
+# pck.write(rv81_final_rem, join(path_rv81, 'interp_mremnant.pck'))
+# pck.write(tny86_final, join(path_tny86, 'w7_yields.pck'))
 
 
-pck_write(ww95_final_half_fe, join(path_ww95_half_fe, 'interp_yields.pck'))
-pck_write(ww95_final_mej_half_fe, join(path_ww95_half_fe,
-                                          'interp_meject.pck'))
-pck_write(ww95_final_rem_half_fe, join(path_ww95_half_fe,
-                                          'interp_mremnant.pck'))
+pck.write(ww95_final_half_fe, join(path_ww95_half_fe, 'interp_yields.pck'))
+pck.write(ww95_final_mej_half_fe, join(path_ww95_half_fe, 'interp_meject.pck'))
+pck.write(ww95_final_rem_half_fe, join(path_ww95_half_fe, 'interp_mremnant.pck'))
 
-# pck_write(ww95_final_half_fe_only, join(path_ww95_half_fe_only,
-#                                            'interp_yields.pck'))
-# pck_write(ww95_final_mej_half_fe_only, join(path_ww95_half_fe_only,
-#                                                'interp_meject.pck'))
-# pck_write(ww95_final_rem_half_fe_only, join(path_ww95_half_fe_only,
-#                                                'interp_mremnant.pck'))
+# pck.write(ww95_final_half_fe_only, join(path_ww95_half_fe_only, 'interp_yields.pck'))
+# pck.write(ww95_final_mej_half_fe_only, join(path_ww95_half_fe_only,'interp_meject.pck'))
+# pck.write(ww95_final_rem_half_fe_only, join(path_ww95_half_fe_only, 'interp_mremnant.pck'))
 
 # generic Big Bang Mass Fraction of isotopes
 if not os.path.isfile(join(path_yldgen, 'bbmf.txt')):

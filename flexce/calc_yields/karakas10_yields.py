@@ -1,34 +1,44 @@
-"""Generate finely spaced grid of AGB yields using the Karakas (2010) yields.
+# @Author: Brett Andrews <andrews>
+# @Date:   2018-06-21 11:06:54
+# @Last modified by:   andrews
+# @Last modified time: 2018-07-12 11:07:49
 
-Karakas & Lattanzio (2010): M = 1.0, 1.25, 1.5, 1.75, 1.9, 2.0, 2.1, 2.25,
-2.5, 3.0, 3.5, 4.0, 5.0, 6.0, 6.5 (Zsolar only); Z = 0.0001, 0.004, 0.008,
-0.02
+"""
+FILE
+    karakas10_yields.py
+
+DESCRIPTION
+    Generate finely spaced grid of AGB yields using the Karakas (2010)
+    yields.
+
+    Karakas & Lattanzio (2010):
+        M = 1.0, 1.25, 1.5, 1.75, 1.9, 2.0, 2.1, 2.25, 2.5, 3.0, 3.5,
+            4.0, 5.0, 6.0, 6.5 (Zsolar only);
+        Z = 0.0001, 0.004, 0.008, 0.02
 """
 
 from __future__ import print_function, division, absolute_import
 
 import os
 from os.path import join
-import sys
 import copy
 
 import numpy as np
 from scipy import interpolate
 import pandas as pd
 
+from flexce.fileio import pck
+
 
 #---- Set Paths -----
 path_calc_yields = join(os.path.abspath(os.path.dirname(__file__)), '')
 path_flexce = join('/'.join(path_calc_yields.split('/')[:-2]), '')
-path_io = join(path_flexce, 'io')
 path_data = join(path_flexce, 'data')
 path_yields = join(path_data, 'yields')
 path_yldgen = join(path_yields, 'general')
 path_k10 = join(path_yields, 'karakas10', 'iso_yields')
-sys.path.append(path_io)
 #-------------------
 
-from flexce.fileio.pck import pck_write
 
 #----- Read in Computed Yields -----
 
@@ -304,7 +314,7 @@ for i in range(n_bins_low):
 
 
 # pickle the interpolated yields array and the metallicity grid used
-pck_write(k10_final, join(path_k10, 'interp_yields.pck'))
-pck_write(k10_final_mej, join(path_k10, 'interp_meject.pck'))
-pck_write(k10_final_rem, join(path_k10, 'interp_mremnant.pck'))
+pck.write(k10_final, join(path_k10, 'interp_yields.pck'))
+pck.write(k10_final_mej, join(path_k10, 'interp_meject.pck'))
+pck.write(k10_final_rem, join(path_k10, 'interp_mremnant.pck'))
 # -----------------------------

@@ -1,28 +1,35 @@
-"""Convert Iwamoto et al. (1999) W70 SNIa yields to pickled arrays."""
+# @Author: Brett Andrews <andrews>
+# @Date:   2018-06-21 11:06:54
+# @Last modified by:   andrews
+# @Last modified time: 2018-07-12 11:07:30
+
+"""
+FILE
+    iwamoto99_yields.py
+
+DESCRIPTION
+    Convert Iwamoto et al. (1999) W70 SNIa yields to pickled arrays.
+"""
 
 from __future__ import print_function, division, absolute_import
 
 import os
 from os.path import join
-import sys
 
 import numpy as np
 import pandas as pd
 import string
 
+from flexce.fileio import pck
+
 # ---- Set Paths -----
 path_calc_yields = join(os.path.abspath(os.path.dirname(__file__)), '')
 path_flexce = join('/'.join(path_calc_yields.split('/')[:-2]), '')
-path_io = join(path_flexce, 'io')
 path_data = join(path_flexce, 'data')
 path_yields = join(path_data, 'yields')
 path_yldgen = join(path_yields, 'general')
 path_i99 = join(path_yields, 'iwamoto99')
-sys.path.append(path_io)
 # -------------------
-
-from flexce.fileio.pck import pck_write
-
 
 # ---- Iwamoto et al. (1999) W70 SNIa yields ----
 
@@ -90,4 +97,4 @@ for k in i99.keys():
 
 # write to file
 for k in snia_yields.keys():
-    pck_write(snia_yields[k], join(path_i99, k + '_yields.pck'))
+    pck.write(snia_yields[k], join(path_i99, k + '_yields.pck'))

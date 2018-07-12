@@ -1,38 +1,46 @@
-"""Generate finely spaced grid of SN II isotopic yields.
+# @Author: Brett Andrews <andrews>
+# @Date:   2018-06-21 11:06:54
+# @Last modified by:   andrews
+# @Last modified time: 2018-07-12 11:07:17
 
-Use a combination of the Chieffi & Limongi (2004) & Limongi & Chieffi (2006).
+"""
+FILE
+    limongi_chieffi_yields.py
 
-Chieffi & Limongi (2004): M = 13--35 Msun; Z = 0--solar
-Limongi & Chieffi (2006): M = 11--120; Z = solar
+DESCRIPTION
+    Generate finely spaced grid of SN II isotopic yields.
 
-Mass cut = 0.1 Msun Ni56
+    Use a combination of the Chieffi & Limongi (2004) and
+    Limongi & Chieffi (2006) yields.
+
+    Chieffi & Limongi (2004): M = 13--35 Msun; Z = 0--solar
+    Limongi & Chieffi (2006): M = 11--120; Z = solar
+
+    Mass cut = 0.1 Msun Ni56
 """
 
 from __future__ import print_function, division, absolute_import
 
 import os
 from os.path import join
-import sys
 
 import numpy as np
 from scipy import interpolate
 import pandas as pd
 
+from flexce.fileio import pck
 
 #---- Set Paths -----
 path_calc_yields = join(os.path.abspath(os.path.dirname(__file__)), '')
 path_flexce = join('/'.join(path_calc_yields.split('/')[:-2]), '')
-path_io = join(path_flexce, 'io')
 path_data = join(path_flexce, 'data')
 path_yields = join(path_data, 'yields')
 path_yldgen = join(path_yields, 'general')
 path_cl04 = join(path_yields, 'chieffi04', 'iso_yields')
 path_lc06 = join(path_yields, 'limongi06', 'iso_yields')
 path_lc06_el = join(path_yields, 'limongi06', 'el_yields')
-sys.path.append(path_io)
 # -------------------
 
-from flexce.fileio.pck import pck_write
 
 # ---- Read in Computed Yields -----
 # CL04
@@ -449,10 +457,10 @@ for i in range(n_metal_bin):
 
 
 # pickle the interpolated yields array and the metallicity grid used
-pck_write(z_final, join(path_yldgen, 'interp_metallicity.pck'))
-pck_write(lc_final, join(path_lc06, 'interp_yields.pck'))
-pck_write(lc_final_mej, join(path_lc06, 'interp_meject.pck'))
-pck_write(lc_final_rem, join(path_lc06, 'interp_mremnant.pck'))
+pck.write(z_final, join(path_yldgen, 'interp_metallicity.pck'))
+pck.write(lc_final, join(path_lc06, 'interp_yields.pck'))
+pck.write(lc_final_mej, join(path_lc06, 'interp_meject.pck'))
+pck.write(lc_final_rem, join(path_lc06, 'interp_mremnant.pck'))
 
 
 ##############################

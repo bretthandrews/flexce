@@ -1,16 +1,25 @@
-"""Generate a finely spaced grid of Ba & Eu yields from SNII.
+# @Author: Brett Andrews <andrews>
+# @Date:   2018-06-21 11:06:54
+# @Last modified by:   andrews
+# @Last modified time: 2018-07-12 11:07:15
 
-Generate a finely spaced grid of Ba & Eu yields from SNII from the 'empirical'
-r-process yields (determined by matching Ba and Eu abundances from a chemical
-evolution model that used these yields to observations) of
-Cescutti et al. (2006).
+"""
+FILE
+    cescutti06.py
+
+DESCRIPTION
+    Generate a finely spaced grid of Ba & Eu yields from SNII.
+
+    Generate a finely spaced grid of Ba & Eu yields from SNII from the
+    'empirical' r-process yields (determined by matching Ba and Eu
+    abundances from a chemical evolution model that used these yields
+    to observations) of Cescutti et al. (2006).
 """
 
 from __future__ import print_function, division, absolute_import
 
 import os
 from os.path import join
-import sys
 
 import numpy as np
 from scipy import interpolate
@@ -19,16 +28,13 @@ import pandas as pd
 # ---- Set Paths -----
 path_calc_yields = join(os.path.abspath(os.path.dirname(__file__)), '')
 path_flexce = join('/'.join(path_calc_yields.split('/')[:-2]), '')
-path_io = join(path_flexce, 'io')
 path_data = join(path_flexce, 'data')
 path_yields = join(path_data, 'yields')
 path_yldgen = join(path_yields, 'general')
 path_c06 = join(path_yields, 'cescutti06')
-sys.path.append(path_io)
 # -------------------
 
-from flexce.fileio.pck import pck_read
-from flexce.fileio.pck import pck_write
+from flexce.fileio import pck
 
 
 # ---- Load Data ----
@@ -38,7 +44,7 @@ data_in = pd.read_csv(join(path_c06, 'cescutti06_rprocess.txt'),
 m_c06 = np.array(data_in['M'])
 x_c06 = np.array(data_in[['XBa', 'XEu']]).T
 
-c06_orig = x_c06 * m_c06 # convert X_Ba & X_Eu to a mass of Ba & Eu
+c06_orig = x_c06 * m_c06  # convert X_Ba & X_Eu to a mass of Ba & Eu
 # -------------------
 
 
@@ -86,7 +92,7 @@ for i in range(len(c06_orig)):
 
 
 # project into 3D arrays (metallicities, masses, isotopes)
-z_final = pck_read(join(path_yldgen, 'interp_metallicity.pck'))
+z_final = pck.read(join(path_yldgen, 'interp_metallicity.pck'))
 n_metal_bin = len(z_final)
 c06_final = np.ones((n_metal_bin, n_bins_high, len(c06_orig)))
 c06_final[:] = c06_interp_metal
@@ -94,4 +100,4 @@ c06_final[:] = c06_interp_metal
 # -----------------------------
 
 # pickle the interpolated yields array and the metallicity grid used
-pck_write(c06_final, join(path_c06, 'cescutti06_yields.pck'))
+pck.write(c06_final, join(path_c06, 'cescutti06_yields.pck'))

@@ -1,7 +1,7 @@
 # @Author: Brett Andrews <andrews>
 # @Date:   2018-07-12 09:07:24
 # @Last modified by:   andrews
-# @Last modified time: 2018-07-12 10:07:68
+# @Last modified time: 2018-07-12 11:07:77
 
 """
 FILE
@@ -17,6 +17,7 @@ DESCRIPTION
 
 from __future__ import print_function, division, absolute_import
 
+import os
 from os.path import join
 import re
 
@@ -25,7 +26,7 @@ import pandas as pd
 from flexce.fileio.general import _make_sim_path
 
 
-def write(path, sim):
+def write_abundances(path, sim):
     """Write simulation abundances to a .txt file.
 
     Args:
@@ -42,11 +43,13 @@ def write(path, sim):
 
     sim_id = sim.params['box']['sim_id'] or sim.params['box']['datetime']
 
+    os.makedirs(path, exist_ok=True)
+
     with open(join(path, f'ab{sim_id}.txt'), 'w') as fout:
         df2.to_string(fout, header=header, index=False, formatters=formatters)
 
 
-def read(path, sim_id=None):
+def read_abundances(path, sim_id=None):
     """Read simulation abundances from a text file.
 
     Args:
