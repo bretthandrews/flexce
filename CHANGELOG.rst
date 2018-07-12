@@ -19,7 +19,7 @@ Added
 
 - Abundances computation to simulation run, so that the simulation instance now includes a Pandas DataFrame of [Fe/H] and [X/Fe].
 
-- Test to check that simulation output and abundances are the same as fiducial simulation from Andrews et al. (2017).
+- Test to check that simulation output, abundances, and yields are the same as fiducial simulation from Andrews et al. (2017).
 - Significant amount to docstrings.
 
 Removed
