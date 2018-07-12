@@ -1,3 +1,16 @@
+# @Author: Brett Andrews <andrews>
+# @Date:   2018-06-21 11:06:11
+# @Last modified by:   andrews
+# @Last modified time: 2018-07-12 16:07:28
+
+"""
+FILE
+    cfg.py
+
+DESCRIPTION
+    Read config files.
+"""
+
 from __future__ import print_function, division, absolute_import
 
 try:
