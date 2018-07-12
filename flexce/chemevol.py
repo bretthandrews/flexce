@@ -1,7 +1,7 @@
 # @Author: Brett Andrews <andrews>
 # @Date:   2018-06-05 11:06:88
 # @Last modified by:   andrews
-# @Last modified time: 2018-07-11 17:07:79
+# @Last modified time: 2018-07-11 21:07:27
 
 """
 FILE
@@ -55,7 +55,7 @@ class ChemEvol:
 
         self.mass_bins = flexce.utils.set_mass_bins(**params['mass_bins'])
 
-        self.set_box(**params['box'])
+        self.setup_box(**params['box'])
 
         if ylds is None:
             # TODO try to load existing yields. If they don't exist, then calculate them.
@@ -98,7 +98,7 @@ class ChemEvol:
             self.params['abundances']['solar']['source'],
         )
 
-    def set_box(
+    def setup_box(
         self,
         radius=10.,
         time_tot=12000.,
@@ -224,10 +224,10 @@ class ChemEvol:
 
         ``inflow[0].sum()`` is fractionally larger than
         ``inflow_rate.sum()`` by 7.5e-5 (due to
-        ``sum(bbmf)`` = 1. + 7.5e-5)
+        ``sum(bbmf)`` = 1. + 7.5e-5).
 
         Args:
-            yields: ``Yields`` instance.
+            yields: ``flexce.yields.Yields`` instance.
         """
         m_in = (self.inflow.sum() + self.mgas_iso[0].sum() + self.mwarmgas_iso[0].sum() * 4.)
         m_out = self.outflow.sum()
@@ -237,7 +237,7 @@ class ChemEvol:
         dm = m_in - m_out - m_gas - m_star
         assert dm < 1e-3, f'Mass not conserved!\nmass_in - mass_out: {dm}'
 
-    def snii_snia_rate(self):
+    def print_snii_snia_rate(self):
         """Prints ratio of SNII to SNIa rates in last 100 time steps.
 
         Instantaneous Rate(SNII) / Rate(SNIa) ~ 3:1 (Li et al.).
@@ -254,12 +254,11 @@ class ChemEvol:
         print('Rate of SNII to SNIa in last 100 timesteps:',
               1. / np.mean(rate_snia_snii[-100:]))
 
-    def initialize_arrays(self, n_sym):
+    def _initialize_arrays(self, n_sym):
         """Initialize arrays for simulation.
 
         Args:
             n_sym (int): Number of isotopes in ``Yields`` instance.
-
         """
         n_steps = len(self.time)
         self.agb = np.zeros((n_steps, n_sym))
@@ -326,7 +325,7 @@ class ChemEvol:
             ylds: ``Yields`` instance.
 
         """
-        self.initialize_arrays(ylds.n_sym)
+        self._initialize_arrays(ylds.n_sym)
 
         ind_yld = np.zeros(self.n_steps, dtype=int)
         ind8 = np.where(self.mass_bins == 8.)[0][0]
@@ -552,7 +551,7 @@ class ChemEvol:
 
         self.outflow_rate = np.sum(self.outflow, axis=1) / self.dtime
         self.check_mass_conservation(ylds)
-        self.snii_snia_rate()
+        self.print_snii_snia_rate()
 
         # Set all negative masses equal to a small positive number.
         self.mgas_iso[self.mgas_iso < 0.] = 1e-30
