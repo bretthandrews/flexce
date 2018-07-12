@@ -1,7 +1,7 @@
 # @Author: Brett Andrews <andrews>
 # @Date:   2018-06-13 15:06:13
 # @Last modified by:   andrews
-# @Last modified time: 2018-07-11 16:07:72
+# @Last modified time: 2018-07-12 10:07:38
 
 """
 FILE
@@ -75,15 +75,12 @@ gal_ignore = ['ab']
 keys_box0 = box0_ignore
 keys_gal = gal_ignore
 
-keys_ab = ['param', 'sim_id']
-keys_ab0 = ['param', 'sim_id', 'stem_data', 'stem_parent']
-
 
 class TestFiducialBox(object):
 
     def test_params_box(self, gal, box0):
         for k, v in gal.params['box'].items():
-            if k in ['sim_id', 'save']:
+            if k in ['sim_id', 'save', 'datetime']:
                 continue
 
             assert box0.__dict__[k] == v, k
