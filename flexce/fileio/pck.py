@@ -48,49 +48,20 @@ def _make_sim_path(path_out, sim_id, stem='box'):
     """
     sim_id = str(sim_id)
     path_sim = os.path.join(path_out, ''.join(['sim', sim_id]))
-    fname = '{}{}.pck'.format(stem, sim_id)
+    fname = f'{stem}{sim_id}.pck'
     return os.path.join(path_sim, fname)
 
 
-def box_read(path_out, sim_id):
-    """Read in ChemEvol instance from box<sim_id>.pck file.
+def sim_read(path_out, sim_id):
+    """Read in simulation results.
 
     Args:
-        path_out (str): directory of pickle file.
-        sim_id (str): simulation ID number.
+        path_out (str): Directory of pickle file.
+        sim_id (str): Simulation ID number.
 
     Returns:
-        object: instance of ChemEvol class ('box' object).
+        flexce.chemevol.ChemEvol
     """
     from flexce.chemevol import ChemEvol
     fname = _make_sim_path(path_out, sim_id, stem='box')
     return pck_read(fname)
-
-
-def ab_read(path_out, sim_id):
-    """Read in Abundances instance from ab<sim_id>.pck file.
-
-    Args:
-        path_out (str): directory of pickle file.
-        sim_id (str): simulation ID number.
-
-    Returns:
-        object: instance of Abundances class ('ab' object).
-    """
-    fname = _make_sim_path(path_out, sim_id, stem='ab')
-    return pck_read(fname)
-
-
-def sim_read(path_out, sim_id):
-    """Read in box and ab objects.
-
-    Args:
-        path_out (str): directory of pickle file.
-        sim_id (str): simulation ID number.
-
-    Returns:
-        ChemEvol instance, Abundances instance (tuple): 'box' and 'ab' objects
-    """
-    box = box_read(path_out, sim_id)
-    ab = ab_read(path_out, sim_id)
-    return box, ab
