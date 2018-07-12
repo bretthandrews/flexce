@@ -12,7 +12,7 @@ DESCRIPTION
 
     These files only save the time, number of surviving stars, [Fe/H],
     and [X/Fe] abundances of each stellar generation. Use
-    ``flexce.io.pck`` to save all properties of a simulation.
+    ``flexce.fileio.pck`` to save all properties of a simulation.
 """
 
 from __future__ import print_function, division, absolute_import

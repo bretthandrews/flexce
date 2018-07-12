@@ -9,7 +9,7 @@ import numpy as np
 from scipy.interpolate import interp1d
 from scipy.stats import gaussian_kde
 
-from flexce.io.pck import pck_read
+from flexce.fileio.pck import pck_read
 
 class PlotSim:
     def __init__(self, suite_in):

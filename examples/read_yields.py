@@ -3,7 +3,7 @@
 import os
 from os.path import join
 
-from flexce.io.yml import read_yml
+from flexce.fileio.yml import read_yml
 from flexce.utils import set_mass_bins, load_yields
 
 from flexce.yields import Yields

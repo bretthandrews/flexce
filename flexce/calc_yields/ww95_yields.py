@@ -40,8 +40,8 @@ path_ww95_half_fe = join(path_ww95, 'half_fe')
 sys.path.append(path_io)
 # -------------------
 
-from flexce.io.pck import pck_read
-from flexce.io.pck import pck_write
+from flexce.fileio.pck import pck_read
+from flexce.fileio.pck import pck_write
 
 
 if not os.path.isdir(path_ww95_orig):

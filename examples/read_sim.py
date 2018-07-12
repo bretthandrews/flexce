@@ -2,8 +2,8 @@
 
 import os
 from os.path import join
-from flexce.io import pck
-from flexce.io import txt
+from flexce.fileio import pck
+from flexce.fileio import txt
 
 
 path_output = join(os.expanduer('~'), 'flexce_output')

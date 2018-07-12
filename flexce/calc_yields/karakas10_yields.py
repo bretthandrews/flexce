@@ -28,7 +28,7 @@ path_k10 = join(path_yields, 'karakas10', 'iso_yields')
 sys.path.append(path_io)
 #-------------------
 
-from flexce.io.pck import pck_write
+from flexce.fileio.pck import pck_write
 
 #----- Read in Computed Yields -----
 

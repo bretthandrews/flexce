@@ -6,7 +6,7 @@ import numpy as np
 import pandas as pd
 
 import flexce
-from flexce.io.pck import pck_read
+from flexce.fileio.pck import pck_read
 from flexce.utils import set_yields
 
 

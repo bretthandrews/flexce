@@ -32,7 +32,7 @@ path_lc06_el = join(path_yields, 'limongi06', 'el_yields')
 sys.path.append(path_io)
 # -------------------
 
-from flexce.io.pck import pck_write
+from flexce.fileio.pck import pck_write
 
 # ---- Read in Computed Yields -----
 # CL04

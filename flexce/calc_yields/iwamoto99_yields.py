@@ -21,7 +21,7 @@ path_i99 = join(path_yields, 'iwamoto99')
 sys.path.append(path_io)
 # -------------------
 
-from flexce.io.pck import pck_write
+from flexce.fileio.pck import pck_write
 
 
 # ---- Iwamoto et al. (1999) W70 SNIa yields ----

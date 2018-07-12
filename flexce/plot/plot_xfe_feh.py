@@ -37,7 +37,7 @@ path_plots = join(path_flexce_top, 'plots')
 sys.path.insert(0, path_flexce)
 import utils
 import plot.utils as putils
-from flexce.io import cfg, txt
+from flexce.fileio import cfg, txt
 
 default_config_path = join(path_plots, 'config')
 default_output_path = join(path_flexce_top, 'output')
