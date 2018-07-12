@@ -1,7 +1,7 @@
 # @Author: Brett Andrews <andrews>
 # @Date:   2018-07-12 10:07:51
 # @Last modified by:   andrews
-# @Last modified time: 2018-07-12 11:07:83
+# @Last modified time: 2018-07-12 16:07:42
 
 """
 FILE
@@ -12,6 +12,8 @@ DESCRIPTION
 """
 
 from __future__ import print_function, division, absolute_import
+
+from os.path import join
 
 import pickle
 
@@ -40,3 +42,7 @@ def write(path, obj):
     """
     with open(path, 'wb') as fout:
         pickle.dump(obj, fout, -1)
+
+
+def read_sim(path, sim_id):
+    return read(join(path, f'sim{sim_id}.pck'))

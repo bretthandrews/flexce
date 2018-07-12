@@ -2,19 +2,13 @@
 
 import os
 from os.path import join
-from flexce.fileio import pck
-from flexce.fileio import txt
+from flexce.fileio import pck, txt
 
 
-path_output = join(os.expanduer('~'), 'flexce_output')
+path = join(os.expanduer('~'), 'flexce_output')
 
-# Read in pickled box and ab objects individually...
-box0 = pck.box_read(path_output, sim_id=0)
-ab0 = pck.ab_read(path_output, sim_id=0)
-# ...or simultaneously
-box1, ab1 = pck.sim_read(path_output, sim_id=1)
+# Read in pickled sim instance
+gal = pck.read_sim(path, sim_id=0)
 
-# Read in timesteps, surviving stars, and abundances of select elements
-time0, survivors0, feh0, abunds0 = txt.txt_read(path_output, sim_id=0)
-# abunds0 is a recarray with element abbreviation (e.g., 'C') as the column
-# names (instead of '[C/Fe]').
+# Read in timesteps, surviving stars, and abundances
+ab = txt.read_abundances(path, sim_id=0)
