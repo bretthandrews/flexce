@@ -1,7 +1,7 @@
 # @Author: Brett Andrews <andrews>
 # @Date:   2018-07-12 09:07:24
 # @Last modified by:   andrews
-# @Last modified time: 2018-07-12 11:07:77
+# @Last modified time: 2018-07-12 20:07:43
 
 """
 FILE
@@ -41,7 +41,7 @@ def write_abundances(path, sim):
     df = pd.DataFrame({'time': sim.time[1:], 'survivors': sim.survivors[1:]})
     df2 = pd.concat((df, sim.ab), axis=1)
 
-    sim_id = sim.params['box']['sim_id'] or sim.params['box']['datetime']
+    sim_id = str(sim.params['box']['sim_id']) or sim.params['box']['datetime']
 
     os.makedirs(path, exist_ok=True)
 

@@ -1,7 +1,7 @@
 # @Author: Brett Andrews <andrews>
 # @Date:   2018-06-05 11:06:88
 # @Last modified by:   andrews
-# @Last modified time: 2018-07-12 16:07:19
+# @Last modified time: 2018-07-12 20:07:86
 
 """
 FILE
@@ -276,7 +276,7 @@ class ChemEvol:
 
         if as_pck:
             os.makedirs(path, exist_ok=True)
-            sim_id = self.params['box']['sim_id'] or self.params['box']['datetime']
+            sim_id = str(self.params['box']['sim_id']) or self.params['box']['datetime']
             pck.write(join(path, f'sim{sim_id}.pck'), self)
 
         if as_txt:
