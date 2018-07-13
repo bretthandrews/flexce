@@ -1,0 +1,15 @@
+sim_ids:
+    - 0
+    - 1
+
+labels:
+    - fiducial
+    - low eta
+
+ab: "[O/Fe]"
+
+plot:
+    colors: dodgerblue, r
+
+legend:
+    title: Simulations
