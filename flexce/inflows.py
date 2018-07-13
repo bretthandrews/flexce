@@ -1,7 +1,7 @@
 # @Author: Brett Andrews <andrews>
 # @Date:   2018-06-07 20:06:05
 # @Last modified by:   andrews
-# @Last modified time: 2018-07-13 09:07:78
+# @Last modified time: 2018-07-13 13:07:83
 
 """
 FILE
@@ -17,6 +17,8 @@ from os.path import join
 
 import numpy as np
 import pandas as pd
+
+import flexce.utils
 
 
 def set_inflows(
@@ -143,7 +145,7 @@ def _set_default_coeff(func, coeff):
             'sfe': 3e7,
         }
 
-    coeff = {**default, **coeff}
+    coeff = flexce.utils.merge(coeff, default)
 
     return coeff
 

@@ -1,8 +1,23 @@
+# @Author: Brett Andrews <andrews>
+# @Date:   2018-06-21 11:06:12
+# @Last modified by:   andrews
+# @Last modified time: 2018-07-13 13:07:64
+
+"""
+FILE
+    utils.py
+
+DESCRIPTION
+    Plotting utility functions.
+"""
+
 from __future__ import print_function, division, absolute_import
 
 import matplotlib as mpl
 import matplotlib.pyplot as plt
 import seaborn as sns
+
+import flexce.utils
 
 
 def get_colors(cfg):
@@ -95,7 +110,7 @@ def joint_overplot(x, y, data, fig, color="r", marg_kws=None):
     if marg_kws is None:
         marg_kws = {}
 
-    marg_kws = {**default, **marg_kws}
+    marg_kws = flexce.utils.merge(marg_kws, default)
 
     fig.x = data[x]
     fig.y = data[y]

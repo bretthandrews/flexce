@@ -1,7 +1,7 @@
 # @Author: Brett Andrews <andrews>
 # @Date:   2018-04-16 20:04:30
 # @Last modified by:   andrews
-# @Last modified time: 2018-07-13 09:07:49
+# @Last modified time: 2018-07-13 13:07:08
 
 """
 FILE
@@ -18,6 +18,8 @@ import string
 import numpy as np
 import pandas as pd
 
+import flexce.utils
+
 
 def set_default_params(params):
     default = {
@@ -26,7 +28,7 @@ def set_default_params(params):
         }
     }
 
-    params = {**default, **params}
+    params = flexce.utils.merge(params, default)
 
     return params
 
