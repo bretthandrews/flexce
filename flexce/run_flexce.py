@@ -1,7 +1,7 @@
 # @Author: Brett Andrews <andrews>
 # @Date:   2018-05-30 17:05:89
 # @Last modified by:   andrews
-# @Last modified time: 2018-07-12 16:07:50
+# @Last modified time: 2018-07-12 22:07:00
 
 """
 FILE
@@ -12,7 +12,7 @@ USAGE
 
     Example::
 
-        $ run_flexce sim0.cfg
+        $ run_flexce sim0.yml
 
 DESCRIPTION
     Run flexCE from the command line using a config file.
@@ -34,15 +34,13 @@ from flexce.yields import Yields
 
 
 @click.command()
-@click.option('--path_in', default=None, type=click.Path())
 @click.option('--path_out', default=None, type=click.Path())
 @click.argument('config_file', default=None, required=False, type=click.Path())
-def main(config_file, path_in, path_out):
+def main(config_file, path_out):
     """
     Args:
         config_file (str): Config file name.  Default is ``sim0.yml``.
             (fiducial parameters from Andrews et al. 2017).
-        path_in (str): Path to `config_file`.  Default is current dir.
         path_out (str): Path to output dir.  Default is current dir.
     """
     path_flexce = join(os.path.abspath(os.path.dirname(__file__)), '')
@@ -51,45 +49,21 @@ def main(config_file, path_in, path_out):
 
     if config_file is None:
         print('No config file specified. Using default parameters.')
-        config_file = 'sim0.yml'
-        path_in = join(path_flexce_root, 'examples')
-
-    if path_in is None:
-        print('No input path specified. Using current working directory.')
-        path_in = os.getcwd()
+        config_file = join(path_flexce_root, 'examples', 'sim0.yml')
 
     if path_out is None:
         print('No output path specified. Using current working directory.')
         path_out = os.getcwd()
 
-    file_in = join(path_in, config_file)
-
-    params = yml.read(file_in)
+    params = yml.read(config_file)
 
     mass_bins = flexce.utils.set_mass_bins(**params['mass_bins'])
 
     params['yld_args'] = flexce.utils.set_yields(params['yields'])
     ylds = Yields(params=params['yields'], mass_bins=mass_bins, path=path_data)
 
-    box = ChemEvol(params, ylds)
-
-    write_output(path_out, params['sim_id'], box)
-
-
-# TODO Remove in favor of ChemEvol.save()
-def write_output(path, sim_id, sim):
-    """Write simulation results to pickle and txt files.
-
-    Args:
-        path (str): Output path.
-        sim_id (str): Simulation ID number.
-        sim: ``flexce.chemevol.ChemEvol`` instance.
-    """
-    path_sim = join(path, ''.join(['sim', sim_id]))
-    os.makedirs(path_sim, exist_ok=True)
-
-    pck.write(join(path_sim, f'sim{sim_id}.pck'), sim)
-    txt.write_abundances(join(path_sim, f'ab{sim_id}.txt'), sim)
+    gal = ChemEvol(params, ylds)
+    gal.save(path=path_out)
 
 
 if __name__ == '__main__':
