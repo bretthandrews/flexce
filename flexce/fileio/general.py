@@ -1,7 +1,7 @@
 # @Author: Brett Andrews <andrews>
 # @Date:   2018-07-12 09:07:44
 # @Last modified by:   andrews
-# @Last modified time: 2018-07-12 10:07:65
+# @Last modified time: 2018-07-12 21:07:32
 
 """
 FILE
@@ -35,6 +35,6 @@ def _make_sim_path(path, sim_id=None, ext=None):
                   '.txt': 'ab'}
 
         sim_id = str(sim_id)
-        path = join(path, f'sim{sim_id}', f'{prefix[ext]}{sim_id}{ext}')
+        path = join(path, f'{prefix[ext]}{sim_id}{ext}')
 
     return path
