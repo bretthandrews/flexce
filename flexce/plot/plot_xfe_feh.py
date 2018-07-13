@@ -22,6 +22,10 @@ import sys
 import matplotlib.pyplot as plt
 import seaborn as sns
 
+from flexce import utils
+import flexce.plot.utils as putils
+from flexce.fileio import cfg, txt
+
 # ----- Set paths -----
 try:
     path_plot = os.path.abspath(os.path.dirname(__file__))
@@ -30,14 +34,8 @@ except NameError as e:
 
 path_flexce_top = os.path.abspath(join(path_plot, '../..'))
 path_flexce = join(path_flexce_top, 'flexce')
-path_io = join(path_flexce_top, 'flexce', 'io')
 path_plots = join(path_flexce_top, 'plots')
 # ---------------------
-
-sys.path.insert(0, path_flexce)
-import utils
-import plot.utils as putils
-from flexce.fileio import cfg, txt
 
 default_config_path = join(path_plots, 'config')
 default_output_path = join(path_flexce_top, 'output')
