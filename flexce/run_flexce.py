@@ -1,7 +1,7 @@
 # @Author: Brett Andrews <andrews>
 # @Date:   2018-05-30 17:05:89
 # @Last modified by:   andrews
-# @Last modified time: 2018-07-12 22:07:00
+# @Last modified time: 2018-07-13 08:07:31
 
 """
 FILE
@@ -28,7 +28,7 @@ import click
 
 import flexce.abundances
 from flexce.chemevol import ChemEvol
-from flexce.fileio import pck, txt, yml
+from flexce.fileio import yml
 import flexce.utils
 from flexce.yields import Yields
 
