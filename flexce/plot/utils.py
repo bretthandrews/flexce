@@ -6,10 +6,10 @@ import seaborn as sns
 
 
 def get_colors(cfg):
-    """Get colors from config file or set them with seaborn color palette.
+    """Get colors from config file or set with seaborn color palette.
 
     Args:
-        cfg (dict): config settings.
+        cfg (dict): Config settings.
 
     Returns:
         list: colors
@@ -18,8 +18,10 @@ def get_colors(cfg):
         colors = cfg['Plot']['colors']
         if not isinstance(colors, list):
             colors = [colors]
+
     except KeyError:
         colors = sns.color_palette('bright')
+
     return colors
 
 
@@ -32,18 +34,30 @@ def get_leg_args(cfg):
     Returns:
         dict: Keyword args to pass to legend.
     """
-    leg_args = dict(scatterpoints=1, handletextpad=0.05, labelspacing=0.01,
-                    borderpad=0.2, borderaxespad=0.5, loc=3)
+    leg_args = {
+        'scatterpoints': 1,
+        'handletextpad': 0.05,
+        'labelspacing': 0.01,
+        'borderpad': 0.2,
+        'borderaxespad': 0.5,
+        'loc': 3
+    }
+
     try:
         args = cfg['Legend']
+
         for k, v in args.items():
             try:
                 v = float(v)
+
             except ValueError:
                 continue
+
             leg_args[k] = v
+
     except KeyError:
         pass
+
     return leg_args
 
 
@@ -62,26 +76,27 @@ def get_path_collections(fig):
     return p
 
 
-def joint_overplot(x, y, df, fig, color='r', marg_kws=None):
+def joint_overplot(x, y, data, fig, color='r', marg_kws=None):
     """Overplot additional data on existing JointGrid instance.
 
     Args:
-        x (str):
-        y (str):
-        df (DataFrame):
+        x (str): Column name of data to show on x-axis.
+        y (str): Column name of data to show on y-axis.
+        data (DataFrame): Data.
         fig: seaborn JointGrid instance.
         color (str): Color.
         marg_kws (dict): Keyword arguments to pass to plot_marginals().
 
     Returns:
-        fig: seaborn JointGrid instance.
+        fig: ``sns.JointGrid`` instance.
     """
     if marg_kws is None:
         marg_kws = dict(norm_hist=True,
-                        hist_kws=dict(weights=df.Survivors.values))
-    fig.x = df[x]
-    fig.y = df[y]
+                        hist_kws=dict(weights=data.Survivors.values))
+
+    fig.x = data[x]
+    fig.y = data[y]
     fig.plot_joint(plt.scatter, c=color)
-    fig.plot_marginals(sns.distplot, color=color, kde=False, axlabel=False,
-                       **marg_kws)
+    fig.plot_marginals(sns.distplot, color=color, kde=False, axlabel=False, **marg_kws)
+
     return fig
