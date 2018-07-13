@@ -15,12 +15,12 @@ def get_colors(cfg):
         list: colors
     """
     try:
-        colors = cfg['Plot']['colors']
+        colors = cfg["Plot"]["colors"]
         if not isinstance(colors, list):
             colors = [colors]
 
     except KeyError:
-        colors = sns.color_palette('bright')
+        colors = sns.color_palette("bright")
 
     return colors
 
@@ -35,16 +35,16 @@ def get_leg_args(cfg):
         dict: Keyword args to pass to legend.
     """
     leg_args = {
-        'scatterpoints': 1,
-        'handletextpad': 0.05,
-        'labelspacing': 0.01,
-        'borderpad': 0.2,
-        'borderaxespad': 0.5,
-        'loc': 3
+        "scatterpoints": 1,
+        "handletextpad": 0.05,
+        "labelspacing": 0.01,
+        "borderpad": 0.2,
+        "borderaxespad": 0.5,
+        "loc": 3,
     }
 
     try:
-        args = cfg['Legend']
+        args = cfg["Legend"]
 
         for k, v in args.items():
             try:
@@ -76,7 +76,7 @@ def get_path_collections(fig):
     return p
 
 
-def joint_overplot(x, y, data, fig, color='r', marg_kws=None):
+def joint_overplot(x, y, data, fig, color="r", marg_kws=None):
     """Overplot additional data on existing JointGrid instance.
 
     Args:
@@ -90,10 +90,7 @@ def joint_overplot(x, y, data, fig, color='r', marg_kws=None):
     Returns:
         fig: ``sns.JointGrid`` instance.
     """
-    default = {
-        'norm_hist': True,
-        'hist_kws': {'weights': data.Survivors.values}
-    }
+    default = {"norm_hist": True, "hist_kws": {"weights": data.Survivors.values}}
 
     if marg_kws is None:
         marg_kws = {}
