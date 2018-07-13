@@ -1,7 +1,7 @@
 # @Author: Brett Andrews <andrews>
 # @Date:   2018-06-07 20:06:05
 # @Last modified by:   andrews
-# @Last modified time: 2018-06-14 22:06:87
+# @Last modified time: 2018-07-13 09:07:78
 
 """
 FILE
@@ -143,11 +143,10 @@ def _set_default_coeff(func, coeff):
             'sfe': 3e7,
         }
 
-    for kk, vv in default.items():
-        if kk not in coeff.keys():
-            coeff[kk] = vv
+    coeff = {**default, **coeff}
 
     return coeff
+
 
 def inflow_composition(params, yields, mgas_iso_last):
     """Compute the mass fraction of each element in the inflowing gas.

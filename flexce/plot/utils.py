@@ -90,9 +90,15 @@ def joint_overplot(x, y, data, fig, color='r', marg_kws=None):
     Returns:
         fig: ``sns.JointGrid`` instance.
     """
+    default = {
+        'norm_hist': True,
+        'hist_kws': {'weights': data.Survivors.values}
+    }
+
     if marg_kws is None:
-        marg_kws = dict(norm_hist=True,
-                        hist_kws=dict(weights=data.Survivors.values))
+        marg_kws = {}
+
+    marg_kws = {**default, **marg_kws}
 
     fig.x = data[x]
     fig.y = data[y]
