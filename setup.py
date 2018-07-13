@@ -18,6 +18,7 @@ entry_points = (
         [console_scripts]
         run_flexce=flexce.run_flexce:main
         make_yield_grids=flexce.make_yield_grids:main
+        plot_xfe=flexce.plot.plot_xfe:main
     ''')
 
 setup(
