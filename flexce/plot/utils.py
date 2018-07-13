@@ -1,7 +1,7 @@
 # @Author: Brett Andrews <andrews>
 # @Date:   2018-06-21 11:06:12
 # @Last modified by:   andrews
-# @Last modified time: 2018-07-13 13:07:64
+# @Last modified time: 2018-07-13 13:07:47
 
 """
 FILE
@@ -35,7 +35,8 @@ def get_colors(cfg):
             colors = [colors]
 
     except KeyError:
-        colors = sns.color_palette("bright")
+        prop_cycle = plt.rcParams['axes.prop_cycle']
+        colors = prop_cycle.by_key()['color']
 
     return colors
 
