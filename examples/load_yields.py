@@ -10,7 +10,7 @@ from flexce.yields import Yields
 
 # Edit for docs
 path_flexce = join(os.path.expanduser('~'), 'projects', 'flexce')
-path_config = join(path_flexce, 'examples')
+path_config = join(path_flexce, 'data', 'config')
 path_data = join(path_flexce, 'flexce', 'data')
 file_in = join(path_config, 'sim0.yml')
 

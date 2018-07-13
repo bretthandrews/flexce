@@ -1,7 +1,7 @@
 # @Author: Brett Andrews <andrews>
 # @Date:   2018-07-12 16:07:07
 # @Last modified by:   andrews
-# @Last modified time: 2018-07-13 09:07:81
+# @Last modified time: 2018-07-13 13:07:80
 
 """
 FILE
@@ -39,10 +39,9 @@ def main(config_file, path_sim, path_out):
         path_out (str): Path to output dir.  Default is current dir.
     """
     path_flexce = join(os.path.abspath(os.path.dirname(__file__)), '')
-    path_flexce_root = os.path.abspath(join(path_flexce, '..'))
 
     if config_file is None:
-        config_file = join(path_flexce_root, 'examples', 'ofe_sim0.yml')
+        config_file = join(path_flexce, 'data', 'config', 'ofe_sim0.yml')
 
     if path_sim is None:
         path_sim = os.getcwd()

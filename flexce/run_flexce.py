@@ -1,7 +1,7 @@
 # @Author: Brett Andrews <andrews>
 # @Date:   2018-05-30 17:05:89
 # @Last modified by:   andrews
-# @Last modified time: 2018-07-13 08:07:31
+# @Last modified time: 2018-07-13 13:07:99
 
 """
 FILE
@@ -44,12 +44,11 @@ def main(config_file, path_out):
         path_out (str): Path to output dir.  Default is current dir.
     """
     path_flexce = join(os.path.abspath(os.path.dirname(__file__)), '')
-    path_flexce_root = os.path.abspath(join(path_flexce, '..'))
     path_data = join(path_flexce, 'data')
 
     if config_file is None:
         print('No config file specified. Using default parameters.')
-        config_file = join(path_flexce_root, 'examples', 'sim0.yml')
+        config_file = join(path_flexce, 'data', 'config', 'sim0.yml')
 
     if path_out is None:
         print('No output path specified. Using current working directory.')
