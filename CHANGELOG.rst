@@ -7,6 +7,7 @@ flexCE's Change Log
 Added
 ^^^^^
 - Ability to import ``flexce``.
+- Ability to run multiple simulations from a single command line statement.
 - Requirements file.
 - Ability to evolve box without passing in arguments (defaults to fiducial simulation from Andrews et al. 2017).
 
