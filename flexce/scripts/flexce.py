@@ -1,18 +1,18 @@
 # @Author: Brett Andrews <andrews>
 # @Date:   2018-05-30 17:05:89
 # @Last modified by:   andrews
-# @Last modified time: 2018-07-16 11:07:41
+# @Last modified time: 2018-07-16 11:07:12
 
 """
 FILE
-    run_flexce
+    flexce
 
 USAGE
-    run_flexce config_files --path_out path/to/output
+    flexce config_files --path_out path/to/output
 
     Example::
 
-        $ run_flexce sim0.yml --path_out output
+        $ flexce sim0.yml --path_out output
 
 DESCRIPTION
     Run flexCE from the command line using config files.
