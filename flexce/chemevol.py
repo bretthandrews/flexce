@@ -1,7 +1,7 @@
 # @Author: Brett Andrews <andrews>
 # @Date:   2018-06-05 11:06:88
 # @Last modified by:   andrews
-# @Last modified time: 2018-07-12 20:07:86
+# @Last modified time: 2018-07-16 10:07:48
 
 """
 FILE
@@ -260,27 +260,36 @@ class ChemEvol:
         print('Rate of SNII to SNIa in last 100 timesteps:',
               1. / np.mean(rate_snia_snii[-100:]))
 
-    def save(self, path=None, as_pck=True, as_txt=True):
+    def save(self, path=None, to_pck=True, to_txt=True, verbose=True):
         """Save simulation results to pickle and txt files.
 
         Args:
-            path (str): Output path. Default is ``None``, which gets
-                converted to the user's home directory.
-            as_pck (bool): Save simulation as a *.pck file. Default is
+            path (str): Output path. Default is current directory.
+            to_pck (bool): Save simulation as a *.pck file. Default is
                 ``True``.
-            as_txt (bool): Save abundances as a *.txt file. Default is
+            to_txt (bool): Save abundances as a *.txt file. Default is
+                ``True``.
+            verbose (bool): Print output file paths. Default is
                 ``True``.
         """
         if path is None:
-            path = os.path.expanduser('~')
+            path = os.getcwd()
 
-        if as_pck:
+        if to_pck:
             os.makedirs(path, exist_ok=True)
-            sim_id = str(self.params['box']['sim_id']) or self.params['box']['datetime']
-            pck.write(join(path, f'sim{sim_id}.pck'), self)
 
-        if as_txt:
-            txt.write_abundances(path, self)
+            sim_id = str(self.params['box']['sim_id']) or self.params['box']['datetime']
+            fpck = join(path, f'sim{sim_id}.pck')
+            pck.write(fpck, self)
+
+            if verbose:
+                print(f'Wrote: {fpck}')
+
+        if to_txt:
+            ftxt = txt.write_abundances(path, self)
+
+            if verbose:
+                print(f'Wrote: {ftxt}')
 
     @property
     def feh(self):
