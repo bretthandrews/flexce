@@ -16,7 +16,7 @@ install_requires = [line.strip().replace('==', '>=') for line in open(requiremen
 entry_points = (
     '''
         [console_scripts]
-        run_flexce=flexce.scripts.run_flexce:main
+        flexce=flexce.scripts.flexce:main
         make_yield_grids=flexce.scripts.make_yield_grids:main
         plot_xfe=flexce.scripts.plot_xfe:main
     ''')
