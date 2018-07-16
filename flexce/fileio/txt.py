@@ -1,7 +1,7 @@
 # @Author: Brett Andrews <andrews>
 # @Date:   2018-07-12 09:07:24
 # @Last modified by:   andrews
-# @Last modified time: 2018-07-12 20:07:43
+# @Last modified time: 2018-07-13 16:07:24
 
 """
 FILE
@@ -32,6 +32,9 @@ def write_abundances(path, sim):
     Args:
         path (str): Output file path.
         sim: ``flexce.chemevol.ChemEvol`` instance.
+
+    Returns:
+        str: Full path of output file.
     """
     formatters = ['{:<7}'.format, '{:10}'.format] + ['{:8.5f}'.format for _ in sim.ab]
 
@@ -45,8 +48,12 @@ def write_abundances(path, sim):
 
     os.makedirs(path, exist_ok=True)
 
-    with open(join(path, f'ab{sim_id}.txt'), 'w') as fout:
+    path = join(path, f'ab{sim_id}.txt')
+
+    with open(path, 'w') as fout:
         df2.to_string(fout, header=header, index=False, formatters=formatters)
+
+    return path
 
 
 def read_abundances(path, sim_id=None):
