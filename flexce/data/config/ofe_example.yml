@@ -9,7 +9,7 @@ labels:
 ab: "[O/Fe]"
 
 plot:
-    colors: dodgerblue, r
+    colors: C1, C2
 
 legend:
     title: Simulations
