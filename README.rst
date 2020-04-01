@@ -9,7 +9,7 @@ A flexible Chemical Evolution model in python
 Documentation
 ^^^^^^^^^^^^^
 
-For the latest documenation please see `here <http://bretthandrews.github.io/flexCE>`_.
+For the latest documenation please see `here <http://bretthandrews.github.io/flexce>`_.
 
 
 Python Versions and Dependencies
@@ -79,27 +79,33 @@ the LICENSE file.
 
 Attribution
 ^^^^^^^^^^^
-Please cite `Andrews et al. (2016)
-<http://adsabs.harvard.edu/cgi-bin/bib_query?arXiv:1604.08613>`_ if you find
+Please cite `Andrews et al. (2017)
+<https://ui.adsabs.harvard.edu/abs/2017ApJ...835..224A>`_ if you find
 this code helpful in your research. You may also want to check out
-`Weinberg, Andrews, & Freudenburg (2016)
-<http://adsabs.harvard.edu/cgi-bin/bib_query?arXiv:1604.07435>`_ for a companion
+`Weinberg, Andrews, & Freudenburg (2017)
+<https://ui.adsabs.harvard.edu/abs/2017ApJ...837..183W>`_ for a companion
 analytic model.
 
-The BibTeX entry for Andrews et al. (2016)::
+The BibTeX entry for Andrews et al. (2017)::
 
-    @ARTICLE{2016arXiv160408613A,
+    @ARTICLE{2017ApJ...835..224A,
            author = {{Andrews}, B.~H. and {Weinberg}, D.~H. and {Sch{\"o}nrich}, R. and {Johnson}, J.~A.},
             title = "{Inflow, Outflow, Yields, and Stellar Population Mixing in Chemical Evolution Models}",
-          journal = {ArXiv e-prints},
+          journal = {\apj},
     archivePrefix = "arXiv",
            eprint = {1604.08613},
-         keywords = {Astrophysics - Astrophysics of Galaxies, Astrophysics - Solar and Stellar Astrophysics},
-             year = 2016,
-            month = apr,
-           adsurl = {http://adsabs.harvard.edu/abs/2016arXiv160408613A},
+         keywords = {galaxies: ISM, Galaxy: evolution, Galaxy: formation, Galaxy: general, Galaxy: stellar content, stars: abundances},
+             year = 2017,
+            month = feb,
+           volume = 835,
+              eid = {224},
+            pages = {224},
+              doi = {10.3847/1538-4357/835/2/224},
+           adsurl = {http://adsabs.harvard.edu/abs/2017ApJ...835..224A},
           adsnote = {Provided by the SAO/NASA Astrophysics Data System}
     }
+
+
 
 .. |ascl:1612.006| image:: https://img.shields.io/badge/ascl-1612.006-blue.svg?colorB=262255
    :target: http://ascl.net/1612.006
