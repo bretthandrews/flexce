@@ -18,14 +18,14 @@
         <h1>flexCE</h1>
         <p>A flexible Chemical Evolution model</p>
 
-        <p class="view"><a href="https://github.com/bretthandrews/flexCE">View the Project on GitHub <small>bretthandrews/flexCE</small></a></p>
+        <p class="view"><a href="https://github.com/bretthandrews/flexce">View the Project on GitHub <small>bretthandrews/flexce</small></a></p>
         <p class="view"><a href="http://adsabs.harvard.edu/abs/2017ApJ...835..224A">Read the Paper <small>Andrews et al. (2017)</small></a></p>
 
 
         <ul>
-          <li><a href="https://github.com/bretthandrews/flexCE/zipball/master">Download <strong>ZIP File</strong></a></li>
-          <li><a href="https://github.com/bretthandrews/flexCE/tarball/master">Download <strong>TAR Ball</strong></a></li>
-          <li><a href="https://github.com/bretthandrews/flexCE">View On <strong>GitHub</strong></a></li>
+          <li><a href="https://github.com/bretthandrews/flexce/zipball/master">Download <strong>ZIP File</strong></a></li>
+          <li><a href="https://github.com/bretthandrews/flexce/tarball/master">Download <strong>TAR Ball</strong></a></li>
+          <li><a href="https://github.com/bretthandrews/flexce">View On <strong>GitHub</strong></a></li>
         </ul>
       </header>
       <section>
@@ -49,33 +49,33 @@
 <p>Choose a location for flexCE to live. We"ll assume that it's in your home
 directory ("~/").</p>
 
-<pre><code>cd ~/flexCE
+<pre><code>cd ~/flexce
 python setup.py install
 </code></pre>
 
 <p><strong>Generate yields</strong></p>
 
-<pre><code>cd ~/flexCE/flexCE/
+<pre><code>cd ~/flexce/flexce/
 python make_yield_grids.py
 </code></pre>
 
 <h2>Quick Start</h2>
 
 <p><strong>Run the code</strong></p>
-<pre><code>cd ~/flexCE/flexCE/
+<pre><code>cd ~/flexce/flexce/
 python flexce.py ../config/sim0.cfg
 </code></pre>
 
 
 <p><strong>Plot [O/Fe]-[Fe/H]</strong></p>
 
-<pre><code>cd flexCE/flexCE/plot
+<pre><code>cd flexce/flexce/plot
 python plot_xfe_feh.py ofe_feh_sim0.cfg
 </code></pre>
 
 <p><strong>Go to output plot directory</strong></p>
 
-<pre><code>cd flexCE/plots/plots
+<pre><code>cd flexce/plots/plots
 </code></pre>
 
 
@@ -86,14 +86,14 @@ python plot_xfe_feh.py ofe_feh_sim0.cfg
     <code>sim0.cfg</code></li>
 <li>edit <code>simN.cfg</code></li>
 <li><p>re-run the code</p>
-<pre><code>cd ~/flexCE/flexCE/
+<pre><code>cd ~/flexce/flexce/
 python flexce.py ../config/simN.cfg</code></pre>
 </li>
 </ol>
 
 <p><strong>Create subdirectories for new simulation suite</strong></p>
 
-<pre><code>cd ~/flexCE/flexCE
+<pre><code>cd ~/flexce/flexce
 python init_suite.py new-suite-name
 </code></pre>
 
