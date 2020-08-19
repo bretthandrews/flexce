@@ -160,7 +160,7 @@ for i in range(len(cl04_files)):
         # (e.g., z00m13.nik)
         qtmp0 = pd.read_csv(join(path_cl04, cl04_files[i, j]),
                             delim_whitespace=True)
-        qtmp = np.array(qtmp0.ix[1:])  # skip first row (surface of star)
+        qtmp = np.array(qtmp0.iloc[1:])  # skip first row (surface of star)
         if j == cl04_files.shape[1] - 1:
             qtmp = qtmp[:, :-3]
         ytmp[:, cnt:cnt+qtmp.shape[1]-1] = qtmp[:, 1:]
