@@ -85,7 +85,7 @@ for k in i99.keys():
         snia_yields[k] = np.zeros(n_species)
         for j in range(n_species):
             if species[j] in snia_sym:
-                snia_yields[k][j] = i99[k].ix[np.where(snia_sym == species[j])]
+                snia_yields[k][j] = i99[k].iloc[np.where(snia_sym == species[j])]
 
 
 # write to file

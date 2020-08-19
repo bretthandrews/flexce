@@ -415,7 +415,7 @@ logz_grid = np.log10(z_grid)
 
 # evenly sample metallicity (in log Z) between grid points
 logz_final = np.zeros(n_metal_bin)
-dind = (n_metal_bin - 1) / (len(z_grid) - 1)
+dind = int((n_metal_bin - 1) / (len(z_grid) - 1))
 for i in range(len(z_grid) - 1):
     dlogz = (logz_grid[i+1] - logz_grid[i]) / \
             ((n_metal_bin - 1) / (len(z_grid) - 1))
